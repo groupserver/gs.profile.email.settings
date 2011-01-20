@@ -1,0 +1,57 @@
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:tal="http://xml.zope.org/namespaces/tal"
+  xmlns:metal="http://xml.zope.org/namespaces/metal"
+  metal:use-macro="context/@@groupserver_layout/page">
+  <head>
+    <title metal:fill-slot="title">
+      <span tal:replace="string:${view/label}: ${view/userInfo/name}: ${view/siteInfo/name}"/>
+    </title>
+    <style metal:fill-slot="style">
+      #delivery-addresses, #other-addresses { list-style-type: none; margin: 0; padding: 0; float: left; margin-right: 10px; }
+      #delivery-addresses li, #other-addresses li { margin: 0 5px 5px 5px; padding: 5px; font-size: 1.2em; width: 120px; }
+    </style>
+  </head>
+  <body>
+    <tal:block 
+      define="errors view/errors; status view/status; widgets view/widgets"
+      content="structure provider:groupserver.FormStatusMessage"
+      metal:fill-slot="messages">&#160;</tal:block>
+    <tal:block metal:fill-slot="contextnavigation">
+      <span 
+        tal:replace="structure provider:groupserver.ProfileContextMenu">
+        Context Menu
+      </span>
+    </tal:block>
+    <tal:block metal:fill-slot="body">
+      <h1 tal:content="view/label">Change Email Settings</h1>
+      <p i18n:translate="XXX">
+        Here you can update your email address settings. This means
+        adding, removing, and toggling preferred delivery on and off.
+      </p>
+      <form enctype="multipart/form-data"  method="post" action="."
+        id="change-email-settings" tal:attributes="action request/URL">
+        <tal:block define="widgets view/widgets">
+          <tal:block replace="structure provider:groupserver.FormWidgets"/>
+        </tal:block>
+        <div class="addresslists">
+          <ul id="delivery-addresses" class="connectedSortable">
+            <li class="ui-state-default">Item 1</li>
+            <li class="ui-state-default">Item 2</li>
+          </ul>
+          <ul id="other-addresses" class="connectedSortable">
+            <li class="ui-state-highlight">Item 1</li>
+            <li class="ui-state-highlight">Item 2</li>
+          </ul>
+        </div><!-- End demo -->
+      </form>
+    </tal:block>
+  </body>
+  <script>
+    $(function() {
+      $( "#delivery-addresses, #other-addresses" ).sortable({
+        connectWith: ".connectedSortable"
+      }).disableSelection();
+    });
+  </script>
+</html>
