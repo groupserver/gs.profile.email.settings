@@ -1,5 +1,7 @@
 #coding=utf-8
 from zope.formlib import form
+from zope.i18nmessageid import MessageFactory
+_ = MessageFactory('groupserver')
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from Products.CustomUserFolder.interfaces import IGSUserInfo
 from gs.content.form.form import SiteForm
@@ -16,6 +18,35 @@ class ChangeEmailSettingsForm(SiteForm):
         SiteForm.__init__(self, user, request)
         self.userInfo = IGSUserInfo(user)
         self.emailUser = EmailUser(user, self.userInfo)
+
+    def setUpWidgets(self, ignore_request=True):
+        default_data = \
+          {'deliveryAddresses': '\n'.join(self.deliveryAddresses),
+           'otherAddresses': '\n'.join(self.otherAddresses)}
+        self.widgets = form.setUpWidgets(
+            self.form_fields, self.prefix, self.userInfo.user, 
+            self.request, data=default_data,
+            ignore_request=False)
+
+    @property
+    def deliveryAddresses(self):
+        return self.emailUser.get_delivery_addresses()
+    
+    @property
+    def otherAddresses(self):
+        verifiedAddresses = self.emailUser.get_verified_addresses()
+        otherAddresses = \
+          [ a for a in verifiedAddresses 
+            if a not in self.deliveryAddresses ]
+        return otherAddresses
+    
+    @property
+    def unverifiedAddresses(self):
+        allAddresses = self.emailUser.get_addresses()
+        verifiedAddresses = self.emailUser.get_verified_addresses()
+        unverifiedAddresses = \
+          [ a for a in allAddresses if a not in verifiedAddresses ]
+        return unverifiedAddresses
         
     @form.action(label=_(u'Change'), failure='handle_set_action_failure')
     def handle_set(self, action, data):

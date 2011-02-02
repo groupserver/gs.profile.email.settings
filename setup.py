@@ -5,9 +5,9 @@ from version import get_version
 
 version = get_version()
 
-setup(name='gs.profile.email.base',
+setup(name='gs.profile.email.settings',
     version=version,
-    description="Associate email addresses with a profile on GroupServer.",
+    description="Update email address settings on GroupServer.",
     long_description=open("README.txt").read() + "\n" +
                       open(os.path.join("docs", "HISTORY.txt")).read(),
     classifiers=[

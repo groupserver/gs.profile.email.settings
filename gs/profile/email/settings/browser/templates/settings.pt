@@ -2,15 +2,29 @@
   xmlns="http://www.w3.org/1999/xhtml"
   xmlns:tal="http://xml.zope.org/namespaces/tal"
   xmlns:metal="http://xml.zope.org/namespaces/metal"
-  metal:use-macro="context/@@groupserver_layout/page">
+  metal:use-macro="context/@@groupserver_layout/page"
+  xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+  i18n_domain="groupserver">
   <head>
     <title metal:fill-slot="title">
       <span tal:replace="string:${view/label}: ${view/userInfo/name}: ${view/siteInfo/name}"/>
     </title>
-    <style metal:fill-slot="style">
-      #delivery-addresses, #other-addresses { list-style-type: none; margin: 0; padding: 0; float: left; margin-right: 10px; }
-      #delivery-addresses li, #other-addresses li { margin: 0 5px 5px 5px; padding: 5px; font-size: 1.2em; width: 120px; }
-    </style>
+    <tal:block metal:fill-slot="style"> 
+      <style type="text/css">
+        #delivery-addresses, #other-addresses, #unverified-addresses { 
+          background: #EEEEEE;
+          list-style-type: none; 
+          margin: 0; 
+          padding: 2px; 
+        }
+        #delivery-addresses li, #other-addresses li, #unverified-addresses li { 
+          list-style-type: none;
+          margin: 0 5px 5px 5px; 
+          padding: 5px; 
+          font-size: 1.2em; 
+        }
+      </style>
+    </tal:block>
   </head>
   <body>
     <tal:block 
@@ -25,7 +39,7 @@
     </tal:block>
     <tal:block metal:fill-slot="body">
       <h1 tal:content="view/label">Change Email Settings</h1>
-      <p i18n:translate="XXX">
+      <p i18n:translate="gs_profile_email_settings_settings_description">
         Here you can update your email address settings. This means
         adding, removing, and toggling preferred delivery on and off.
       </p>
@@ -35,23 +49,52 @@
           <tal:block replace="structure provider:groupserver.FormWidgets"/>
         </tal:block>
         <div class="addresslists">
+          <h3 i18n:translate="XXX">Delivery Addresses</h3>
           <ul id="delivery-addresses" class="connectedSortable">
-            <li class="ui-state-default">Item 1</li>
-            <li class="ui-state-default">Item 2</li>
+            <li class="ui-state-default"
+              tal:repeat="address view/deliveryAddresses"
+              tal:content="address">email@example.com</li>
           </ul>
+          <h3 i18n:translate="XXX">Other Addresses</h3>
           <ul id="other-addresses" class="connectedSortable">
-            <li class="ui-state-highlight">Item 1</li>
-            <li class="ui-state-highlight">Item 2</li>
+            <li class="ui-state-highlight"
+              tal:repeat="address view/otherAddresses"
+              tal:content="address">email@example.com</li>
           </ul>
-        </div><!-- End demo -->
+          <h3 i18n:translate="XXX">Unverified Addresses</h3>
+          <ul id="unverified-addresses">
+            <li
+              tal:repeat="address view/unverifiedAddresses"
+              tal:content="address">email@example.com</li>
+          </ul>
+        </div>
       </form>
     </tal:block>
+    <tal:block metal:fill-slot="javascript">
+      <script type="text/javascript"
+        src="/++resource++jquery-ui-1.8.9.custom.min.js">&#160;</script>
+      <script type="text/javascript">
+        jQuery.noConflict();
+        jQuery(document).ready( function () {
+          jQuery("#delivery-addresses, #other-addresses").sortable({
+            connectWith: ".connectedSortable"
+          }).disableSelection();
+          jQuery("#delivery-addresses").bind("sortupdate", function () {
+            var newList = "";
+            jQuery(this).children().each(function () {
+              newList += jQuery(this).text() + "\n";
+            });
+            jQuery("#form\\.deliveryAddresses").text(newList);
+          });
+          jQuery("#other-addresses").bind("sortupdate", function () {
+            var newList = "";
+            jQuery(this).children().each(function () {
+              newList += jQuery(this).text() + "\n";
+            });
+            jQuery("#form\\.otherAddresses").text(newList);
+          });
+        });
+      </script>
+    </tal:block>
   </body>
-  <script>
-    $(function() {
-      $( "#delivery-addresses, #other-addresses" ).sortable({
-        connectWith: ".connectedSortable"
-      }).disableSelection();
-    });
-  </script>
 </html>
