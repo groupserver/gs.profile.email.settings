@@ -48,18 +48,30 @@ class ChangeEmailSettingsForm(SiteForm):
           [ a for a in allAddresses if a not in verifiedAddresses ]
         return unverifiedAddresses
         
-    @form.action(label=_('Change'), failure='handle_set_action_failure')
-    def handle_set(self, action, data):
-        deliveryAddresses = data.get('deliveryAddresses','')
-        otherAddresses = data.get('otherAddresses','')
-        self.status = _(u'Delivery addresses now: %s.\nOther addresses now: %s') %\
-          (deliveryAddresses, otherAddresses)
-        assert type(self.status == unicode)
+    @form.action(label=_('Change'), failure='handle_change_action_failure')
+    def handle_change(self, action, data):
+        deliveryAddresses = data.get('deliveryAddresses','').strip().split('\n')
+        self.update_delivery_addresses(deliveryAddresses)
     
-    def handle_set_action_failure(self, action, data, errors):
+    def handle_change_action_failure(self, action, data, errors):
         if len(errors) == 1:
             self.status = _(u'There was an error:')
         else:
             self.status = _(u'<p>There were errors:</p>')
         
+    def update_delivery_addresses(self, addresses):
+        oldAddresses = self.deliveryAddresses
+        newAddresses = addresses
+        addedAddresses = \
+          [a for a in newAddresses if a not in oldAddresses]
+        removedAddresses = \
+          [a for a in oldAddresses if a not in newAddresses]
         
+        for address in addedAddresses:
+            assert address in self.emailUser.get_addresses(), \
+              'Address %s does not belong to %s (%s)' %\
+              (address, self.emailUser.userInfo.name, 
+               self.emailUser.userInfo.id)
+            self.emailUser.set_delivery(address)
+        for address in removedAddresses:
+            self.emailUser.drop_delivery(address)

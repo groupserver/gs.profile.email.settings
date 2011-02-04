@@ -14,14 +14,18 @@
         #delivery-addresses, #other-addresses, #unverified-addresses { 
           background: #EEEEEE;
           list-style-type: none; 
-          margin: 0; 
-          padding: 2px; 
+          margin: 0.69em; 
+          padding: 0.69em;
         }
-        #delivery-addresses li, #other-addresses li, #unverified-addresses li { 
+        #delivery-addresses li, #other-addresses li, #unverified-addresses li {
           list-style-type: none;
-          margin: 0 5px 5px 5px; 
-          padding: 5px; 
-          font-size: 1.2em; 
+          margin: 0.69em; 
+          padding: 0.69em; 
+        }
+        .removeLink, .resendLink {
+          margin-right: 0.69em;
+          float: right;
+          text-decoration: none;
         }
       </style>
     </tal:block>
@@ -57,22 +61,29 @@
         </div><!--buttons-->
         <div class="addresslists">
           <h3 i18n:translate="XXX">Delivery Addresses</h3>
-          <ul id="delivery-addresses" class="connectedSortable">
-            <li class="ui-state-default"
-              tal:repeat="address view/deliveryAddresses"
-              tal:content="address">email@example.com</li>
+          <ul id="delivery-addresses">
+            <li class="ui-state-highlight ui-corner-all"
+              tal:repeat="address view/deliveryAddresses">
+              <samp class="email" tal:content="address">email@example.com</samp>
+              <a href="#" class="removeLink">&#8722; Remove</a>
+            </li>
           </ul>
           <h3 i18n:translate="XXX">Other Addresses</h3>
-          <ul id="other-addresses" class="connectedSortable">
-            <li class="ui-state-highlight"
-              tal:repeat="address view/otherAddresses"
-              tal:content="address">email@example.com</li>
+          <ul id="other-addresses">
+            <li class="ui-state-highlight ui-corner-all"
+              tal:repeat="address view/otherAddresses">
+              <samp class="email" tal:content="address">email@example.com</samp>
+              <a href="#" class="removeLink">&#8722; Remove</a>
+            </li>
           </ul>
           <h3 i18n:translate="XXX">Unverified Addresses</h3>
           <ul id="unverified-addresses">
-            <li
-              tal:repeat="address view/unverifiedAddresses"
-              tal:content="address">email@example.com</li>
+            <li class="ui-state-default ui-corner-all"
+              tal:repeat="address view/unverifiedAddresses">
+              <samp class="email" tal:content="address">email@example.com</samp>
+              <a href="#" class="resendLink">&#9993; Resend</a>
+              <a href="#" class="removeLink">&#8722; Remove</a>
+            </li>
           </ul>
         </div>
       </form>
@@ -87,7 +98,7 @@
             var newDeliveries = "";
             var newOthers = "";
             
-            jQuery("#delivery-addresses").children().each(function () {
+            jQuery("#delivery-addresses").children().children(".email").each(function () {
               newDeliveries += jQuery(this).text() + "\n";
             });
             jQuery("#form\\.deliveryAddresses").text(newDeliveries);
@@ -97,7 +108,7 @@
               jQuery("#delivery-addresses").sortable("option", "connectWith", null);
             }
         
-            jQuery("#other-addresses").children().each(function () {
+            jQuery("#other-addresses").children().children(".email").each(function () {
               newOthers += jQuery(this).text() + "\n";
             });
             jQuery("#form\\.otherAddresses").text(newOthers);
