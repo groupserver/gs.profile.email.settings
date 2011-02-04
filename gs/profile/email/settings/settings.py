@@ -19,7 +19,7 @@ class ChangeEmailSettingsForm(SiteForm):
         self.userInfo = IGSUserInfo(user)
         self.emailUser = EmailUser(user, self.userInfo)
 
-    def setUpWidgets(self, ignore_request=True):
+    def setUpWidgets(self, ignore_request=False):
         default_data = \
           {'deliveryAddresses': '\n'.join(self.deliveryAddresses),
            'otherAddresses': '\n'.join(self.otherAddresses)}
@@ -48,9 +48,12 @@ class ChangeEmailSettingsForm(SiteForm):
           [ a for a in allAddresses if a not in verifiedAddresses ]
         return unverifiedAddresses
         
-    @form.action(label=_(u'Change'), failure='handle_set_action_failure')
+    @form.action(label=_('Change'), failure='handle_set_action_failure')
     def handle_set(self, action, data):
-        self.status = _(u'Something changed!')
+        deliveryAddresses = data.get('deliveryAddresses','')
+        otherAddresses = data.get('otherAddresses','')
+        self.status = _(u'Delivery addresses now: %s.\nOther addresses now: %s') %\
+          (deliveryAddresses, otherAddresses)
         assert type(self.status == unicode)
     
     def handle_set_action_failure(self, action, data, errors):

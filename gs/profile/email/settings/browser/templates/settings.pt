@@ -48,6 +48,13 @@
         <tal:block define="widgets view/widgets">
           <tal:block replace="structure provider:groupserver.FormWidgets"/>
         </tal:block>
+        <div class="buttons" style="display: none;">
+          <tal:block repeat="action view/actions">
+            <div class="formelementbutton">
+              <span tal:replace="structure action/render">Button</span>
+            </div>
+          </tal:block>
+        </div><!--buttons-->
         <div class="addresslists">
           <h3 i18n:translate="XXX">Delivery Addresses</h3>
           <ul id="delivery-addresses" class="connectedSortable">
@@ -76,23 +83,41 @@
       <script type="text/javascript">
         jQuery.noConflict();
         jQuery(document).ready( function () {
-          jQuery("#delivery-addresses, #other-addresses").sortable({
-            connectWith: ".connectedSortable"
+          var updateAddresses = function () {
+            var newDeliveries = "";
+            var newOthers = "";
+            
+            jQuery("#delivery-addresses").children().each(function () {
+              newDeliveries += jQuery(this).text() + "\n";
+            });
+            jQuery("#form\\.deliveryAddresses").text(newDeliveries);
+            if (jQuery("#delivery-addresses").children().length > 1) {
+              jQuery("#delivery-addresses").sortable("option", "connectWith", "#other-addresses");
+            } else {
+              jQuery("#delivery-addresses").sortable("option", "connectWith", null);
+            }
+        
+            jQuery("#other-addresses").children().each(function () {
+              newOthers += jQuery(this).text() + "\n";
+            });
+            jQuery("#form\\.otherAddresses").text(newOthers);
+        
+            jQuery("#form\\.actions\\.change").click();
+          };
+          if (jQuery("#delivery-addresses").children().length > 1) {
+            jQuery("#delivery-addresses").sortable({
+              connectWith: "#other-addresses",
+              update: updateAddresses
+            }).disableSelection();
+          } else {
+            jQuery("#delivery-addresses").sortable({
+              update: updateAddresses
+            }).disableSelection();
+          }
+          jQuery("#other-addresses").sortable({
+            connectWith: "#delivery-addresses",
+            update: updateAddresses
           }).disableSelection();
-          jQuery("#delivery-addresses").bind("sortupdate", function () {
-            var newList = "";
-            jQuery(this).children().each(function () {
-              newList += jQuery(this).text() + "\n";
-            });
-            jQuery("#form\\.deliveryAddresses").text(newList);
-          });
-          jQuery("#other-addresses").bind("sortupdate", function () {
-            var newList = "";
-            jQuery(this).children().each(function () {
-              newList += jQuery(this).text() + "\n";
-            });
-            jQuery("#form\\.otherAddresses").text(newList);
-          });
         });
       </script>
     </tal:block>
