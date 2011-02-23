@@ -10,5 +10,10 @@
     class=".settings.ChangeEmailSettingsForm"
     permission="zope2.ManageProperties"/>
     
+  <browser:resource
+    name="check-unverified-addresses.js"
+    file="browser/javascript/emailsettings.js"
+    permission="zope2.Public"/>
+    
 </configure>
 

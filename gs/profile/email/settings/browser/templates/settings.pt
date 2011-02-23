@@ -114,6 +114,8 @@
     <tal:block metal:fill-slot="javascript">
       <script type="text/javascript"
         src="/++resource++jquery-ui-1.8.9.custom.min.js">&#160;</script>
+      <script type="text/javascript"
+        src="/++resource++check-unverified-addresses.js">&#160;</script>
       <script type="text/javascript">
         jQuery.noConflict();
         jQuery(document).ready( function () {
@@ -143,11 +145,12 @@
             update: updateAddresses
           }).disableSelection();
           jQuery(".removeLink").click(function () {
-            jQuery(this).parent().remove()
+            jQuery(this).parent().remove();
             updateAddresses();
             jQuery("#form\\.actions\\.change").click();
-          })
+          });
         });
+        GSCheckVerified.poll();
       </script>
     </tal:block>
   </body>
