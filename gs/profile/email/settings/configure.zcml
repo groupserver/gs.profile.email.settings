@@ -10,9 +10,5 @@
     class=".settings.ChangeEmailSettingsForm"
     permission="zope2.ManageProperties"/>
     
-  <browser:resource name="jquery-ui-1.8.9.custom.min.js"
-    file="browser/javascript/jquery-ui-1.8.9/jquery-ui-1.8.9.custom.min.js" 
-    permission="zope2.Public" />
-    
 </configure>
 

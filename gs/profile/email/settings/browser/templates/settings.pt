@@ -11,6 +11,9 @@
     </title>
     <tal:block metal:fill-slot="style"> 
       <style type="text/css">
+        #change-email-settings-form {
+          display: None;
+        }
         #delivery-addresses, #other-addresses, #unverified-addresses { 
           background: #EEEEEE;
           list-style-type: none; 
@@ -26,6 +29,10 @@
           margin-right: 0.69em;
           float: right;
           text-decoration: none;
+        }
+        .removeLink:hover, .resendLink:hover {
+          text-decoration: underline;
+          cursor: pointer;
         }
       </style>
     </tal:block>
@@ -48,45 +55,61 @@
         adding, removing, and toggling preferred delivery on and off.
       </p>
       <form enctype="multipart/form-data"  method="post" action="."
-        id="change-email-settings" tal:attributes="action request/URL">
+        id="change-email-settings-form" tal:attributes="action request/URL">
         <tal:block define="widgets view/widgets">
           <tal:block replace="structure provider:groupserver.FormWidgets"/>
         </tal:block>
-        <div class="buttons" style="display: none;">
+        <div class="buttons">
           <tal:block repeat="action view/actions">
             <div class="formelementbutton">
               <span tal:replace="structure action/render">Button</span>
             </div>
           </tal:block>
         </div><!--buttons-->
-        <div class="addresslists">
-          <h3 i18n:translate="XXX">Delivery Addresses</h3>
-          <ul id="delivery-addresses">
-            <li class="ui-state-highlight ui-corner-all"
-              tal:repeat="address view/deliveryAddresses">
-              <samp class="email" tal:content="address">email@example.com</samp>
-              <a href="#" class="removeLink">&#8722; Remove</a>
-            </li>
-          </ul>
-          <h3 i18n:translate="XXX">Other Addresses</h3>
-          <ul id="other-addresses">
-            <li class="ui-state-highlight ui-corner-all"
-              tal:repeat="address view/otherAddresses">
-              <samp class="email" tal:content="address">email@example.com</samp>
-              <a href="#" class="removeLink">&#8722; Remove</a>
-            </li>
-          </ul>
-          <h3 i18n:translate="XXX">Unverified Addresses</h3>
-          <ul id="unverified-addresses">
-            <li class="ui-state-default ui-corner-all"
-              tal:repeat="address view/unverifiedAddresses">
-              <samp class="email" tal:content="address">email@example.com</samp>
-              <a href="#" class="resendLink">&#9993; Resend</a>
-              <a href="#" class="removeLink">&#8722; Remove</a>
-            </li>
-          </ul>
-        </div>
-      </form>
+      </form><!-- form -->
+      <div class="addresslists">
+        <h3 i18n:translate="XXX">Preferred Delivery Addresses</h3>
+        <ul id="delivery-addresses">
+          <li class="ui-state-disabled ui-corner-all"
+            tal:define="address python:view.deliveryAddresses[0]"
+            tal:condition="python:len(view.deliveryAddresses)==1"
+            tal:attributes="id address">
+            <samp class="email" tal:content="address">email@example.com</samp>
+            <a class="removeLink"
+              tal:condition="view/otherAddresses"
+              tal:attributes="id string:remove-${address}">Remove &#8722;</a>
+          </li>
+          <li class="ui-state-highlight ui-corner-all"
+            tal:condition="python:len(view.deliveryAddresses)>1"
+            tal:repeat="address view/deliveryAddresses"
+            tal:attributes="id address">
+            <samp class="email" tal:content="address">email@example.com</samp>
+            <a class="removeLink"
+              tal:attributes="id string:remove-${address}">Remove &#8722;</a>
+          </li>
+        </ul>
+        <h3 i18n:translate="XXX">Other Addresses</h3>
+        <ul id="other-addresses">
+          <li class="ui-state-highlight ui-corner-all"
+            tal:repeat="address view/otherAddresses"
+            tal:attributes="id address">
+            <samp class="email" tal:content="address">email@example.com</samp>
+            <a class="removeLink"
+              tal:attributes="id string:remove-${address}">Remove &#8722;</a>
+          </li>
+        </ul>
+        <h3 i18n:translate="XXX">Unverified Addresses</h3>
+        <ul id="unverified-addresses">
+          <li class="ui-state-default ui-corner-all"
+            tal:repeat="address view/unverifiedAddresses"
+            tal:attributes="id address">
+            <samp class="email" tal:content="address">email@example.com</samp>
+            <a href="#" class="resendLink">Resend &#9993;</a>
+            <a class="removeLink"
+              tal:attributes="id string:remove-${address}">Remove &#8722;</a>
+          </li>
+        </ul>
+      </div>
     </tal:block>
     <tal:block metal:fill-slot="javascript">
       <script type="text/javascript"
@@ -102,12 +125,7 @@
               newDeliveries += jQuery(this).text() + "\n";
             });
             jQuery("#form\\.deliveryAddresses").text(newDeliveries);
-            if (jQuery("#delivery-addresses").children().length > 1) {
-              jQuery("#delivery-addresses").sortable("option", "connectWith", "#other-addresses");
-            } else {
-              jQuery("#delivery-addresses").sortable("option", "connectWith", null);
-            }
-        
+                    
             jQuery("#other-addresses").children().children(".email").each(function () {
               newOthers += jQuery(this).text() + "\n";
             });
@@ -115,20 +133,20 @@
         
             jQuery("#form\\.actions\\.change").click();
           };
-          if (jQuery("#delivery-addresses").children().length > 1) {
-            jQuery("#delivery-addresses").sortable({
-              connectWith: "#other-addresses",
-              update: updateAddresses
-            }).disableSelection();
-          } else {
-            jQuery("#delivery-addresses").sortable({
-              update: updateAddresses
-            }).disableSelection();
-          }
+          jQuery("#delivery-addresses").sortable({
+            connectWith: "#other-addresses",
+            update: updateAddresses,
+            cancel: ".ui-state-disabled"
+          }).disableSelection();
           jQuery("#other-addresses").sortable({
             connectWith: "#delivery-addresses",
             update: updateAddresses
           }).disableSelection();
+          jQuery(".removeLink").click(function () {
+            jQuery(this).parent().remove()
+            updateAddresses();
+            jQuery("#form\\.actions\\.change").click();
+          })
         });
       </script>
     </tal:block>

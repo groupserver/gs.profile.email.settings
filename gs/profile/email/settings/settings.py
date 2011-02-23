@@ -42,16 +42,17 @@ class ChangeEmailSettingsForm(SiteForm):
     
     @property
     def unverifiedAddresses(self):
-        allAddresses = self.emailUser.get_addresses()
-        verifiedAddresses = self.emailUser.get_verified_addresses()
-        unverifiedAddresses = \
-          [ a for a in allAddresses if a not in verifiedAddresses ]
-        return unverifiedAddresses
+        return self.emailUser.get_unverified_addresses()
         
     @form.action(label=_('Change'), failure='handle_change_action_failure')
     def handle_change(self, action, data):
-        deliveryAddresses = data.get('deliveryAddresses','').strip().split('\n')
-        self.update_delivery_addresses(deliveryAddresses)
+        deliveryAddresses = data.get('deliveryAddresses','') and \
+          data['deliveryAddresses'].strip().split('\n') or [] 
+        otherAddresses = data.get('otherAddresses','') and \
+          data['otherAddresses'].strip().split('\n') or []
+        unverifiedAddresses = data.get('unverifiedAddresses','') and \
+          data['unverifiedAddresses'].strip().split('\n') or []
+        self.update_addresses(deliveryAddresses, otherAddresses, unverifiedAddresses)
     
     def handle_change_action_failure(self, action, data, errors):
         if len(errors) == 1:
@@ -59,6 +60,29 @@ class ChangeEmailSettingsForm(SiteForm):
         else:
             self.status = _(u'<p>There were errors:</p>')
         
+    def update_addresses(self, deliveryAddresses, otherAddresses, unverifiedAddresses):
+        oldVerifiedAddresses = self.emailUser.get_verified_addresses()
+        newVerifiedAddresses = deliveryAddresses + otherAddresses
+        for address in oldVerifiedAddresses:
+            assert address in self.emailUser.get_addresses(), \
+              'Address %s does not belong to %s (%s)' %\
+              (address, self.emailUser.userInfo.name, 
+               self.emailUser.userInfo.id)
+            if address not in newVerifiedAddresses:
+                self.emailUser.remove_address(address)
+        
+        oldUnverifiedAddresses = self.emailUser.get_unverified_addresses()
+        newUnverifiedAddresses = unverifiedAddresses
+        for address in oldUnverifiedAddresses:
+            assert address in self.emailUser.get_addresses(), \
+              'Address %s does not belong to %s (%s)' %\
+              (address, self.emailUser.userInfo.name, 
+               self.emailUser.userInfo.id)
+            if address not in newUnverifiedAddresses:
+                self.emailUser.remove_address(address)
+        
+        self.update_delivery_addresses(deliveryAddresses)
+    
     def update_delivery_addresses(self, addresses):
         oldAddresses = self.deliveryAddresses
         newAddresses = addresses
