@@ -34,6 +34,9 @@
           text-decoration: underline;
           cursor: pointer;
         }
+        .ui-sortable li.ui-state-highlight {
+          cursor: move;
+        }
       </style>
     </tal:block>
   </head>
@@ -118,23 +121,32 @@
         src="/++resource++check-unverified-addresses.js">&#160;</script>
       <script type="text/javascript">
         jQuery.noConflict();
+        var updateAddresses = function () {
+          // Create two new variables: one for default addresses and
+          // one for others.
+          var newDeliveries = "";
+          var newOthers = "";
+          
+          // Copy each addresses in the Default Addresses list to the
+          // newDeliveries variable
+          jQuery("#delivery-addresses").children().children(".email").each(function () {
+            newDeliveries += jQuery(this).text() + "\n";
+          });
+          // Set the text of the hidden deliveryAddresses form element
+          // to the default addresses text.
+          jQuery("#form\\.deliveryAddresses").text(newDeliveries);
+          
+          // Now do the same for the "other" addresses
+          jQuery("#other-addresses").children().children(".email").each(function () {
+            newOthers += jQuery(this).text() + "\n";
+          });
+          jQuery("#form\\.otherAddresses").text(newOthers);
+          
+          // Submit the form.
+          jQuery("#form\\.actions\\.change").click();
+        };
         jQuery(document).ready( function () {
-          var updateAddresses = function () {
-            var newDeliveries = "";
-            var newOthers = "";
-            
-            jQuery("#delivery-addresses").children().children(".email").each(function () {
-              newDeliveries += jQuery(this).text() + "\n";
-            });
-            jQuery("#form\\.deliveryAddresses").text(newDeliveries);
-                    
-            jQuery("#other-addresses").children().children(".email").each(function () {
-              newOthers += jQuery(this).text() + "\n";
-            });
-            jQuery("#form\\.otherAddresses").text(newOthers);
-        
-            jQuery("#form\\.actions\\.change").click();
-          };
+          // Set up the two lists of addresses.
           jQuery("#delivery-addresses").sortable({
             connectWith: "#other-addresses",
             update: updateAddresses,
@@ -147,7 +159,7 @@
           jQuery(".removeLink").click(function () {
             jQuery(this).parent().remove();
             updateAddresses();
-            jQuery("#form\\.actions\\.change").click();
+            jQuery("#form\\.actions\\.change").click(); // --=mpj17=-- why?
           });
         });
         GSCheckVerified.poll();
