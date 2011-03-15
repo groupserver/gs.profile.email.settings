@@ -11,6 +11,9 @@
     </title>
     <tal:block metal:fill-slot="style"> 
       <style type="text/css">
+        body {
+          text-align: left;
+        }
         #change-email-settings-form {
           display: None;
         }
@@ -59,11 +62,11 @@
       </p>
       <form enctype="multipart/form-data"  method="post" action="."
         id="change-email-settings-form" tal:attributes="action request/URL">
-        <tal:block define="widgets view/widgets">
+        <tal:block define="widgets python:[w for w in view.widgets][:3]">
           <tal:block replace="structure provider:groupserver.FormWidgets"/>
         </tal:block>
         <div class="buttons">
-          <tal:block repeat="action view/actions">
+          <tal:block define="action view/actions/form.actions.change">
             <div class="formelementbutton">
               <span tal:replace="structure action/render">Button</span>
             </div>
@@ -91,6 +94,7 @@
               tal:attributes="id string:remove-${address}">Remove &#8722;</a>
           </li>
         </ul>
+        
         <h3 i18n:translate="XXX">Other Addresses</h3>
         <ul id="other-addresses">
           <li class="ui-state-highlight ui-corner-all"
@@ -101,6 +105,27 @@
               tal:attributes="id string:remove-${address}">Remove &#8722;</a>
           </li>
         </ul>
+
+        <div id="add-email-address">
+          <a href="#" id="open-add">Add an address&#8230;</a>
+          <div id="add-email-address-dialog" style="display:none;"
+            title="Add an address">
+            <form enctype="multipart/form-data"  method="post" action="."
+              id="add-email-address-form" tal:attributes="action request/URL">
+              <tal:block define="widgets python:[view.widgets['newAddress']];">
+                <tal:block replace="structure provider:groupserver.FormWidgets"/>
+              </tal:block>
+              <div class="buttons">
+                <tal:block define="action view/actions/form.actions.add">
+                  <div class="formelementbutton">
+                    <span tal:replace="structure action/render">Button</span>
+                  </div>
+                </tal:block>
+              </div><!--buttons-->
+            </form>
+          </div><!--add-email-address-dialog-->
+        </div><!--add-email-address-->
+        
         <h3 i18n:translate="XXX">Unverified Addresses</h3>
         <ul id="unverified-addresses">
           <li class="ui-state-default ui-corner-all"
@@ -145,6 +170,11 @@
           // Submit the form.
           jQuery("#form\\.actions\\.change").click();
         };
+        
+        var showDialog = function () {
+          jQuery('#add-email-address-dialog').dialog("open");
+        };
+        
         jQuery(document).ready( function () {
           // Set up the two lists of addresses.
           jQuery("#delivery-addresses").sortable({
@@ -161,6 +191,13 @@
             updateAddresses();
             jQuery("#form\\.actions\\.change").click(); // --=mpj17=-- why?
           });
+          
+          // Add dialog
+          var o = { autoOpen: false, minWidth: 516, modal: true };
+          jQuery('#add-email-address-dialog').dialog(o);
+          jQuery('#open-add').button({ icons: {primary:'ui-icon-plusthick'}});
+          jQuery('#open-add').click(showDialog);
+          jQuery('#form\\.actions\\.add').button({ icons: {primary:'ui-icon-plusthick'}});
         });
         GSCheckVerified.poll();
       </script>

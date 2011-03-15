@@ -33,7 +33,7 @@ class IGSEmailSettings(Interface):
         unique=True,
         default=[],
         required=False)
-    
+        
 class IGSEmailSettingsForm(Interface):
     
     deliveryAddresses = ASCII(title=u'Addresses For Receiving Email',
@@ -47,3 +47,6 @@ class IGSEmailSettingsForm(Interface):
           'messages to your groups',
         required=False)
     
+    newAddress = EmailAddress(title=u'Address',
+      description=u'The email address you want to add.')
+
