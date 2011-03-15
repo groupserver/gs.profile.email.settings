@@ -48,5 +48,6 @@ class IGSEmailSettingsForm(Interface):
         required=False)
     
     newAddress = EmailAddress(title=u'Address',
-      description=u'The email address you want to add.')
+      description=u'The email address you want to add.',
+      required=False)
 

@@ -4,6 +4,7 @@ from zope.i18nmessageid import MessageFactory
 _ = MessageFactory('groupserver')
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from Products.CustomUserFolder.interfaces import IGSUserInfo
+from Products.XWFCore.XWFUtils import comma_comma_and
 from gs.content.form.form import SiteForm
 from gs.profile.email.base.emailuser import EmailUser
 from interfaces import IGSEmailSettingsForm
@@ -52,10 +53,10 @@ class ChangeEmailSettingsForm(SiteForm):
           data['otherAddresses'].strip().split('\n') or []
         unverifiedAddresses = data.get('unverifiedAddresses','') and \
           data['unverifiedAddresses'].strip().split('\n') or []
-        self.update_addresses(deliveryAddresses, otherAddresses, unverifiedAddresses)
-
-        self.status = _(u' ')
-        assert self.status
+        r = self.update_addresses(deliveryAddresses, otherAddresses, 
+                    unverifiedAddresses)
+        self.status = u'<p>%s</p>' % r
+        assert type(self.status) == unicode
     
     @form.action(label=_('Add'), failure='handle_failure')
     def handle_add(self, action, data):
@@ -73,7 +74,7 @@ class ChangeEmailSettingsForm(SiteForm):
             u'You must follow the instructions in the email before '
             u'you can use ') + e + _('. ')
         self.status = u'<p>%s</p> <p>%s</p>' % (m, n)
-        assert self.status
+        assert type(self.status) == unicode
 
     def handle_failure(self, action, data, errors):
         if len(errors) == 1:
@@ -82,6 +83,22 @@ class ChangeEmailSettingsForm(SiteForm):
             self.status = _(u'<p>There were errors:</p>')
     
     def update_addresses(self, deliveryAddresses, otherAddresses, unverifiedAddresses):
+        # Perform two types of address update: remove some addresses,
+        # and handle any different delivery addresses.
+        retval = self.remove_addresses(deliveryAddresses, otherAddresses, 
+                    unverifiedAddresses)
+        retval = retval + self.update_delivery_addresses(deliveryAddresses)
+        
+        assert type(retval) == unicode
+        return retval
+    
+    def remove_addresses(self, deliveryAddresses, otherAddresses, unverifiedAddresses):
+        # --=mpj17=-- While the UI presents an interfacefor removing 
+        # addresses, it is actually handled through a side-effect. The 
+        # UI just removes the address from the list of delivery, other,
+        # or unverified addresses. This code trawls through the addresses
+        # trying to spot the ones that have been removed.
+        r = []
         oldVerifiedAddresses = self.emailUser.get_verified_addresses()
         newVerifiedAddresses = deliveryAddresses + otherAddresses
         for address in oldVerifiedAddresses:
@@ -91,6 +108,7 @@ class ChangeEmailSettingsForm(SiteForm):
                self.emailUser.userInfo.id)
             if address not in newVerifiedAddresses:
                 self.emailUser.remove_address(address)
+                r.append(u'<code class="email">%s</code>' % address)
         
         oldUnverifiedAddresses = self.emailUser.get_unverified_addresses()
         newUnverifiedAddresses = unverifiedAddresses
@@ -101,9 +119,11 @@ class ChangeEmailSettingsForm(SiteForm):
                self.emailUser.userInfo.id)
             if address not in newUnverifiedAddresses:
                 self.emailUser.remove_address(address)
-        
-        self.update_delivery_addresses(deliveryAddresses)
-    
+                r.append(u'<code class="email">%s</code>' % address)
+
+        retval = _(u'<strong>Removed</strong> ') + comma_comma_and(r)
+        return retval
+            
     def update_delivery_addresses(self, addresses):
         oldAddresses = self.deliveryAddresses
         newAddresses = addresses
@@ -112,12 +132,29 @@ class ChangeEmailSettingsForm(SiteForm):
         removedAddresses = \
           [a for a in oldAddresses if a not in newAddresses]
         
+        retval = u''
+        r = []
         for address in addedAddresses:
             assert address in self.emailUser.get_addresses(), \
               'Address %s does not belong to %s (%s)' %\
               (address, self.emailUser.userInfo.name, 
                self.emailUser.userInfo.id)
             self.emailUser.set_delivery(address)
+            r.append(address)
+        if r:
+            s = [u'<code class="email">%s</code>' % a for a in r]
+            retval = _(u'<strong>Added</strong> ') + comma_comma_and(s) + \
+                _(u' to the list of preferred delivery addresses.')
+            
+        r = []
         for address in removedAddresses:
             self.emailUser.drop_delivery(address)
+            r.append(address)
+        if r:
+            s = [u'<code class="email">%s</code>' % a for a in r]
+            retval = retval + _(u'<strong>Removed</strong> ') + \
+                comma_comma_and(s) + \
+                _(u' from the list of preferred delivery addresses.')
+        
+        return retval
 
