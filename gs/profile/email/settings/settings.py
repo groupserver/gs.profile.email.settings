@@ -44,7 +44,7 @@ class ChangeEmailSettingsForm(SiteForm):
     def unverifiedAddresses(self):
         return self.emailUser.get_unverified_addresses()
         
-    @form.action(label=_('Change'), failure='handle_change_action_failure')
+    @form.action(label=_('Change'), failure='handle_failure')
     def handle_change(self, action, data):
         deliveryAddresses = data.get('deliveryAddresses','') and \
           data['deliveryAddresses'].strip().split('\n') or [] 
@@ -53,13 +53,21 @@ class ChangeEmailSettingsForm(SiteForm):
         unverifiedAddresses = data.get('unverifiedAddresses','') and \
           data['unverifiedAddresses'].strip().split('\n') or []
         self.update_addresses(deliveryAddresses, otherAddresses, unverifiedAddresses)
+
+        self.status = _(u'')
+        assert self.status
     
-    def handle_change_action_failure(self, action, data, errors):
+    @form.action(label=_('Add'), failure='handle_failure')
+    def handle_add(self, action, data):
+        # TODO: Do
+        self.status = u'This should do stuff'
+
+    def handle_failure(self, action, data, errors):
         if len(errors) == 1:
             self.status = _(u'There was an error:')
         else:
             self.status = _(u'<p>There were errors:</p>')
-        
+    
     def update_addresses(self, deliveryAddresses, otherAddresses, unverifiedAddresses):
         oldVerifiedAddresses = self.emailUser.get_verified_addresses()
         newVerifiedAddresses = deliveryAddresses + otherAddresses
