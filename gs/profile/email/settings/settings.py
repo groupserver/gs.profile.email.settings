@@ -54,13 +54,26 @@ class ChangeEmailSettingsForm(SiteForm):
           data['unverifiedAddresses'].strip().split('\n') or []
         self.update_addresses(deliveryAddresses, otherAddresses, unverifiedAddresses)
 
-        self.status = _(u'')
+        self.status = _(u' ')
         assert self.status
     
     @form.action(label=_('Add'), failure='handle_failure')
     def handle_add(self, action, data):
-        # TODO: Do
-        self.status = u'This should do stuff'
+        address = data['newAddress']
+        isPreferred = len(self.emailUser.get_delivery_addresses()) < 1
+        self.emailUser.add_address(address, isPreferred)
+        
+        # TODO: Rewrite for an admin adding an address.
+        e = u'<code class="email">%s</code>' % address
+        m = _(u'The address ') + e + _(u' has been <strong>added</strong> '
+            u'to your profile. ')
+        n = _(u'An email has been sent to <strong>verify</strong> '
+            u'that you control ') + e + _('. ') + \
+            _(u'<strong>Check</strong> your inbox for the email. '
+            u'You must follow the instructions in the email before '
+            u'you can use ') + e + _('. ')
+        self.status = u'<p>%s</p> <p>%s</p>' % (m, n)
+        assert self.status
 
     def handle_failure(self, action, data, errors):
         if len(errors) == 1:
@@ -107,3 +120,4 @@ class ChangeEmailSettingsForm(SiteForm):
             self.emailUser.set_delivery(address)
         for address in removedAddresses:
             self.emailUser.drop_delivery(address)
+
