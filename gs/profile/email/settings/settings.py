@@ -7,6 +7,7 @@ from Products.CustomUserFolder.interfaces import IGSUserInfo
 from Products.XWFCore.XWFUtils import comma_comma_and
 from gs.content.form.form import SiteForm
 from gs.profile.email.base.emailuser import EmailUser
+from gs.profile.email.verify.emailverificationuser import EmailVerificationUser
 from interfaces import IGSEmailSettingsForm
 
 class ChangeEmailSettingsForm(SiteForm):
@@ -63,7 +64,10 @@ class ChangeEmailSettingsForm(SiteForm):
         address = data['newAddress']
         isPreferred = len(self.emailUser.get_delivery_addresses()) < 1
         self.emailUser.add_address(address, isPreferred)
-        
+        emailVerificationUser = EmailVerificationUser(self.context, 
+                                    self.userInfo, address)
+        emailVerificationUser.send_verification_message()
+
         # TODO: Rewrite for an admin adding an address.
         e = u'<code class="email">%s</code>' % address
         m = _(u'The address ') + e + _(u' has been <strong>added</strong> '
@@ -85,9 +89,9 @@ class ChangeEmailSettingsForm(SiteForm):
     def update_addresses(self, deliveryAddresses, otherAddresses, unverifiedAddresses):
         # Perform two types of address update: remove some addresses,
         # and handle any different delivery addresses.
-        retval = self.remove_addresses(deliveryAddresses, otherAddresses, 
+        self.remove_addresses(deliveryAddresses, otherAddresses, 
                     unverifiedAddresses)
-        retval = retval + self.update_delivery_addresses(deliveryAddresses)
+        retval = self.update_delivery_addresses(deliveryAddresses)
         
         assert type(retval) == unicode
         return retval
@@ -98,7 +102,7 @@ class ChangeEmailSettingsForm(SiteForm):
         # UI just removes the address from the list of delivery, other,
         # or unverified addresses. This code trawls through the addresses
         # trying to spot the ones that have been removed.
-        r = []
+ 
         oldVerifiedAddresses = self.emailUser.get_verified_addresses()
         newVerifiedAddresses = deliveryAddresses + otherAddresses
         for address in oldVerifiedAddresses:
@@ -119,10 +123,6 @@ class ChangeEmailSettingsForm(SiteForm):
                self.emailUser.userInfo.id)
             if address not in newUnverifiedAddresses:
                 self.emailUser.remove_address(address)
-                r.append(u'<code class="email">%s</code>' % address)
-
-        retval = _(u'<strong>Removed</strong> ') + comma_comma_and(r)
-        return retval
             
     def update_delivery_addresses(self, addresses):
         oldAddresses = self.deliveryAddresses
@@ -144,7 +144,7 @@ class ChangeEmailSettingsForm(SiteForm):
         if r:
             s = [u'<code class="email">%s</code>' % a for a in r]
             retval = _(u'<strong>Added</strong> ') + comma_comma_and(s) + \
-                _(u' to the list of preferred delivery addresses.')
+                _(u' to the list of preferred delivery addresses. ')
             
         r = []
         for address in removedAddresses:
@@ -152,9 +152,9 @@ class ChangeEmailSettingsForm(SiteForm):
             r.append(address)
         if r:
             s = [u'<code class="email">%s</code>' % a for a in r]
-            retval = retval + _(u'<strong>Removed</strong> ') + \
+            retval = retval + _(u'<strong>Added</strong> ') + \
                 comma_comma_and(s) + \
-                _(u' from the list of preferred delivery addresses.')
+                _(u' to the list of other addresses.')
         
         return retval
 
