@@ -28,13 +28,18 @@
           margin: 0.69em; 
           padding: 0.69em; 
         }
-        .removeLink, .resendLink {
-          margin-right: 0.69em;
+        
+        .addresslists li {
+          height: 33px;
+        }
+        .addresslists .email {
+          margin-top: 5px;
+        }
+        
+        .actions {
           float: right;
-          text-decoration: none;
         }
         .removeLink:hover, .resendLink:hover {
-          text-decoration: underline;
           cursor: pointer;
         }
         .ui-sortable li.ui-state-highlight {
@@ -80,18 +85,24 @@
             tal:define="address python:view.deliveryAddresses[0]"
             tal:condition="python:len(view.deliveryAddresses)==1"
             tal:attributes="id address">
-            <samp class="email" tal:content="address">email@example.com</samp>
-            <a class="removeLink"
-              tal:condition="view/otherAddresses"
-              tal:attributes="id string:remove-${address}">Remove &#8722;</a>
+            <samp class="email" 
+              tal:content="address">email@example.com</samp>
+            <span class="actions">
+              <a class="removeLink"
+                tal:condition="view/otherAddresses"
+                tal:attributes="id string:remove-${address}">Remove</a>
+            </span><!--actions-->
           </li>
           <li class="ui-state-highlight ui-corner-all"
             tal:condition="python:len(view.deliveryAddresses)>1"
             tal:repeat="address view/deliveryAddresses"
             tal:attributes="id address">
-            <samp class="email" tal:content="address">email@example.com</samp>
-            <a class="removeLink"
-              tal:attributes="id string:remove-${address}">Remove &#8722;</a>
+            <samp class="email"
+              tal:content="address">email@example.com</samp>
+            <span class="actions">
+              <a class="removeLink"
+                tal:attributes="id string:remove-${address}">Remove</a>
+            </span><!--actions-->
           </li>
         </ul>
         
@@ -100,9 +111,12 @@
           <li class="ui-state-highlight ui-corner-all"
             tal:repeat="address view/otherAddresses"
             tal:attributes="id address">
-            <samp class="email" tal:content="address">email@example.com</samp>
-            <a class="removeLink"
-              tal:attributes="id string:remove-${address}">Remove &#8722;</a>
+            <samp class="email" 
+              tal:content="address">email@example.com</samp>
+            <span class="actions">
+              <a class="removeLink"
+                tal:attributes="id string:remove-${address}">Remove</a>
+            </span><!--actions-->
           </li>
         </ul>
 
@@ -131,10 +145,13 @@
           <li class="ui-state-default ui-corner-all"
             tal:repeat="address view/unverifiedAddresses"
             tal:attributes="id address">
-            <samp class="email" tal:content="address">email@example.com</samp>
-            <a href="#" class="resendLink">Resend &#9993;</a>
-            <a class="removeLink"
-              tal:attributes="id string:remove-${address}">Remove &#8722;</a>
+            <samp class="email" 
+              tal:content="address">email@example.com</samp>
+            <span class="actions">
+              <a href="#" class="resendLink">Resend</a>
+              <a class="removeLink"
+                tal:attributes="id string:remove-${address}">Remove</a>
+            </span><!--actions-->
           </li>
         </ul>
       </div>
@@ -198,6 +215,9 @@
           jQuery('#open-add').button({ icons: {primary:'ui-icon-plusthick'}});
           jQuery('#open-add').click(showDialog);
           jQuery('#form\\.actions\\.add').button({ icons: {primary:'ui-icon-plusthick'}});
+          
+          jQuery('.removeLink').button({ icons: {primary:'ui-icon-minusthick'}});
+          jQuery('.resendLink').button({ icons: {primary:'ui-icon-mail-closed'}});
         });
         GSCheckVerified.poll();
       </script>
