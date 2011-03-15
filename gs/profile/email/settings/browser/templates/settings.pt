@@ -126,7 +126,8 @@
             title="Add an address">
             <form enctype="multipart/form-data"  method="post" action="."
               id="add-email-address-form" tal:attributes="action request/URL">
-              <tal:block define="widgets python:[view.widgets['newAddress']];">
+              <tal:block 
+                define="widgets python:[view.widgets['newAddress']];">
                 <tal:block replace="structure provider:groupserver.FormWidgets"/>
               </tal:block>
               <div class="buttons">
@@ -192,6 +193,15 @@
           jQuery('#add-email-address-dialog').dialog("open");
         };
         
+        var resendVerification = function () {
+          var email = null;
+          email = jQuery(this).parents('li').find('.email').text();
+          jQuery('#form\\.resendVerificationAddress').val(email);
+          // Submit the form.
+          jQuery("#form\\.actions\\.change").click();
+          //alert(email);
+        }
+        
         jQuery(document).ready( function () {
           // Set up the two lists of addresses.
           jQuery("#delivery-addresses").sortable({
@@ -217,7 +227,10 @@
           jQuery('#form\\.actions\\.add').button({ icons: {primary:'ui-icon-plusthick'}});
           
           jQuery('.removeLink').button({ icons: {primary:'ui-icon-minusthick'}});
-          jQuery('.resendLink').button({ icons: {primary:'ui-icon-mail-closed'}});
+          jQuery('.resendLink')
+            .button({ icons: {primary:'ui-icon-mail-closed'}})
+            .removeAttr('href')
+            .click(resendVerification);
         });
         GSCheckVerified.poll();
       </script>

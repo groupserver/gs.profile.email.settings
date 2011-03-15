@@ -47,7 +47,14 @@ class IGSEmailSettingsForm(Interface):
           'messages to your groups',
         required=False)
     
-    newAddress = EmailAddress(title=u'Address',
+    resendVerificationAddress = EmailAddress(
+      title=u'Resend Verification Address',
+      description=u'The email address you want to send a verifiation '
+        u'email to.',
+      required=False)
+
+    newAddress = EmailAddress(title=u'New Address',
       description=u'The email address you want to add.',
       required=False)
+
 

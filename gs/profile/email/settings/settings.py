@@ -15,7 +15,11 @@ class ChangeEmailSettingsForm(SiteForm):
     label = _(u'Change Email Settings')
     pageTemplateFileName = 'browser/templates/settings.pt'
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
-    
+
+    verifyMesg = _(u'An email has been sent to <strong>verify</strong> '
+                    u'that you control ')
+    verifyCheckMesg =\
+        _(u'<strong>Check</strong> your inbox for the email. ')    
     def __init__(self, user, request):
         SiteForm.__init__(self, user, request)
         self.userInfo = IGSUserInfo(user)
@@ -48,35 +52,35 @@ class ChangeEmailSettingsForm(SiteForm):
         
     @form.action(label=_('Change'), failure='handle_failure')
     def handle_change(self, action, data):
-        deliveryAddresses = data.get('deliveryAddresses','') and \
-          data['deliveryAddresses'].strip().split('\n') or [] 
-        otherAddresses = data.get('otherAddresses','') and \
-          data['otherAddresses'].strip().split('\n') or []
-        unverifiedAddresses = data.get('unverifiedAddresses','') and \
-          data['unverifiedAddresses'].strip().split('\n') or []
-        r = self.update_addresses(deliveryAddresses, otherAddresses, 
-                    unverifiedAddresses)
-        self.status = u'<p>%s</p>' % r
+        
+        da = data.get('deliveryAddresses', '')
+        deliveryAddrs = self.text_to_list(da)
+        oa = data.get('otherAddresses', '')
+        otherAddrs = self.text_to_list(oa)
+        uva = data.get('unverifiedAddresses', '')
+        unverifiedAddrs = self.text_to_list(uva)
+        #r = self.update_addresses(deliveryAddrs, otherAddrs, 
+        #            unverifiedAddrs)
+        #self.status = u'<p>%s</p>' % r
+        
+        if data.has_key('resendVerificationAddress'):
+            r = self.resend_verification(data['resendVerificationAddress'])
+            self.status = u'<p>%s</p>' % r
         assert type(self.status) == unicode
-    
+            
     @form.action(label=_('Add'), failure='handle_failure')
     def handle_add(self, action, data):
         address = data['newAddress']
         isPreferred = len(self.emailUser.get_delivery_addresses()) < 1
         self.emailUser.add_address(address, isPreferred)
-        emailVerificationUser = EmailVerificationUser(self.context, 
-                                    self.userInfo, address)
-        emailVerificationUser.send_verification_message()
-
+        self.send_verification(address)
         # TODO: Rewrite for an admin adding an address.
         e = u'<code class="email">%s</code>' % address
         m = _(u'The address ') + e + _(u' has been <strong>added</strong> '
             u'to your profile. ')
-        n = _(u'An email has been sent to <strong>verify</strong> '
-            u'that you control ') + e + _('. ') + \
-            _(u'<strong>Check</strong> your inbox for the email. '
-            u'You must follow the instructions in the email before '
-            u'you can use ') + e + _('. ')
+        n = self.verifyMesg + e + _('. ') + self.verifyCheckMesg + \
+            _(u'You must follow the instructions in the email before '
+                u'you can use ') + e + _('. ')
         self.status = u'<p>%s</p> <p>%s</p>' % (m, n)
         assert type(self.status) == unicode
 
@@ -85,14 +89,33 @@ class ChangeEmailSettingsForm(SiteForm):
             self.status = _(u'There was an error:')
         else:
             self.status = _(u'<p>There were errors:</p>')
+
+    def text_to_list(self, text):
+        retval = []
+        if text:
+            retval = text.strip().split('\n')
+        assert type(retval) == list
+        return retval
+
+    def resend_verification(self, address):
+        self.send_verification(address)
+        e = u'<code class="email">%s</code>' % address
+        retval = self.verifyMesg + e + _(u'. ') + self.verifyCheckMesg
+        assert type(retval) == unicode
+        return retval
+        
+    def send_verification(self, address):
+        emailVerificationUser = EmailVerificationUser(self.context, 
+                                    self.userInfo, address)
+        emailVerificationUser.send_verification_message()
     
     def update_addresses(self, deliveryAddresses, otherAddresses, unverifiedAddresses):
         # Perform two types of address update: remove some addresses,
         # and handle any different delivery addresses.
-        self.remove_addresses(deliveryAddresses, otherAddresses, 
-                    unverifiedAddresses)
-        retval = self.update_delivery_addresses(deliveryAddresses)
-        
+        #self.remove_addresses(deliveryAddresses, otherAddresses, 
+        #            unverifiedAddresses)
+        # retval = self.update_delivery_addresses(deliveryAddresses)
+        retval = u''
         assert type(retval) == unicode
         return retval
     
