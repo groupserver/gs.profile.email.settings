@@ -45,6 +45,10 @@
         .ui-sortable li.ui-state-highlight {
           cursor: move;
         }
+        
+        #add-email-address-form .buttons {
+          float: right;
+        }
       </style>
     </tal:block>
   </head>
@@ -132,6 +136,8 @@
                 define="widgets python:[view.widgets['newAddress']];">
                 <tal:block replace="structure provider:groupserver.FormWidgets"/>
               </tal:block>
+              <!--I know that the jQuery dialog does this, but it does
+                - not play nice with Zope. -->
               <div class="buttons">
                 <tal:block define="action view/actions/form.actions.add">
                   <div class="formelementbutton">
