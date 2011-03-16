@@ -80,18 +80,22 @@ class ChangeEmailSettingsForm(SiteForm):
         
     @form.action(label=_('Add'), failure='handle_failure')
     def handle_add(self, action, data):
-        address = data['newAddress']
-        isPreferred = len(self.emailUser.get_delivery_addresses()) < 1
-        self.emailUser.add_address(address, isPreferred)
-        self.send_verification(address)
+        self.status = u''
 
-        e = markup_address(address)
-        m = _(u'The address ') + e + _(u' has been <strong>added</strong> '
-            u'to your profile. ')
-        n = self.verifyMesg + e + _('. ') + self.verifyCheckMesg + \
-            _(u'You must follow the instructions in the email before '
-                u'you can use ') + e + _('. ')
-        self.status = u'<p>%s</p> <p>%s</p>' % (m, n)
+        address = data['newAddress']
+        if address:
+            isPreferred = len(self.emailUser.get_delivery_addresses()) < 1
+            self.emailUser.add_address(address, isPreferred)
+            self.send_verification(address)
+
+            e = markup_address(address)
+            m = _(u'The address ') + e + _(u' has been <strong>added</strong> '
+                u'to your profile. ')
+            self.self.add_to_status(m)
+            n = self.verifyMesg + e + _('. ') + self.verifyCheckMesg + \
+                _(u'You must follow the instructions in the email before '
+                    u'you can use ') + e + _('. ')
+            self.self.add_to_status(n)
         assert type(self.status) == unicode
 
     def handle_failure(self, action, data, errors):
