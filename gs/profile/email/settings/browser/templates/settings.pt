@@ -185,6 +185,10 @@
           });
           jQuery("#form\\.otherAddresses").text(newOthers);
           
+          // Blank the resend verification address. If this needs to be
+          // set the resendVerification function will handle it.
+          jQuery('#form\\.resendVerificationAddress').val('');
+          
           // Submit the form.
           jQuery("#form\\.actions\\.change").click();
         };
@@ -214,9 +218,8 @@
             update: updateAddresses
           }).disableSelection();
           jQuery(".removeLink").click(function () {
-            jQuery(this).parent().remove();
+            jQuery(this).parents('li').remove();
             updateAddresses();
-            jQuery("#form\\.actions\\.change").click(); // --=mpj17=-- why?
           });
           
           // Add dialog
