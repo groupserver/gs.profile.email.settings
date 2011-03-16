@@ -1,7 +1,7 @@
 # coding=utf-8
 from zope.interface import Interface
 from zope.schema import ASCII, List
-from gs.profile.email.base.emailaddress import EmailAddress
+from gs.profile.email.base.emailaddress import NewEmailAddress, EmailAddress
 
 class IGSEmailSettings(Interface):
     
@@ -53,7 +53,7 @@ class IGSEmailSettingsForm(Interface):
         u'email to.',
       required=False)
 
-    newAddress = EmailAddress(title=u'New Address',
+    newAddress = NewEmailAddress(title=u'New Address',
       description=u'The email address you want to add.',
       required=False)
 
