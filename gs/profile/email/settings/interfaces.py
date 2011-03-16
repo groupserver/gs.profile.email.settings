@@ -41,12 +41,16 @@ class IGSEmailSettingsForm(Interface):
           'email from your groups',
         required=True)
     
-    otherAddresses = ASCII(title=u'Your Other Addresses',
+    otherAddresses = ASCII(title=u'Other Addresses',
         description=u'Addresses at which you will not usually receive '
           'email from your groups, but from which you might send '
           'messages to your groups',
         required=False)
     
+    unverifiedAddresses = ASCII(title=u'Unverified Addresses',
+        description=u'Your addresses that have not be verified as working.',
+        required=False)
+
     resendVerificationAddress = EmailAddress(
       title=u'Resend Verification Address',
       description=u'The email address you want to send a verifiation '

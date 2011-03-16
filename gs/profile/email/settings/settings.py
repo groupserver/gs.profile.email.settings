@@ -40,7 +40,7 @@ class ChangeEmailSettingsForm(SiteForm):
     def deliveryAddresses(self):
         return self.emailUser.get_delivery_addresses()
     
-    @property
+    @property   
     def otherAddresses(self):
         verifiedAddresses = self.emailUser.get_verified_addresses()
         otherAddresses = \
@@ -59,7 +59,7 @@ class ChangeEmailSettingsForm(SiteForm):
         d = self.t_to_l(data.get('deliveryAddresses',''))
         o = self.t_to_l(data.get('otherAddresses',''))
         u = self.t_to_l(data.get('unverifiedAddresses',''))
-        
+
         removeUpdate = self.remove_addresses(d, o, u)
         if removeUpdate.changed:
             self.add_to_status(unicode(removeUpdate))
@@ -71,7 +71,7 @@ class ChangeEmailSettingsForm(SiteForm):
         # Resend the verification message to an address
         if data.get('resendVerificationAddress', None):
             r = self.resend_verification(data['resendVerificationAddress'])
-            self.self.add_to_status(r)
+            self.add_to_status(r)
 
         assert type(self.status) == unicode
         
@@ -84,18 +84,23 @@ class ChangeEmailSettingsForm(SiteForm):
 
         address = data['newAddress']
         if address:
-            isPreferred = len(self.emailUser.get_delivery_addresses()) < 1
+            e = markup_address(address)
+            
+            d = len(self.emailUser.get_delivery_addresses())
+            isPreferred = d < 1
             self.emailUser.add_address(address, isPreferred)
             self.send_verification(address)
 
-            e = markup_address(address)
-            m = _(u'The address ') + e + _(u' has been <strong>added</strong> '
-                u'to your profile. ')
-            self.self.add_to_status(m)
-            n = self.verifyMesg + e + _('. ') + self.verifyCheckMesg + \
-                _(u'You must follow the instructions in the email before '
-                    u'you can use ') + e + _('. ')
-            self.self.add_to_status(n)
+            m = _(u'The address ') + e + \
+                _(u' has been <strong>added</strong> to your '
+                    u'profile. ')
+            self.add_to_status(m)
+
+            n = self.verifyMesg + e + _('. ') + \
+                self.verifyCheckMesg +  _(u'You must follow the '
+                    u'instructions in the email before you can '
+                    u'use ') + e + _('. ')
+            self.add_to_status(n)
         assert type(self.status) == unicode
 
     def handle_failure(self, action, data, errors):
@@ -114,7 +119,7 @@ class ChangeEmailSettingsForm(SiteForm):
 
     def resend_verification(self, address):
         self.send_verification(address)
-        e = markup_address(a)
+        e = markup_address(address)
         retval = self.verifyMesg + e + _(u'. ') + self.verifyCheckMesg
         assert type(retval) == unicode
         return retval

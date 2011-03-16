@@ -14,6 +14,11 @@
         body {
           text-align: left;
         }
+        
+        .hide {
+          display: none;
+        }
+        
         #change-email-settings-form {
           display: None;
         }
@@ -71,7 +76,7 @@
       </p>
       <form enctype="multipart/form-data"  method="post" action="."
         id="change-email-settings-form" tal:attributes="action request/URL">
-        <tal:block define="widgets python:[w for w in view.widgets][:3]">
+        <tal:block define="widgets python:[w for w in view.widgets][:4]">
           <tal:block replace="structure provider:groupserver.FormWidgets"/>
         </tal:block>
         <div class="buttons">
@@ -83,34 +88,37 @@
         </div><!--buttons-->
       </form><!-- form -->
       <div class="addresslists">
-        <h3 i18n:translate="XXX">Preferred Delivery Addresses</h3>
-        <ul id="delivery-addresses">
-          <li class="ui-state-disabled ui-corner-all"
-            tal:define="address python:view.deliveryAddresses[0]"
-            tal:condition="python:len(view.deliveryAddresses)==1"
-            tal:attributes="id address">
-            <samp class="email" 
-              tal:content="address">email@example.com</samp>
-            <span class="actions">
-              <a class="removeLink"
-                tal:condition="view/otherAddresses"
-                tal:attributes="id string:remove-${address}">Remove</a>
-            </span><!--actions-->
-          </li>
-          <li class="ui-state-highlight ui-corner-all"
-            tal:condition="python:len(view.deliveryAddresses)>1"
-            tal:repeat="address view/deliveryAddresses"
-            tal:attributes="id address">
-            <samp class="email"
-              tal:content="address">email@example.com</samp>
-            <span class="actions">
-              <a class="removeLink"
-                tal:attributes="id string:remove-${address}">Remove</a>
-            </span><!--actions-->
-          </li>
-        </ul>
-        
-        <tal:block condition="view/otherAddresses">
+        <div id="preferred">
+          <h3 i18n:translate="XXX">Preferred Delivery Addresses</h3>
+          <ul id="delivery-addresses">
+            <li class="ui-state-disabled ui-corner-all"
+              tal:define="address python:view.deliveryAddresses[0]"
+              tal:condition="python:len(view.deliveryAddresses)==1"
+              tal:attributes="id address">
+              <samp class="email" 
+                tal:content="address">email@example.com</samp>
+              <span class="actions">
+                <a class="removeLink"
+                  tal:condition="view/otherAddresses"
+                  tal:attributes="id string:remove-${address}">Remove</a>
+              </span><!--actions-->
+            </li>
+            <li class="ui-state-highlight ui-corner-all"
+              tal:condition="python:len(view.deliveryAddresses)>1"
+              tal:repeat="address view/deliveryAddresses"
+              tal:attributes="id address">
+              <samp class="email"
+                tal:content="address">email@example.com</samp>
+              <span class="actions">
+                <a class="removeLink"
+                  tal:attributes="id string:remove-${address}">Remove</a>
+              </span><!--actions-->
+            </li>
+          </ul>
+        </div><!--preferred-->
+        <div id="other"
+          tal:define="show python:len(view.deliveryAddresses)&gt;1 or view.otherAddresses"
+          tal:attributes="class python:show and 'show' or 'hide'">
           <h3 i18n:translate="XXX">Other Addresses</h3>
           <ul id="other-addresses">
             <li class="ui-state-highlight ui-corner-all"
@@ -124,32 +132,10 @@
               </span><!--actions-->
             </li>
           </ul>
-        </tal:block>
-        
-        <div id="add-email-address">
-          <a href="#" id="open-add">Add an address&#8230;</a>
-          <div id="add-email-address-dialog" style="display:none;"
-            title="Add an address">
-            <form enctype="multipart/form-data"  method="post" action="."
-              id="add-email-address-form" tal:attributes="action request/URL">
-              <tal:block 
-                define="widgets python:[view.widgets['newAddress']];">
-                <tal:block replace="structure provider:groupserver.FormWidgets"/>
-              </tal:block>
-              <!--I know that the jQuery dialog does this, but it does
-                - not play nice with Zope. -->
-              <div class="buttons">
-                <tal:block define="action view/actions/form.actions.add">
-                  <div class="formelementbutton">
-                    <span tal:replace="structure action/render">Button</span>
-                  </div>
-                </tal:block>
-              </div><!--buttons-->
-            </form>
-          </div><!--add-email-address-dialog-->
-        </div><!--add-email-address-->
-        
-        <tal:block condition="view/unverifiedAddresses">
+        </div><!--other-->
+        <div id="unverified"
+          tal:define="show view/unverifiedAddresses"
+          tal:attributes="class python:show and 'show' or 'hide'">
           <h3 i18n:translate="XXX">Unverified Addresses</h3>
           <ul id="unverified-addresses">
             <li class="ui-state-default ui-corner-all"
@@ -164,8 +150,30 @@
               </span><!--actions-->
             </li>
           </ul>
-        </tal:block>
+        </div><!--unverified-->
       </div><!--addresslists-->
+      <div id="add-email-address">
+        <a href="#" id="open-add">Add an address&#8230;</a>
+        <div id="add-email-address-dialog" style="display:none;"
+          title="Add an address">
+          <form enctype="multipart/form-data"  method="post" action="."
+            id="add-email-address-form" tal:attributes="action request/URL">
+            <tal:block 
+              define="widgets python:[view.widgets['newAddress']];">
+              <tal:block replace="structure provider:groupserver.FormWidgets"/>
+            </tal:block>
+            <!--I know that the jQuery dialog does this, but it does
+              - not play nice with Zope. -->
+            <div class="buttons">
+              <tal:block define="action view/actions/form.actions.add">
+                <div class="formelementbutton">
+                  <span tal:replace="structure action/render">Button</span>
+                </div>
+              </tal:block>
+            </div><!--buttons-->
+          </form>
+        </div><!--add-email-address-dialog-->
+      </div><!--add-email-address-->
     </tal:block>
     <tal:block metal:fill-slot="javascript">
       <script type="text/javascript"
@@ -174,26 +182,41 @@
         src="/++resource++check-unverified-addresses.js">&#160;</script>
       <script type="text/javascript">
         jQuery.noConflict();
-        var updateAddresses = function () {
-          // Create two new variables: one for default addresses and
-          // one for others.
-          var newDeliveries = "";
-          var newOthers = "";
-          
+        
+        var updateDelivery = function () {
           // Copy each addresses in the Default Addresses list to the
           // newDeliveries variable
+          var newDeliveries = "";
           jQuery("#delivery-addresses").children().children(".email").each(function () {
             newDeliveries += jQuery(this).text() + "\n";
           });
           // Set the text of the hidden deliveryAddresses form element
           // to the default addresses text.
           jQuery("#form\\.deliveryAddresses").text(newDeliveries);
-          
+        }
+        
+        var updateOther = function () {
           // Now do the same for the "other" addresses
+          var newOthers = "";
           jQuery("#other-addresses").children().children(".email").each(function () {
             newOthers += jQuery(this).text() + "\n";
           });
           jQuery("#form\\.otherAddresses").text(newOthers);
+        }
+        
+        var updateUnverified = function () {
+          // Aaaand for the unverified addresses
+          var newUnverified = "";
+          jQuery("#unverified-addresses").children().children(".email").each(function () {
+            newUnverified += jQuery(this).text() + "\n";
+          });
+          jQuery("#form\\.unverifiedAddresses").text(newUnverified);
+        }
+
+        var updateAddresses = function () {
+          updateDelivery();
+          updateOther();
+          updateUnverified();
           
           // Blank the resend verification address. If this needs to be
           // set the resendVerification function will handle it.
@@ -209,11 +232,13 @@
         
         var resendVerification = function () {
           var email = null;
+          updateDelivery();
+          updateOther();
+          updateUnverified();
           email = jQuery(this).parents('li').find('.email').text();
           jQuery('#form\\.resendVerificationAddress').val(email);
           // Submit the form.
           jQuery("#form\\.actions\\.change").click();
-          //alert(email);
         }
         
         jQuery(document).ready( function () {
