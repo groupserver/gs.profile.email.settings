@@ -106,20 +106,22 @@
           </li>
         </ul>
         
-        <h3 i18n:translate="XXX">Other Addresses</h3>
-        <ul id="other-addresses">
-          <li class="ui-state-highlight ui-corner-all"
-            tal:repeat="address view/otherAddresses"
-            tal:attributes="id address">
-            <samp class="email" 
-              tal:content="address">email@example.com</samp>
-            <span class="actions">
-              <a class="removeLink"
-                tal:attributes="id string:remove-${address}">Remove</a>
-            </span><!--actions-->
-          </li>
-        </ul>
-
+        <tal:block condition="view/otherAddresses">
+          <h3 i18n:translate="XXX">Other Addresses</h3>
+          <ul id="other-addresses">
+            <li class="ui-state-highlight ui-corner-all"
+              tal:repeat="address view/otherAddresses"
+              tal:attributes="id address">
+              <samp class="email" 
+                tal:content="address">email@example.com</samp>
+              <span class="actions">
+                <a class="removeLink"
+                  tal:attributes="id string:remove-${address}">Remove</a>
+              </span><!--actions-->
+            </li>
+          </ul>
+        </tal:block>
+        
         <div id="add-email-address">
           <a href="#" id="open-add">Add an address&#8230;</a>
           <div id="add-email-address-dialog" style="display:none;"
@@ -141,21 +143,23 @@
           </div><!--add-email-address-dialog-->
         </div><!--add-email-address-->
         
-        <h3 i18n:translate="XXX">Unverified Addresses</h3>
-        <ul id="unverified-addresses">
-          <li class="ui-state-default ui-corner-all"
-            tal:repeat="address view/unverifiedAddresses"
-            tal:attributes="id address">
-            <samp class="email" 
-              tal:content="address">email@example.com</samp>
-            <span class="actions">
-              <a href="#" class="resendLink">Resend</a>
-              <a class="removeLink"
-                tal:attributes="id string:remove-${address}">Remove</a>
-            </span><!--actions-->
-          </li>
-        </ul>
-      </div>
+        <tal:block condition="view/unverifiedAddresses">
+          <h3 i18n:translate="XXX">Unverified Addresses</h3>
+          <ul id="unverified-addresses">
+            <li class="ui-state-default ui-corner-all"
+              tal:repeat="address view/unverifiedAddresses"
+              tal:attributes="id address">
+              <samp class="email" 
+                tal:content="address">email@example.com</samp>
+              <span class="actions">
+                <a href="#" class="resendLink">Resend</a>
+                <a class="removeLink"
+                  tal:attributes="id string:remove-${address}">Remove</a>
+              </span><!--actions-->
+            </li>
+          </ul>
+        </tal:block>
+      </div><!--addresslists-->
     </tal:block>
     <tal:block metal:fill-slot="javascript">
       <script type="text/javascript"
@@ -225,8 +229,10 @@
           // Add dialog
           var o = { autoOpen: false, minWidth: 516, modal: true };
           jQuery('#add-email-address-dialog').dialog(o);
-          jQuery('#open-add').button({ icons: {primary:'ui-icon-plusthick'}});
-          jQuery('#open-add').click(showDialog);
+          jQuery('#open-add')
+            .button({ icons: {primary:'ui-icon-plusthick'}})
+            .removeAttr('href')
+            .click(showDialog);
           jQuery('#form\\.actions\\.add').button({ icons: {primary:'ui-icon-plusthick'}});
           
           jQuery('.removeLink').button({ icons: {primary:'ui-icon-minusthick'}});
