@@ -52,20 +52,18 @@ class ChangeEmailSettingsForm(SiteForm):
         
     @form.action(label=_('Change'), failure='handle_failure')
     def handle_change(self, action, data):
-        
-        da = data.get('deliveryAddresses', '')
-        deliveryAddrs = self.text_to_list(da)
-        oa = data.get('otherAddresses', '')
-        otherAddrs = self.text_to_list(oa)
-        uva = data.get('unverifiedAddresses', '')
-        unverifiedAddrs = self.text_to_list(uva)
+        self.status = u''
+        deliveryAddrs = self.t_to_l(data.get('deliveryAddresses',''))
+        otherAddrs = self.t_to_l(data.get('otherAddresses',''))
+        unverifiedAddrs = self.t_to_l(data.get('unverifiedAddresses',''))
         #r = self.update_addresses(deliveryAddrs, otherAddrs, 
         #            unverifiedAddrs)
-        #self.status = u'<p>%s</p>' % r
+        #if r:
+        #    self.status = u'<p>%s</p>' % r
         
-        if data.has_key('resendVerificationAddress'):
+        if data.get('resendVerificationAddress', None):
             r = self.resend_verification(data['resendVerificationAddress'])
-            self.status = u'<p>%s</p>' % r
+            self.status = u'%s\n<p>%s</p>' % (self.status, r)
         assert type(self.status) == unicode
             
     @form.action(label=_('Add'), failure='handle_failure')
@@ -90,7 +88,8 @@ class ChangeEmailSettingsForm(SiteForm):
         else:
             self.status = _(u'<p>There were errors:</p>')
 
-    def text_to_list(self, text):
+    def t_to_l(self, text):
+        """Change a text-field (string) to a list"""
         retval = []
         if text:
             retval = text.strip().split('\n')
