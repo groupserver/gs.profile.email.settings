@@ -19,6 +19,10 @@
           display: none;
         }
         
+        .draggable {
+          display: inline-block;
+        }
+        
         #change-email-settings-form {
           display: None;
         }
@@ -37,7 +41,7 @@
         .addresslists li {
           height: 33px;
         }
-        .addresslists .email {
+        .addresslists .email, .draggable {
           margin-top: 5px;
         }
         
@@ -107,6 +111,7 @@
               tal:condition="python:len(view.deliveryAddresses)>1"
               tal:repeat="address view/deliveryAddresses"
               tal:attributes="id address">
+              <span class="draggable ui-icon ui-icon-arrowthick-1-s">&#160;</span>
               <samp class="email"
                 tal:content="address">email@example.com</samp>
               <span class="actions">
@@ -124,6 +129,7 @@
             <li class="ui-state-highlight ui-corner-all"
               tal:repeat="address view/otherAddresses"
               tal:attributes="id address">
+              <span class="draggable ui-icon ui-icon-arrowthick-1-n">&#160;</span>
               <samp class="email" 
                 tal:content="address">email@example.com</samp>
               <span class="actions">
