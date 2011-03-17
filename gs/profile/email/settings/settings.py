@@ -59,6 +59,7 @@ class ChangeEmailSettingsForm(SiteForm):
         d = self.t_to_l(data.get('deliveryAddresses',''))
         o = self.t_to_l(data.get('otherAddresses',''))
         u = self.t_to_l(data.get('unverifiedAddresses',''))
+        d, o = self.fix_delivery(d, o)
 
         removeUpdate = self.remove_addresses(d, o, u)
         if removeUpdate.changed:
@@ -74,7 +75,16 @@ class ChangeEmailSettingsForm(SiteForm):
             self.add_to_status(r)
 
         assert type(self.status) == unicode
-        
+    
+    def fix_delivery(self, deliveryAddresses, otherAddresses):
+        newDelivery = deliveryAddresses
+        newOther = otherAddresses
+        if len(newDelivery) < 1:
+            assert len(newOther) > 0, \
+                'Could not set a default address: no other addresses'
+            newDelivery.append(newOther.pop())
+        return (newDelivery, newOther)
+    
     def add_to_status(self, msg):
         self.status = u'%s<p>%s</p>' % (self.status, msg)
         
@@ -192,6 +202,7 @@ class RemoveUpdate(object):
     verifiedRemoveMessage = _(u'<strong>Removed</strong> the address ')
     unverifiedRemoveMessage = _(u'<strong>Removed</strong> the '
         u'unverified address ')
+    profileMessage = _(u' from your profile.')
     def __init__(self):
         self.verified = []
         self.unverified = []
@@ -204,10 +215,12 @@ class RemoveUpdate(object):
         retval = u''
         if self.verified:
             e = comma_comma_and([markup_address(a) for a in self.verified])
-            retval =  self.verifiedRemoveMessage + e + _(u'. ')
+            retval =  self.verifiedRemoveMessage + e + \
+                        self.profileMessage
         if self.unverified:
             e = comma_comma_and([markup_address(a) for a in self.unverified])
-            retval = retval + self.unverifiedRemoveMessage + e + _(u'. ')
+            retval = retval + self.unverifiedRemoveMessage + e + \
+                        self.profileMessage
         assert type(retval) == unicode
         return retval
 

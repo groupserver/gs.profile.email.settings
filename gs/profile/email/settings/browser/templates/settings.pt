@@ -98,7 +98,7 @@
               <samp class="email" 
                 tal:content="address">email@example.com</samp>
               <span class="actions">
-                <a class="removeLink"
+                <a class="removeLink" href="#"
                   tal:condition="view/otherAddresses"
                   tal:attributes="id string:remove-${address}">Remove</a>
               </span><!--actions-->
@@ -146,6 +146,7 @@
               <span class="actions">
                 <a href="#" class="resendLink">Resend</a>
                 <a class="removeLink"
+                  tal:condition="view/deliveryAddresses"
                   tal:attributes="id string:remove-${address}">Remove</a>
               </span><!--actions-->
             </li>
@@ -241,6 +242,11 @@
           jQuery("#form\\.actions\\.change").click();
         }
         
+        var removeAddr = function () {
+          jQuery(this).parents('li').remove();
+          updateAddresses();
+        }
+        
         jQuery(document).ready( function () {
           // Set up the two lists of addresses.
           jQuery("#delivery-addresses").sortable({
@@ -252,10 +258,6 @@
             connectWith: "#delivery-addresses",
             update: updateAddresses
           }).disableSelection();
-          jQuery(".removeLink").click(function () {
-            jQuery(this).parents('li').remove();
-            updateAddresses();
-          });
           
           // Add dialog
           var o = { autoOpen: false, minWidth: 516, modal: true };
@@ -264,9 +266,12 @@
             .button({ icons: {primary:'ui-icon-plusthick'}})
             .removeAttr('href')
             .click(showDialog);
-          jQuery('#form\\.actions\\.add').button({ icons: {primary:'ui-icon-plusthick'}});
-          
-          jQuery('.removeLink').button({ icons: {primary:'ui-icon-minusthick'}});
+          jQuery('#form\\.actions\\.add')
+            .button({ icons: {primary:'ui-icon-plusthick'}});
+          jQuery('.removeLink')
+            .button({ icons: {primary:'ui-icon-minusthick'}})
+            .removeAttr('href')
+            .click(removeAddr);
           jQuery('.resendLink')
             .button({ icons: {primary:'ui-icon-mail-closed'}})
             .removeAttr('href')

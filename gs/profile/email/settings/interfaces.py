@@ -36,10 +36,14 @@ class IGSEmailSettings(Interface):
         
 class IGSEmailSettingsForm(Interface):
     
+    # --=mpj17=-- Yes, every profile must have a delivery address.
+    # However, the only time that the Remove button is shown next to
+    # a delivery address is when there is an Other address. The form
+    # will move one out of Other and add it to Delivery.
     deliveryAddresses = ASCII(title=u'Addresses For Receiving Email',
         description=u'Addresses at which you will usually receive '
           'email from your groups',
-        required=True)
+        required=False)
     
     otherAddresses = ASCII(title=u'Other Addresses',
         description=u'Addresses at which you will not usually receive '
