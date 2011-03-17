@@ -1,0 +1,78 @@
+<div id="gs-profile-email-settings">
+  <h2>Your Email Settings</h2>
+  <div id="gs-profile-email-settings-add">
+  <h3>Add an Email Address</h3>
+    <p>
+      To add an email address to your profile carry out the following
+      steps.
+    </p>
+    <ol>
+      <li>
+        Visit <a href="/p">your profile.</a>
+      </li>
+      <li>
+        Click <samp class="link">Change Email Settings</samp>.
+        The <cite class="page">Change Email Settings</cite> page will
+        be shown.
+      </li>
+      <li>
+        Click the <samp class="button">Add an address…</samp> button. 
+        The <cite class="dialog">Add an Address</cite> dialog will
+        be shown.
+      </li>
+      <li>
+        Enter your new address in the <samp class="entry">New
+          Address</samp> entry.
+      </li>
+      <li>
+        Click the <samp class="button">Add</samp> button. 
+        An email will be sent to your new address.
+      </li>
+      <li>
+        Follow the instructions in the email to <strong>verify</strong>
+        that you control the address.
+        <em>You must verify the address</em> before you can send
+        or receive email from your new address.
+      </li>
+    </ol>
+  </div><!--gs-profile-email-settings-add-->
+  <div id="gs-profile-email-settings-remove">
+    <h3>Remove an Email Address</h3>
+    <p>
+      To remove an email address from your profile carry out the 
+      following steps.
+    </p>
+    <ol>
+      <li>
+        Visit <a href="/p">your profile.</a>
+      </li>
+      <li>
+        Click <samp class="link">Change Email Settings</samp>.
+        The <cite class="page">Change Email Settings</cite> page will
+        be shown.
+      </li>
+      <li>
+        Click the <samp class="button">Remove</samp> button next to
+        the address you wish to remove.
+        The button is only shown next to addresses you can remove
+        (see the note below).
+        After you click the <samp class="button">Remove</samp> button
+        <ul>
+          <li>The address will be removed from your profile.</li>
+          <li>One of the addresses in your 
+            <samp class="list">Other addresses</samp> list will be made
+            preferred delivery address if you have removed your only
+            preferred address.</li>
+        </ul>
+      </li>
+    </ol>
+    <p class="note">
+      <strong>Note:</strong>
+      You can only remove an address from your profile if you have
+      a different <strong>verified</strong> address.
+      <a href="#gs-profile-email-settings-add">Add an address</a>
+      if you only have one address and you wish to remove it.
+    </p>
+  </div><!---->
+</div><!--gs-profile-email-settings-->
+
