@@ -1,5 +1,16 @@
 <div id="gs-profile-email-settings">
   <h2>Your Email Settings</h2>
+  <p>
+    The <cite class="page">Change Email Settings</cite> page is used
+    to 
+    <a href="#gs-profile-email-settings-add">add an email address,</a>
+    <a href="#gs-profile-email-settings-remove">remove an email
+      address,</a>
+    <a href="#gs-profile-email-settings-make-preferred">make an address
+      a preferred delivery address</a> and
+    <a href="#gs-profile-email-settings-make-other">make a preferred
+      delivery address normal.</a>
+  </p>
   <div id="gs-profile-email-settings-add">
   <h3>Add an Email Address</h3>
     <p>
@@ -35,6 +46,12 @@
         or receive email from your new address.
       </li>
     </ol>
+    <p class="note">
+      <strong>Note:</strong>
+      You can only add a <em>new</em> address to your profile.
+      You will see an error if you try to add an address that has
+      already been added to any other profile.
+    </p>
   </div><!--gs-profile-email-settings-add-->
   <div id="gs-profile-email-settings-remove">
     <h3>Remove an Email Address</h3>
@@ -60,7 +77,7 @@
         <ul>
           <li>The address will be removed from your profile.</li>
           <li>One of the addresses in your 
-            <samp class="list">Other addresses</samp> list will be made
+            <samp class="list">Other Addresses</samp> list will be made
             preferred delivery address if you have removed your only
             preferred address.</li>
         </ul>
@@ -68,11 +85,82 @@
     </ol>
     <p class="note">
       <strong>Note:</strong>
-      You can only remove an address from your profile if you have
-      a different <strong>verified</strong> address.
+      You can remove an address from the either the
+      <samp class="list">Preferred Delivery Addresses</samp>,
+      <samp class="list">Other Addresses</samp> or
+      <samp class="list">Unverified Addresses</samp> lists.
+      However, you can only remove an address from your profile if you
+      have a different <strong>verified</strong> address.
       <a href="#gs-profile-email-settings-add">Add an address</a>
       if you only have one address and you wish to remove it.
     </p>
-  </div><!---->
+  </div><!--gs-profile-email-settings-remove-->
+  <div id="gs-profile-email-settings-make-preferred">
+    <h3>Make an Address a Preferred Delivery Address</h3>
+    <p>
+      To receive email at an address by default carry out the following
+      steps.
+    </p>
+    <ol>
+      <li>
+        Visit <a href="/p">your profile.</a>
+      </li>
+      <li>
+        Click <samp class="link">Change Email Settings</samp>.
+        The <cite class="page">Change Email Settings</cite> page will
+        be shown.
+      </li>
+      <li>
+        Click and drag the address you want to receive email on by
+        default from the <samp class="list">Other Addresses</samp> list
+        to the <samp class="list">Preferred Delivery Addresses</samp>
+        list.
+        The selected address will become a preferred delivery
+        address.
+      </li>
+    </ol>
+    <p class="note">
+      <strong>Note:</strong>
+      The <samp class="list">Other Addresses</samp> will only be shown
+      when you have more than one verified email address.
+    </p>
+  </div><!--gs-profile-email-settings-made-preferred-->
+  <div id="gs-profile-email-settings-make-other">
+    <h3>Make a Preferred Delivery Address Normal </h3>
+    <p>
+      To stop receiving email at an address by default carry out the
+      following steps.
+    </p>
+    <ol>
+      <li>
+        Visit <a href="/p">your profile.</a>
+      </li>
+      <li>
+        Click <samp class="link">Change Email Settings</samp>.
+        The <cite class="page">Change Email Settings</cite> page will
+        be shown.
+      </li>
+      <li>
+        Click and drag the address you no longer want to receive email
+        on by default from the
+        <samp class="list">Preferred Delivery Addresses</samp> list
+        to the <samp class="list">Other Addresses</samp>
+        list.
+        You will no longer receive email at that address by default.
+      </li>
+    </ol>
+    <p class="note">
+      <strong>Note:</strong>
+      You must always have at least one address in the
+      <samp class="list">Preferred Delivery Addresses</samp> list.
+      If only one address is listed in the 
+      <samp class="list">Preferred Delivery Addresses</samp> list then
+      you must first
+      <a href="#gs-profile-email-settings-make-preferred">make another
+        address a preferred delivery address.</a>
+      Then you will be able to remove any address from the 
+      <samp class="list">Preferred Delivery Addresses</samp> list.
+    </p>
+  </div><!--gs-profile-email-settings-make-other-->
 </div><!--gs-profile-email-settings-->
 
