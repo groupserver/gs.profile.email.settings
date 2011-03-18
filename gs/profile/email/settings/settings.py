@@ -82,7 +82,10 @@ class ChangeEmailSettingsForm(SiteForm):
         deliveryUpdate = self.update_delivery_addresses(d)
         if deliveryUpdate.changed:
             self.add_to_status(unicode(deliveryUpdate))
-        
+
+        self.__otherAddresses = self.__deliveryAddresses = None
+        self.__unverifiedAddresses = None
+
         # Resend the verification message to an address
         if data.get('resendVerificationAddress', None):
             r = self.resend_verification(data['resendVerificationAddress'])
@@ -95,7 +98,7 @@ class ChangeEmailSettingsForm(SiteForm):
         newOther = otherAddresses
         if len(newDelivery) < 1:
             assert len(newOther) > 0, \
-                'Could not set a default address: no other addresses'
+                'Could not set a default address: no extra addresses'
             newDelivery.append(newOther.pop())
         return (newDelivery, newOther)
     
@@ -244,7 +247,7 @@ class RemoveUpdate(object):
 class DeliveryUpdate(object):
     addedMessageA = _(u'<strong>Added</strong> the address ')
     addedMessageB = _(u' to the list of preferred delivery addresses. ')
-    removedMessageB = _(u' to the list of your other addresses. ')
+    removedMessageB = _(u' to the list of your extra addresses. ')
     def __init__(self):
         self.added = []
         self.removed = []
