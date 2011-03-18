@@ -74,10 +74,20 @@
     </tal:block>
     <tal:block metal:fill-slot="body">
       <h1 tal:content="view/label">Change Email Settings</h1>
-      <p i18n:translate="gs_profile_email_settings_settings_description">
-        Here you can update your email address settings. This means
-        adding, removing, and toggling preferred delivery on and off.
-      </p>
+      <div id="change-email-intro"
+        i18n:translate="gs_profile_email_settings_settings_description">
+        <p tal:condition="view/showOtherAddresses">
+          To change the addresses that are used to send you email from
+          your groups, 
+          <strong>click and drag</strong> the addresses between the
+          <samp class="list">Preferred Delivery Addresses</samp> and
+          <samp class="list">Extra Addresses</samp> lists.
+        </p>
+        <p id="change-email-intro-add">
+          To <strong>add</strong> an address, click the 
+          <samp class="button">Add an address&#8230;</samp> button below.
+        </p>
+      </div><!--change-email-intro-->
       <form enctype="multipart/form-data"  method="post" action="."
         id="change-email-settings-form" tal:attributes="action request/URL">
         <tal:block define="widgets python:[w for w in view.widgets][:4]">
@@ -103,6 +113,7 @@
                 tal:content="address">email@example.com</samp>
               <span class="actions">
                 <a class="removeLink" href="#"
+                  title="Remove this address from your profile"
                   tal:condition="view/otherAddresses"
                   tal:attributes="id string:remove-${address}">Remove</a>
               </span><!--actions-->
@@ -110,30 +121,31 @@
             <li class="ui-state-highlight ui-corner-all"
               tal:condition="python:len(view.deliveryAddresses)>1"
               tal:repeat="address view/deliveryAddresses"
-              tal:attributes="id address">
-              <span class="draggable ui-icon ui-icon-arrowthick-1-s">&#160;</span>
+              tal:attributes="id address"
+              title="Drag this address to the Extra Addresses list to stop recieving email on this address by default.">
               <samp class="email"
                 tal:content="address">email@example.com</samp>
               <span class="actions">
                 <a class="removeLink"
+                  title="Remove this address from your profile"
                   tal:attributes="id string:remove-${address}">Remove</a>
               </span><!--actions-->
             </li>
           </ul>
         </div><!--preferred-->
         <div id="other"
-          tal:define="show python:len(view.deliveryAddresses)&gt;1 or view.otherAddresses"
-          tal:attributes="class python:show and 'show' or 'hide'">
-          <h3 i18n:translate="XXX">Other Addresses</h3>
+          tal:attributes="class python:view.showOtherAddresses and 'show' or 'hide'">
+          <h3 i18n:translate="XXX">Extra Addresses</h3>
           <ul id="other-addresses">
             <li class="ui-state-highlight ui-corner-all"
               tal:repeat="address view/otherAddresses"
-              tal:attributes="id address">
-              <span class="draggable ui-icon ui-icon-arrowthick-1-n">&#160;</span>
+              tal:attributes="id address"
+              title="Drag this address to the Preferred Delivery Addresses list to recieve email on this address by default.">
               <samp class="email" 
                 tal:content="address">email@example.com</samp>
               <span class="actions">
                 <a class="removeLink"
+                  title="Remove this address from your profile"
                   tal:attributes="id string:remove-${address}">Remove</a>
               </span><!--actions-->
             </li>
@@ -150,8 +162,11 @@
               <samp class="email" 
                 tal:content="address">email@example.com</samp>
               <span class="actions">
-                <a href="#" class="resendLink">Resend</a>
+                <a href="#" 
+                  title="Resend a verification email to this address"
+                class="resendLink">Resend</a>
                 <a class="removeLink"
+                  title="Remove this address from your profile"
                   tal:condition="view/deliveryAddresses"
                   tal:attributes="id string:remove-${address}">Remove</a>
               </span><!--actions-->
@@ -253,16 +268,34 @@
           updateAddresses();
         }
         
+        var highlightDelivery = function(event, ui) {
+          jQuery('#delivery-addresses').addClass("ui-state-hover");
+        }
+        var lowlightDelivery = function(event, ui) {
+          jQuery('#delivery-addresses').removeClass("ui-state-hover");
+        }
+        var highlightOther = function(event, ui) {
+          jQuery('#other-addresses').addClass("ui-state-hover");
+        }
+        var lowlightOther = function(event, ui) {
+          jQuery('#other-addresses').removeClass("ui-state-hover");
+        }
+        
         jQuery(document).ready( function () {
           // Set up the two lists of addresses.
           jQuery("#delivery-addresses").sortable({
             connectWith: "#other-addresses",
             update: updateAddresses,
-            cancel: ".ui-state-disabled"
+            cancel: ".ui-state-disabled",
+            start: highlightOther,
+            stop: lowlightOther,
           }).disableSelection();
+          
           jQuery("#other-addresses").sortable({
             connectWith: "#delivery-addresses",
-            update: updateAddresses
+            update: updateAddresses,
+            start: highlightDelivery,
+            stop: lowlightDelivery,
           }).disableSelection();
           
           // Add dialog

@@ -22,10 +22,13 @@ class ChangeEmailSettingsForm(SiteForm):
                     u'that you control ')
     verifyCheckMesg =\
         _(u'<strong>Check</strong> your inbox for the email. ')    
+    
     def __init__(self, user, request):
         SiteForm.__init__(self, user, request)
         self.userInfo = IGSUserInfo(user)
         self.emailUser = EmailUser(user, self.userInfo)
+        self.__otherAddresses = self.__deliveryAddresses = None
+        self.__unverifiedAddresses = None
 
     def setUpWidgets(self, ignore_request=False): #--=mpj17=-- change to True?
         default_data = \
@@ -38,19 +41,30 @@ class ChangeEmailSettingsForm(SiteForm):
 
     @property
     def deliveryAddresses(self):
-        return self.emailUser.get_delivery_addresses()
+        if self.__deliveryAddresses == None:
+            self.__deliveryAddresses = self.emailUser.get_delivery_addresses()
+        return self.__deliveryAddresses
     
     @property   
     def otherAddresses(self):
-        verifiedAddresses = self.emailUser.get_verified_addresses()
-        otherAddresses = \
-          [ a for a in verifiedAddresses 
-            if a not in self.deliveryAddresses ]
-        return otherAddresses
+        if self.__otherAddresses == None:
+            verifiedAddresses = self.emailUser.get_verified_addresses()
+            self.__otherAddresses = \
+              [ a for a in verifiedAddresses 
+                if a not in self.deliveryAddresses ]
+        return self.__otherAddresses
     
     @property
     def unverifiedAddresses(self):
-        return self.emailUser.get_unverified_addresses()
+        if self.__unverifiedAddresses == None:
+            self.__unverifiedAddresses = \
+                self.emailUser.get_unverified_addresses()
+        return self.__unverifiedAddresses
+
+    @property
+    def showOtherAddresses(self):
+        retval = (len(self.deliveryAddresses) > 1) or self.otherAddresses
+        return retval
         
     @form.action(label=_('Change'), failure='handle_failure')
     def handle_change(self, action, data):
