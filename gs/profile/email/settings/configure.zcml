@@ -9,7 +9,17 @@
     for="Products.CustomUserFolder.interfaces.ICustomUser"
     class=".settings.ChangeEmailSettingsForm"
     permission="zope2.ManageProperties"/>
-    
+  <browser:menuItems
+    menu="user_profile_menu"
+    for="Products.CustomUserFolder.interfaces.ICustomUser">
+    <browser:menuItem 
+        action="emailsettings.html"
+        title="Change Email Settings"
+        description="Change your email addresses and delivery options"
+        order="3"
+        permission="zope2.ManageProperties"/>
+  </browser:menuItems>
+
   <browser:resource
     name="emailsettings-20110324.js"
     file="browser/javascript/emailsettings.js"
