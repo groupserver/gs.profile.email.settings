@@ -201,7 +201,7 @@
       <script type="text/javascript"
         src="/++resource++jquery-ui-1.8.9.custom.min.js">&#160;</script>
       <script type="text/javascript"
-        src="/++resource++check-unverified-addresses.js">&#160;</script>
+        src="/++resource++emailsettings-20110324.js">&#160;</script>
       <script type="text/javascript">
         jQuery.noConflict();
         GSEmailSettings.init();

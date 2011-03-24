@@ -11,7 +11,7 @@
     permission="zope2.ManageProperties"/>
     
   <browser:resource
-    name="check-unverified-addresses.js"
+    name="emailsettings-20110324.js"
     file="browser/javascript/emailsettings.js"
     permission="zope2.Public"/>
 
