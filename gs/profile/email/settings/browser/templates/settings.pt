@@ -58,6 +58,10 @@
         #add-email-address-form .buttons {
           float: right;
         }
+        
+        #group-settings {
+          margin-top: 2.769em; /* 2u */
+        }
       </style>
     </tal:block>
   </head>
