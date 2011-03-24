@@ -196,6 +196,43 @@
           </form>
         </div><!--add-email-address-dialog-->
       </div><!--add-email-address-->
+      <div id="group-settings" class="disclosureWidget">
+        <h2><a class="disclosureButton">Group Settings</a></h2>
+        <div class="disclosureShowHide" style="display:none;">
+          <table id="group-settings-table">
+            <thead>
+              <tr>
+                <th>Group</th>
+                <th>Address</th>
+                <th>Setting</th>
+                <th>&#160;</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr tal:repeat="setting view/groupSettings">
+                <td>
+                  <a tal:content="setting/groupInfo/name"
+                    tal:attributes="href setting/groupInfo/url"
+                    href="#">Group</a>
+                </td>
+                <td tal:content="structure setting/addresses">Address</td>
+                <td>
+                  <span tal:condition="setting/webOnly">Web only.</span>
+                  <span tal:condition="setting/digest">Daily digest of 
+                    topics.</span>
+                  <span tal:condition="setting/email">One email per 
+                    post.</span>
+                </td>
+                <td>
+                  <a 
+                    tal:attributes="href string:${setting/groupInfo/url}/email_settings.html"
+                    href="#">Change</a>
+                </td>
+              </tr>
+            </tbody>
+          </table><!--group-settings-table-->
+        </div>
+      </div><!--group-settings-->
     </tal:block>
     <tal:block metal:fill-slot="javascript">
       <script type="text/javascript"

@@ -9,6 +9,7 @@ from gs.content.form.form import SiteForm
 from gs.profile.email.base.emailuser import EmailUser
 from gs.profile.email.verify.emailverificationuser import EmailVerificationUser
 from interfaces import IGSEmailSettingsForm
+from groupsettings import GroupEmailSettings
 
 # TODO: Rewrite the status messages for an administrator adding an 
 # address.
@@ -29,7 +30,8 @@ class ChangeEmailSettingsForm(SiteForm):
         self.emailUser = EmailUser(user, self.userInfo)
         self.__otherAddresses = self.__deliveryAddresses = None
         self.__unverifiedAddresses = None
-
+        self.groupSettings = GroupEmailSettings(self.userInfo)
+        
     def setUpWidgets(self, ignore_request=False): #--=mpj17=-- change to True?
         default_data = \
           {'deliveryAddresses': '\n'.join(self.deliveryAddresses),
