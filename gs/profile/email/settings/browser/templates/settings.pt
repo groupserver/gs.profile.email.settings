@@ -109,19 +109,20 @@
         <div id="preferred">
           <h3 i18n:translate="XXX">Preferred Delivery Addresses</h3>
           <ul id="delivery-addresses">
-            <li class="ui-state-default ui-corner-all"
-              tal:define="address python:view.deliveryAddresses[0]"
-              tal:condition="python:len(view.deliveryAddresses)==1"
-              tal:attributes="id address">
-              <samp class="email" 
-                tal:content="address">email@example.com</samp>
-              <span class="actions">
-                <a class="removeLink" href="#"
-                  title="Remove this address from your profile"
-                  tal:condition="view/otherAddresses"
-                  tal:attributes="id string:remove-${address}">Remove</a>
-              </span><!--actions-->
-            </li>
+            <tal:block condition="python:len(view.deliveryAddresses)==1">
+              <li class="ui-state-default ui-corner-all"
+                tal:define="address python:view.deliveryAddresses[0]"
+                tal:attributes="id address">
+                <samp class="email" 
+                  tal:content="address">email@example.com</samp>
+                <span class="actions">
+                  <a class="removeLink" href="#"
+                    title="Remove this address from your profile"
+                    tal:condition="view/otherAddresses"
+                    tal:attributes="id string:remove-${address}">Remove</a>
+                </span><!--actions-->
+              </li>
+            </tal:block>
             <li class="ui-state-highlight ui-corner-all"
               tal:condition="python:len(view.deliveryAddresses)>1"
               tal:repeat="address view/deliveryAddresses"

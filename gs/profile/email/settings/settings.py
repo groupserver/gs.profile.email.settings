@@ -98,9 +98,7 @@ class ChangeEmailSettingsForm(SiteForm):
     def fix_delivery(self, deliveryAddresses, otherAddresses):
         newDelivery = deliveryAddresses
         newOther = otherAddresses
-        if len(newDelivery) < 1:
-            assert len(newOther) > 0, \
-                'Could not set a default address: no extra addresses'
+        if ((len(newDelivery) < 1) and (len(newOther) > 0)):
             newDelivery.append(newOther.pop())
         return (newDelivery, newOther)
     
