@@ -1,9 +1,11 @@
-<div id="gs-profile-email-settings">
+<div class="section" id="gs-profile-email-settings">
   <h2>Your Email Settings</h2>
   <p>
     The <cite class="page">Change Email Settings</cite> page is used
     to 
     <a href="#gs-profile-email-settings-add">add an email address,</a>
+    <a href="#gs-profile-email-settings-resend">resend an email address
+      verification message,</a>
     <a href="#gs-profile-email-settings-remove">remove an email
       address,</a>
     <a href="#gs-profile-email-settings-make-preferred">make an extra 
@@ -11,7 +13,7 @@
     <a href="#gs-profile-email-settings-make-extra">make a preferred
       delivery address an extra address.</a>
   </p>
-  <div id="gs-profile-email-settings-add">
+  <div class="section" id="gs-profile-email-settings-add">
   <h3>Add an Email Address</h3>
     <p>
       To add an email address to your profile carry out the following
@@ -53,7 +55,22 @@
       already been added to any other profile.
     </p>
   </div><!--gs-profile-email-settings-add-->
-  <div id="gs-profile-email-settings-remove">
+  <div class="section" id="gs-profile-email-settings-resend">
+    <h3>Resend an Email Address Verification Message</h3>
+    <p></p>
+    <ol>
+      <li>Visit <a href="/p">your profile.</a> 
+        Log in if necessary.</li>
+      <li>Click <samp class="link">Change Email Settings</samp>. 
+        The <cite>Change Email Settings</cite> page will be shown.</li>
+      <li>Click the <samp class="button">Resend</samp> button next to
+        the unverified email address.
+        A verification email will be sent to you.</li>
+      <li>Follow the instructions in the email to <strong>verify</strong>
+        that you control the address.</li>
+    </ol>
+  </div><!--gs-profile-email-settings-resend-->
+  <div class="section" id="gs-profile-email-settings-remove">
     <h3>Remove an Email Address</h3>
     <p>
       To remove an email address from your profile carry out the 
@@ -91,7 +108,7 @@
       if you only have one address and you wish to remove it.
     </p>
   </div><!--gs-profile-email-settings-remove-->
-  <div id="gs-profile-email-settings-make-preferred">
+  <div class="section" id="gs-profile-email-settings-make-preferred">
     <h3>Make an Address a Preferred Delivery Address</h3>
     <p>
       To receive email at an address by default carry out the following
@@ -121,7 +138,7 @@
       when you have more than one verified email address.
     </p>
   </div><!--gs-profile-email-settings-made-preferred-->
-  <div id="gs-profile-email-settings-make-extra">
+  <div class="section" id="gs-profile-email-settings-make-extra">
     <h3>Make a Preferred Delivery Address an Extra Address</h3>
     <p>
       To stop receiving email at an address by default carry out the
