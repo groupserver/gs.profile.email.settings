@@ -87,14 +87,14 @@ GSEmailSettings = function () {
         update: updateAddresses,
         cancel: ".ui-state-disabled",
         start: highlightOther,
-        stop: lowlightOther,
+        stop: lowlightOther
       }).disableSelection();
       
       jQuery("#other-addresses").sortable({
         connectWith: "#delivery-addresses",
         update: updateAddresses,
         start: highlightDelivery,
-        stop: lowlightDelivery,
+        stop: lowlightDelivery
       }).disableSelection();
       
       // Add dialog
@@ -114,7 +114,7 @@ GSEmailSettings = function () {
         .button({ icons: {primary:'ui-icon-mail-closed'}})
         .removeAttr('href')
         .click(resendVerification);
-    },
+    }
   };
 }(); //GSEmailSettings
 
