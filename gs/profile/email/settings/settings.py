@@ -1,4 +1,5 @@
 #coding=utf-8
+from zope.cachedescriptors.property import Lazy
 from zope.formlib import form
 from zope.i18nmessageid import MessageFactory
 _ = MessageFactory('groupserver')
@@ -26,11 +27,25 @@ class ChangeEmailSettingsForm(SiteForm):
     
     def __init__(self, user, request):
         SiteForm.__init__(self, user, request)
-        self.userInfo = IGSUserInfo(user)
-        self.emailUser = EmailUser(user, self.userInfo)
+        # These caches will be cleared when the form submits, so we 
+        #   do them in the non-@Lazy way.
         self.__otherAddresses = self.__deliveryAddresses = None
         self.__unverifiedAddresses = None
-        self.groupSettings = GroupEmailSettings(self.userInfo)
+    
+    @Lazy
+    def userInfo(self):
+        retval = IGSUserInfo(self.context)
+        return retval
+    
+    @Lazy
+    def emailUser(self):
+        retval = EmailUser(self.context, self.userInfo)
+        return retval
+    
+    @Lazy
+    def groupSettings(self):
+        retval = GroupEmailSettings(self.userInfo)
+        return retval
         
     def setUpWidgets(self, ignore_request=False): #--=mpj17=-- change to True?
         default_data = \
@@ -154,7 +169,7 @@ class ChangeEmailSettingsForm(SiteForm):
     def send_verification(self, address):
         emailVerificationUser = EmailVerificationUser(self.context, 
                                     self.userInfo, address)
-        emailVerificationUser.send_verification_message()
+        emailVerificationUser.send_verification(self.request)
         
     def remove_addresses(self, deliveryAddresses, otherAddresses, unverifiedAddresses):
         # --=mpj17=-- While the UI presents an interface for removing 
