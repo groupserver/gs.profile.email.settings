@@ -153,7 +153,7 @@ GSCheckVerified = function () {
         // The Unverified addresses should not need to be updated.
         jQuery("#form\\.actions\\.change").click();
       } else {
-        setTimeout("GSCheckVerified.poll()", TIMEOUT_DELTA);
+        setTimeout(function () { GSCheckVerified.poll(); }, TIMEOUT_DELTA);
       }
     }
   };
