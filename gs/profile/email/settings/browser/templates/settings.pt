@@ -1,10 +1,9 @@
-<html
-  xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:tal="http://xml.zope.org/namespaces/tal"
-  xmlns:metal="http://xml.zope.org/namespaces/metal"
-  metal:use-macro="context/@@groupserver_layout/page"
-  xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-  i18n_domain="groupserver">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n_domain="groupserver"
+      metal:use-macro="context/@@groupserver_menu_layout/page">
   <head>
     <title metal:fill-slot="title">
       <span tal:replace="string:${view/label}: ${view/userInfo/name}: ${view/siteInfo/name}"/>
@@ -240,15 +239,10 @@
       </div><!--group-settings-->
     </tal:block>
     <tal:block metal:fill-slot="javascript">
-      <script type="text/javascript"
-        src="/++resource++jquery-ui-1.8.9.custom.min.js">&#160;</script>
-      <script type="text/javascript"
-        src="/++resource++emailsettings-20110324.js">&#160;</script>
-      <script type="text/javascript">
-        jQuery.noConflict();
-        GSEmailSettings.init();
-        GSCheckVerified.poll();
-      </script>
+      <script type="text/javascript" defer="true"
+              src="/++resource++jquery-ui-1.8.9.custom.min.js">&#160;</script>
+      <script type="text/javascript" defer="true"
+              src="/++resource++emailsettings-20130530.js">&#160;</script>
     </tal:block>
   </body>
 </html>

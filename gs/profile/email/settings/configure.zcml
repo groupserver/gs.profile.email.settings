@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <configure xmlns="http://namespaces.zope.org/zope"
-  xmlns:browser="http://namespaces.zope.org/browser"
-  xmlns:five="http://namespaces.zope.org/five"
-  i18n_domain="groupserver">
+           xmlns:browser="http://namespaces.zope.org/browser"
+           i18n_domain="groupserver">
 
   <browser:page
     name="emailsettings.html"
@@ -13,24 +12,28 @@
     menu="user_profile_menu"
     for="Products.CustomUserFolder.interfaces.ICustomUser">
     <browser:menuItem 
-        action="emailsettings.html"
-        title="Change Email Settings"
-        description="Change your email addresses and delivery options"
-        order="3"
-        permission="zope2.ManageProperties"/>
+      action="emailsettings.html"
+      title="Change Email Settings"
+      description="Change your email addresses and delivery options"
+      order="3"
+      permission="zope2.ManageProperties"/>
   </browser:menuItems>
 
   <browser:resource
-    name="emailsettings-20110324.js"
+    name="emailsettings-20130530.js"
     file="browser/javascript/emailsettings.js"
+    permission="zope2.Public"/>
+  <browser:resource
+    name="emailsettings-min-20130530.js"
+    file="browser/javascript/emailsettings-min.js"
     permission="zope2.Public"/>
 
   <!--help-->
-  <browser:viewlet name="gs-profile-email-settings-help"
+  <browser:viewlet 
+    name="gs-profile-email-settings-help"
     manager="gs.help.interfaces.IUserHelp"
     template="browser/templates/help.pt"
     permission="zope2.Public"
     weight="2" />
 
 </configure>
-
