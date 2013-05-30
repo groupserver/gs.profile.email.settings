@@ -33,7 +33,7 @@ setup(name='gs.profile.email.settings',
     install_requires=[
         'setuptools',
         'gs.content.form',
-        'gs.content.js.jquery',
+        'gs.content.js.jquery.base',
         'gs.profile.email.base',
         'gs.profile.email.verify',
         'Products.CustomUserFolder',
