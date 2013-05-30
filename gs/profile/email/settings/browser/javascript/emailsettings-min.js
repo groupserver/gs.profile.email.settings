@@ -22,5 +22,5 @@ return{init:function(){},poll:function(){jQuery("#unverified-addresses").childre
 f=jQuery(this).text();g={type:"POST",url:b,cache:false,data:"email="+encodeURIComponent(f),success:GSCheckVerified.checkReturn};
 jQuery.ajax(g)})},checkReturn:function(g,i){var e=g=="1",h=null,f=null;if(e){f='<li><samp class="email">'+c+"</samp></li>";
 h=jQuery("#other-addresses");h.append(f);d.updateOther();jQuery("#form\\.actions\\.change").click()
-}else{setTimeout("GSCheckVerified.poll()",a)}}}}jQuery(window).load(function(){var b=null,a=null;
+}else{setTimeout(function(){GSCheckVerified.poll()},a)}}}}jQuery(window).load(function(){var b=null,a=null;
 b=GSEmailSettings();b.init();a=GSCheckVerified();a.poll()});
