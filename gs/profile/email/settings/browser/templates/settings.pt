@@ -55,13 +55,23 @@
         .ui-sortable li.ui-state-highlight {
           cursor: move;
         }
-        
-        #add-email-address-form .buttons {
-          float: right;
+        #add-email-address-form {
+          margin: 0;
         }
-        
+        #widget-form\.newAddress, #add-email-address-form .buttons {
+          width: 80%;
+        }
+        #form\.newAddress {
+          width: 100%;
+        }
+        #add-email-address-form .buttons {
+          margin: 1.25em 0 0 1.875em;
+        }
+        #form\.actions\.add {
+          padding: 2px 9px;
+        }
         #group-settings {
-          margin-top: 2.769em; /* 2u */
+          margin-top: 2.5em; /* 2u */
         }
       </style>
     </tal:block>
@@ -77,7 +87,23 @@
         Context Menu
       </span>
     </tal:block>
-    <tal:block metal:fill-slot="body">
+    <ul metal:fill-slot="breadcrumb">
+      <li>
+        <a href="/" class="icon-alone">
+          <span aria-hidden="true" data-icon="&#x2302;"></span>
+          <span class="screen-reader-text">Site home page</span>
+        </a>
+      </li>
+      <li>
+        <a href="view/userInfo/relativeURL"
+           title="Profile"><strong class="fn" 
+                                   tal:content="view/userInfo/name">Profile</strong></a>
+      </li>
+      <li tal:content="view/label">This page</li>
+    </ul>
+    <div id="gs-profile-email-settings" 
+         class="gs-content-js-jqueryui" 
+         metal:fill-slot="body">
       <h1 tal:content="view/label">Change Email Settings</h1>
       <div id="change-email-intro"
         i18n:translate="gs_profile_email_settings_settings_description">
@@ -180,7 +206,7 @@
           </ul>
         </div><!--unverified-->
       </div><!--addresslists-->
-      <div id="add-email-address">
+      <div id="add-email-address"">
         <a href="#" id="open-add">Add an address&#8230;</a>
         <div id="add-email-address-dialog" style="display:none;"
           title="Add an address">
@@ -239,10 +265,10 @@
           </table><!--group-settings-table-->
         </div>
       </div><!--group-settings-->
-    </tal:block>
+    </div><!--gs-profile-email-settings-->
     <tal:block metal:fill-slot="javascript">
       <script type="text/javascript" defer="true"
-              src="/++resource++jquery-ui-1.10.3.custom.js">&#160;</script>
+              src="/++resource++jquery-ui-1.10.3.js">&#160;</script>
       <script type="text/javascript" defer="true"
               src="/++resource++emailsettings-20130530.js">&#160;</script>
     </tal:block>
