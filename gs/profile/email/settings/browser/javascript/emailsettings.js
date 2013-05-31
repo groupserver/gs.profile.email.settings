@@ -33,8 +33,13 @@ function GSEmailSettingsUpdate() {
 }//GSEmailSettingsUpdate
 
 function GSEmailSettings() {
-    var updater = GSEmailSettingsUpdate();
-
+    var updater = null,
+        dialog = null, 
+        verificationAddress = null, 
+        changeButton = null,
+        deliveryAddresses = null, 
+        otherAddresses = null;
+    
     function updateAddresses() {
         updater.updateDelivery();
         updater.updateOther();
@@ -42,14 +47,14 @@ function GSEmailSettings() {
     
         // Blank the resend verification address. If this needs to be
         // set the resendVerification function will handle it.
-        jQuery('#form\\.resendVerificationAddress').val('');
+        verificationAddress.val('');
     
         // Submit the form\\.
-        jQuery("#form\\.actions\\.change").click();
+        changeButton.click();
     }
   
     function showDialog() {
-        jQuery('#add-email-address-dialog').dialog("open");
+        dialog.dialog("open");
     }
     
     function resendVerification() {
@@ -58,9 +63,9 @@ function GSEmailSettings() {
         updater.updateOther();
         updater.updateUnverified();
         email = jQuery(this).parents('li').find('.email').text();
-        jQuery('#form\\.resendVerificationAddress').val(email);
+        verificationAddress.val(email);
         // Submit the form\\.
-        jQuery("#form\\.actions\\.change").click();
+        changeButton.click();
     }
     
     function removeAddr() {
@@ -69,25 +74,37 @@ function GSEmailSettings() {
     }
 
     function highlightDelivery(event, ui) {
-        jQuery('#delivery-addresses').addClass("ui-state-hover");
+        deliveryAddresses.addClass("ui-state-hover");
     }
 
     function lowlightDelivery(event, ui) {
-        jQuery('#delivery-addresses').removeClass("ui-state-hover");
+        deliveryAddresses.removeClass("ui-state-hover");
     }
 
     function highlightOther(event, ui) {
-        jQuery('#other-addresses').addClass("ui-state-hover");
+        otherAddresses.addClass("ui-state-hover");
     }
 
     function lowlightOther(event, ui) {
-        jQuery('#other-addresses').removeClass("ui-state-hover");
+        otherAddresses.removeClass("ui-state-hover");
     }
+
+    function start () {
+        updater = GSEmailSettingsUpdate();
+        dialog = jQuery('#add-email-address-dialog');
+        verificationAddress = jQuery('#form\\.resendVerificationAddress');
+        changeButton = jQuery("#form\\.actions\\.change");
+        deliveryAddresses = jQuery('#delivery-addresses');
+        otherAddresses = jQuery('#other-addresses');
+    }
+    start();  // Note the automatic execution
 
     return {
         init: function () {
             var o = null;
-            jQuery("#delivery-addresses").sortable({
+            jQuery('body').addClass('gs-content-js-jqueryui');
+
+            deliveryAddresses.sortable({
                 connectWith: "#other-addresses",
                 update: updateAddresses,
                 cancel: ".ui-state-disabled",
@@ -95,7 +112,7 @@ function GSEmailSettings() {
                 stop: lowlightOther
             }).disableSelection();
             
-            jQuery("#other-addresses").sortable({
+            otherAddresses.sortable({
                 connectWith: "#delivery-addresses",
                 update: updateAddresses,
                 start: highlightDelivery,
@@ -103,8 +120,9 @@ function GSEmailSettings() {
             }).disableSelection();
             
             // Add dialog
-            o = { autoOpen: false, minWidth: 516, modal: true };
-            jQuery('#add-email-address-dialog').dialog(o);
+            o = { autoOpen: false, minHeight: 190, modal: true,
+                  dialogClass: 'gs-content-js-jqueryui' };
+            dialog.dialog(o);
             jQuery('#open-add')
                 .button({ icons: {primary:'ui-icon-plusthick'}})
                 .removeAttr('href')
