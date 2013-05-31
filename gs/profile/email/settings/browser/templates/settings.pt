@@ -75,6 +75,11 @@
         }
       </style>
     </tal:block>
+    <tal:block metal:fill-slot="metadata">
+      <link rel="up" href="#" title="Profile"
+            tal:attributes="title string:Profile of ${view/userInfo/name};
+                            href view/userInfo/url" />
+    </tal:block>
   </head>
   <body>
     <tal:block 
