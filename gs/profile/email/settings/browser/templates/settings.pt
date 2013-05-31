@@ -95,7 +95,8 @@
         </a>
       </li>
       <li>
-        <a href="view/userInfo/relativeURL"
+        <a href="#"
+           tal:attributes="href view/userInfo/url"
            title="Profile"><strong class="fn" 
                                    tal:content="view/userInfo/name">Profile</strong></a>
       </li>
