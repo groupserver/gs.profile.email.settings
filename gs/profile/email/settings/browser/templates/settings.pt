@@ -250,7 +250,7 @@
               <tr tal:repeat="setting view/groupSettings">
                 <td>
                   <a tal:content="setting/groupInfo/name"
-                    tal:attributes="href setting/groupInfo/url"
+                    tal:attributes="href setting/groupInfo/relativeURL"
                     href="#">Group</a>
                 </td>
                 <td tal:content="structure setting/addresses">Address</td>
@@ -263,7 +263,7 @@
                 </td>
                 <td>
                   <a 
-                    tal:attributes="href string:${setting/groupInfo/url}/email_settings.html"
+                    tal:attributes="href string:${setting/groupInfo/relativeURL}/email_settings.html"
                     href="#">Change</a>
                 </td>
               </tr>
