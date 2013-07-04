@@ -237,7 +237,7 @@
       <div id="group-settings" class="disclosureWidget">
         <h2><a class="disclosureButton">Group Settings</a></h2>
         <div class="disclosureShowHide" style="display:none;">
-          <table id="group-settings-table">
+          <table id="group-settings-table" class="table">
             <thead>
               <tr>
                 <th>Group</th>
@@ -262,7 +262,7 @@
                     post.</span>
                 </td>
                 <td>
-                  <a 
+                  <a class="btn btn-small"
                     tal:attributes="href string:${setting/groupInfo/relativeURL}/email_settings.html"
                     href="#">Change</a>
                 </td>
