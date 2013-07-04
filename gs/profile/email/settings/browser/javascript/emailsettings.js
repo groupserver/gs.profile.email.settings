@@ -102,7 +102,6 @@ function GSEmailSettings() {
     return {
         init: function () {
             var o = null;
-            jQuery('body').addClass('gs-content-js-jqueryui');
 
             deliveryAddresses.sortable({
                 connectWith: "#other-addresses",
