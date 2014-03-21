@@ -1,3 +1,4 @@
+"use strict";
 jQuery.noConflict();
 
 function GSEmailSettingsUpdate() {
@@ -5,7 +6,7 @@ function GSEmailSettingsUpdate() {
         updateDelivery: function () {
             // Copy each addresses in the Default Addresses list to the
             // newDeliveries variable
-            var newDeliveries = "";
+            var newDeliveries="";
             jQuery("#delivery-addresses").children().children(".email").each(function () {
                 newDeliveries += jQuery(this).text() + "\n";
             });
@@ -15,7 +16,7 @@ function GSEmailSettingsUpdate() {
         },
         updateOther: function () {
             // Now do the same for the "other" addresses
-            var newOthers = "";
+            var newOthers="";
             jQuery("#other-addresses").children().children(".email").each(function () {
                 newOthers += jQuery(this).text() + "\n";
             });
@@ -23,7 +24,7 @@ function GSEmailSettingsUpdate() {
         },
         updateUnverified: function () {
             // Aaaand for the unverified addresses
-            var newUnverified = "";
+            var newUnverified="";
             jQuery("#unverified-addresses").children().children(".email").each(function () {
                 newUnverified += jQuery(this).text() + "\n";
             });
@@ -33,30 +34,30 @@ function GSEmailSettingsUpdate() {
 }//GSEmailSettingsUpdate
 
 function GSEmailSettings() {
-    var updater = null,
-        dialog = null, 
-        verificationAddress = null, 
-        changeButton = null,
-        deliveryAddresses = null, 
-        otherAddresses = null;
-    
+    var updater=null,
+        dialog=null,
+        verificationAddress=null,
+        changeButton=null,
+        deliveryAddresses=null,
+        otherAddresses=null;
+
     function updateAddresses() {
         updater.updateDelivery();
         updater.updateOther();
         updater.updateUnverified();
-    
+
         // Blank the resend verification address. If this needs to be
         // set the resendVerification function will handle it.
         verificationAddress.val('');
-    
+
         // Submit the form\\.
         changeButton.click();
     }
-  
+
     function showDialog() {
         dialog.dialog("open");
     }
-    
+
     function resendVerification() {
         var email = null;
         updater.updateDelivery();
@@ -67,7 +68,7 @@ function GSEmailSettings() {
         // Submit the form\\.
         changeButton.click();
     }
-    
+
     function removeAddr() {
         jQuery(this).parents('li').remove();
         updateAddresses();
@@ -110,14 +111,14 @@ function GSEmailSettings() {
                 start: highlightOther,
                 stop: lowlightOther
             }).disableSelection();
-            
+
             otherAddresses.sortable({
                 connectWith: "#delivery-addresses",
                 update: updateAddresses,
                 start: highlightDelivery,
                 stop: lowlightDelivery
             }).disableSelection();
-            
+
             // Add dialog
             o = { autoOpen: false, minHeight: 190, modal: true,
                   dialogClass: 'gs-content-js-jqueryui' };
@@ -142,10 +143,10 @@ function GSEmailSettings() {
 
 // Check to see if the newly added email addresses have become verified.
 function GSCheckVerified() {
-    var email = null, 
-        URI = 'checkemailverified.ajax', 
-        TIMEOUT_DELTA = 2000, 
-        updater = GSEmailSettingsUpdate();
+    var email=null,
+        URI='checkemailverified.ajax',
+        TIMEOUT_DELTA=2000,
+        updater=GSEmailSettingsUpdate();
 
   return {
       init: function () {
@@ -156,7 +157,7 @@ function GSCheckVerified() {
                   var e = null, d = null;
                   e = jQuery(this).text();
                   d = {type: "POST",
-                       url: URI, 
+                       url: URI,
                        cache: false,
                        data: 'email='+encodeURIComponent(e),
                        success: GSCheckVerified.checkReturn}
@@ -180,11 +181,17 @@ function GSCheckVerified() {
   };
 } //GSCheckVerified
 
-jQuery(window).load(function () {
-    var settings = null, checker = null;
+function gs_profile_email_profile_settings_init() {
+    var settings=null, checker=null;
+
     settings = GSEmailSettings();
     settings.init();
 
     checker = GSCheckVerified();
     checker.poll();
+}
+
+jQuery(window).load(function () {
+    gsJsLoader.with_module('/++resource++jquery-ui-1.10.3.js', 
+                           gs_profile_email_profile_settings_init);
 });

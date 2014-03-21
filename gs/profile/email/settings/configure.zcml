@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- Copyright © 2011, 2012, 2013, 2014 OnlineGroups.net and Contributors. -->
+<!-- All Rights Reserved. -->
+
+<!-- This software is subject to the provisions of the Zope Public -->
+<!-- License, Version 2.1 (ZPL).  A copy of the ZPL should accompany this -->
+<!-- distribution. -->
+
+<!-- THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED -->
+<!-- WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED -->
+<!-- WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND -->
+<!-- FITNESS FOR A PARTICULAR PURPOSE. -->
 <configure xmlns="http://namespaces.zope.org/zope"
            xmlns:browser="http://namespaces.zope.org/browser"
            i18n_domain="groupserver">
@@ -11,7 +22,7 @@
   <browser:menuItems
     menu="user_profile_menu"
     for="Products.CustomUserFolder.interfaces.ICustomUser">
-    <browser:menuItem 
+    <browser:menuItem
       action="emailsettings.html"
       title="Change Email Settings"
       description="Change your email addresses and delivery options"
@@ -20,16 +31,16 @@
   </browser:menuItems>
 
   <browser:resource
-    name="emailsettings-20130530.js"
+    name="emailsettings-20140321.js"
     file="browser/javascript/emailsettings.js"
     permission="zope2.Public"/>
   <browser:resource
-    name="emailsettings-min-20130530.js"
+    name="emailsettings-min-201403214.js"
     file="browser/javascript/emailsettings-min.js"
     permission="zope2.Public"/>
 
   <!--help-->
-  <browser:viewlet 
+  <browser:viewlet
     name="gs-profile-email-settings-help"
     manager="gs.help.interfaces.IUserHelp"
     template="browser/templates/help.pt"

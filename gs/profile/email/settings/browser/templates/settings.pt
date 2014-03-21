@@ -8,44 +8,44 @@
     <title metal:fill-slot="title">
       <span tal:replace="string:${view/label}: ${view/userInfo/name}: ${view/siteInfo/name}"/>
     </title>
-    <tal:block metal:fill-slot="style"> 
+    <tal:block metal:fill-slot="style">
       <link rel="stylesheet" type="text/css"
             href="/++resource++jquery-ui-1.10.3.css" />
       <style type="text/css">
         body {
           text-align: left;
         }
-        
+
         .hide {
           display: none;
         }
-        
+
         .draggable {
           display: inline-block;
         }
-        
+
         #change-email-settings-form {
           display: None;
         }
-        #delivery-addresses, #other-addresses, #unverified-addresses { 
+        #delivery-addresses, #other-addresses, #unverified-addresses {
           background: #EEEEEE;
-          list-style-type: none; 
-          margin: 0.69em; 
+          list-style-type: none;
+          margin: 0.69em;
           padding: 0.69em;
         }
         #delivery-addresses li, #other-addresses li, #unverified-addresses li {
           list-style-type: none;
-          margin: 0.69em; 
-          padding: 0.69em; 
+          margin: 0.69em;
+          padding: 0.69em;
         }
-        
+
         .addresslists li {
           height: 33px;
         }
         .addresslists .email, .draggable {
           margin-top: 5px;
         }
-        
+
         .actions {
           float: right;
         }
@@ -82,12 +82,12 @@
     </tal:block>
   </head>
   <body>
-    <tal:block 
+    <tal:block
       define="errors view/errors; status view/status; widgets view/widgets"
       content="structure provider:groupserver.FormStatusMessage"
       metal:fill-slot="messages">&#160;</tal:block>
     <tal:block metal:fill-slot="contextnavigation">
-      <span 
+      <span
         tal:replace="structure provider:groupserver.ProfileContextMenu">
         Context Menu
       </span>
@@ -102,26 +102,26 @@
       <li>
         <a href="#"
            tal:attributes="href view/userInfo/url"
-           title="Profile"><strong class="fn" 
+           title="Profile"><strong class="fn"
                                    tal:content="view/userInfo/name">Profile</strong></a>
       </li>
       <li tal:content="view/label">This page</li>
     </ul>
-    <div id="gs-profile-email-settings" 
-         class="gs-content-js-jqueryui" 
+    <div id="gs-profile-email-settings"
+         class="gs-content-js-jqueryui"
          metal:fill-slot="body">
       <h1 tal:content="view/label">Change Email Settings</h1>
       <div id="change-email-intro"
         i18n:translate="gs_profile_email_settings_settings_description">
         <p tal:condition="view/showOtherAddresses">
           To change the addresses that are used to send you email from
-          your groups, 
+          your groups,
           <strong>click and drag</strong> the addresses between the
           <samp class="list">Preferred Delivery Addresses</samp> and
           <samp class="list">Extra Addresses</samp> lists.
         </p>
         <p id="change-email-intro-add">
-          To <strong>add</strong> an address, click the 
+          To <strong>add</strong> an address, click the
           <samp class="button">Add an address&#8230;</samp> button below.
         </p>
       </div><!--change-email-intro-->
@@ -146,7 +146,7 @@
               <li class="ui-state-default ui-corner-all"
                 tal:define="address python:view.deliveryAddresses[0]"
                 tal:attributes="id address">
-                <samp class="email" 
+                <samp class="email"
                   tal:content="address">email@example.com</samp>
                 <span class="actions">
                   <a class="removeLink" href="#"
@@ -179,7 +179,7 @@
               tal:repeat="address view/otherAddresses"
               tal:attributes="id address"
               title="Drag this address to the Preferred Delivery Addresses list to recieve email on this address by default.">
-              <samp class="email" 
+              <samp class="email"
                 tal:content="address">email@example.com</samp>
               <span class="actions">
                 <a class="removeLink"
@@ -197,10 +197,10 @@
             <li class="ui-state-default ui-corner-all"
               tal:repeat="address view/unverifiedAddresses"
               tal:attributes="id address">
-              <samp class="email" 
+              <samp class="email"
                 tal:content="address">email@example.com</samp>
               <span class="actions">
-                <a href="#" 
+                <a href="#"
                   title="Resend a verification email to this address"
                 class="resendLink">Resend</a>
                 <a class="removeLink"
@@ -218,7 +218,7 @@
           title="Add an address">
           <form enctype="multipart/form-data"  method="post" action="."
             id="add-email-address-form" tal:attributes="action request/URL">
-            <tal:block 
+            <tal:block
               define="widgets python:[view.widgets['newAddress']];">
               <tal:block replace="structure provider:groupserver.FormWidgets"/>
             </tal:block>
@@ -256,9 +256,9 @@
                 <td tal:content="structure setting/addresses">Address</td>
                 <td>
                   <span tal:condition="setting/webOnly">Web only.</span>
-                  <span tal:condition="setting/digest">Daily digest of 
+                  <span tal:condition="setting/digest">Daily digest of
                     topics.</span>
-                  <span tal:condition="setting/email">One email per 
+                  <span tal:condition="setting/email">One email per
                     post.</span>
                 </td>
                 <td>
@@ -272,11 +272,9 @@
         </div>
       </div><!--group-settings-->
     </div><!--gs-profile-email-settings-->
-    <tal:block metal:fill-slot="javascript">
-      <script type="text/javascript" defer="true"
-              src="/++resource++jquery-ui-1.10.3.js">&#160;</script>
-      <script type="text/javascript" defer="true"
-              src="/++resource++emailsettings-20130530.js">&#160;</script>
-    </tal:block>
+    <script metal:fill-slot="javascript"
+            type="text/javascript"
+            defer="defer"
+            src="/++resource++emailsettings-20140321.js"> </script>
   </body>
 </html>
