@@ -35,7 +35,7 @@
     file="browser/javascript/emailsettings.js"
     permission="zope2.Public"/>
   <browser:resource
-    name="emailsettings-min-20140324.js"
+    name="emailsettings-min-20140321.js"
     file="browser/javascript/emailsettings-min.js"
     permission="zope2.Public"/>
 
