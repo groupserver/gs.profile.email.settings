@@ -1,4 +1,14 @@
 "use strict";
+// Copyright © 2011, 2012, 2013, 2014 OnlineGroups.net and Contributors.
+// All Rights Reserved.
+//
+// This software is subject to the provisions of the Zope Public License,
+// Version 2.1 (ZPL). http://groupserver.org/downloads/license/
+//
+// THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+// WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+// WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND
+// FITNESS FOR A PARTICULAR PURPOSE.
 jQuery.noConflict();
 
 function GSEmailSettingsUpdate() {
@@ -59,7 +69,7 @@ function GSEmailSettings() {
     }
 
     function resendVerification() {
-        var email = null;
+        var email=null;
         updater.updateDelivery();
         updater.updateOther();
         updater.updateUnverified();
@@ -102,7 +112,7 @@ function GSEmailSettings() {
 
     return {
         init: function () {
-            var o = null;
+            var o=null;
 
             deliveryAddresses.sortable({
                 connectWith: "#other-addresses",
@@ -154,7 +164,8 @@ function GSCheckVerified() {
       poll: function () {
           jQuery("#unverified-addresses")
               .children().children(".email").each(function () {
-                  var e = null, d = null;
+                  var e=null, 
+                      d=null;
                   e = jQuery(this).text();
                   d = {type: "POST",
                        url: URI,
@@ -165,7 +176,9 @@ function GSCheckVerified() {
               });
       },
       checkReturn: function (data, textStatus) {
-          var verified = data == '1', otherAddresses = null, newItem = null;
+          var verified=data == '1', 
+               otherAddresses=null, 
+               newItem=null;
           if ( verified ) {
               //TODO: FIX
               newItem = '<li><samp class="email">'+email+'</samp></li>';
