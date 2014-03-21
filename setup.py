@@ -29,7 +29,7 @@ setup(name='gs.profile.email.settings',
     packages=find_packages(exclude=['ez_setup']),
     namespace_packages=['gs', 'gs.profile', 'gs.profile.email'],
     include_package_data=True,
-    zip_safe=True,
+    zip_safe=False,
     install_requires=[
         'setuptools',
         'zope.cachedescriptors',
