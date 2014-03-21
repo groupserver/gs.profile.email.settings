@@ -1,4 +1,18 @@
 # -*- coding: utf-8 -*-
+##############################################################################
+#
+# Copyright © 2014 OnlineGroups.net and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+from __future__ import absolute_import, unicode_literals
 from zope.cachedescriptors.property import Lazy
 from zope.formlib import form
 from zope.i18nmessageid import MessageFactory
@@ -7,10 +21,10 @@ from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from gs.profile.base import ProfileForm
 from gs.profile.email.base.emailuser import EmailUser
 from gs.profile.email.verify.emailverificationuser import EmailVerificationUser
-from interfaces import IGSEmailSettingsForm
-from groupsettings import GroupEmailSettings
-from update import RemoveUpdate, DeliveryUpdate
-from utils import markup_address
+from .interfaces import IGSEmailSettingsForm
+from .groupsettings import GroupEmailSettings
+from .update import RemoveUpdate, DeliveryUpdate
+from .utils import markup_address
 
 # TODO: Rewrite the status messages for an administrator adding an
 # address.
@@ -18,15 +32,15 @@ from utils import markup_address
 
 class ChangeEmailSettingsForm(ProfileForm):
     form_fields = form.Fields(IGSEmailSettingsForm)
-    label = _(u'Change Email Settings')
+    label = _('Change Email Settings')
     pageTemplateFileName = 'browser/templates/settings.pt'
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
 
-    verifyMesg = _(u'An email has been sent to <strong>verify</strong> '
-                    u'that you control ')
+    verifyMesg = _('An email has been sent to <strong>verify</strong> '
+                    'that you control ')
     verifyCheckMesg =\
-        _(u'<strong>Check</strong> your inbox (and Spam folder) for the '
-            u'email. ')
+        _('<strong>Check</strong> your inbox (and Spam folder) for the '
+            'email. ')
 
     def __init__(self, user, request):
         super(ChangeEmailSettingsForm, self).__init__(user, request)
@@ -82,7 +96,7 @@ class ChangeEmailSettingsForm(ProfileForm):
 
     @form.action(label=_('Change'), failure='handle_failure')
     def handle_change(self, action, data):
-        self.status = u''
+        self.status = ''
 
         d = self.t_to_l(data.get('deliveryAddresses', ''))
         o = self.t_to_l(data.get('otherAddresses', ''))
@@ -115,11 +129,11 @@ class ChangeEmailSettingsForm(ProfileForm):
         return (newDelivery, newOther)
 
     def add_to_status(self, msg):
-        self.status = u'%s<p>%s</p>' % (self.status, msg)
+        self.status = '%s<p>%s</p>' % (self.status, msg)
 
     @form.action(label=_('Add'), failure='handle_failure')
     def handle_add(self, action, data):
-        self.status = u''
+        self.status = ''
 
         address = data['newAddress']
         if address:
@@ -130,23 +144,23 @@ class ChangeEmailSettingsForm(ProfileForm):
             self.emailUser.add_address(address, isPreferred)
             self.send_verification(address)
 
-            m = _(u'The address ') + e + \
-                _(u' has been <strong>added</strong> to your '
-                    u'profile. ')
+            m = _('The address ') + e + \
+                _(' has been <strong>added</strong> to your '
+                    'profile. ')
             self.add_to_status(m)
 
             n = self.verifyMesg + e + _('. ') + \
-                self.verifyCheckMesg + _(u'You must follow the '
-                    u'instructions in the email before you can '
-                    u'use ') + e + _('. ')
+                self.verifyCheckMesg + _('You must follow the '
+                    'instructions in the email before you can '
+                    'use ') + e + _('. ')
             self.add_to_status(n)
         assert type(self.status) == unicode
 
     def handle_failure(self, action, data, errors):
         if len(errors) == 1:
-            self.status = _(u'There was an error:')
+            self.status = _('There was an error:')
         else:
-            self.status = _(u'<p>There were errors:</p>')
+            self.status = _('<p>There were errors:</p>')
 
     def t_to_l(self, text):
         """Change a text-field (string) to a list"""
@@ -159,7 +173,7 @@ class ChangeEmailSettingsForm(ProfileForm):
     def resend_verification(self, address):
         self.send_verification(address)
         e = markup_address(address)
-        retval = self.verifyMesg + e + _(u'. ') + self.verifyCheckMesg
+        retval = self.verifyMesg + e + _('. ') + self.verifyCheckMesg
         assert type(retval) == unicode
         return retval
 
