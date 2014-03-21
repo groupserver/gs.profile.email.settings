@@ -275,6 +275,6 @@
     <script metal:fill-slot="javascript"
             type="text/javascript"
             defer="defer"
-            src="/++resource++emailsettings-20140321.js"> </script>
+            src="/++resource++emailsettings-min-20140321.js"> </script>
   </body>
 </html>
