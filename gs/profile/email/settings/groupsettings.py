@@ -1,8 +1,22 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
+##############################################################################
+#
+# Copyright © 2014 OnlineGroups.net and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+from __future__ import absolute_import, unicode_literals
 from zope.cachedescriptors.property import Lazy
 from zope.component import createObject
 from Products.XWFCore.XWFUtils import comma_comma_and
-from utils import markup_address
+from .utils import markup_address
 # TODO: Make a content provider
 # TODO: Remove depricated code
 # TODO: Make into an adaptor
@@ -79,5 +93,4 @@ class GroupEmailSetting(object):
         assert self.groupInfo
         assert self.groupInfo == groupInfo
         assert type(self.setting) == int
-
         assert type(self.addresses) in (str, unicode)
