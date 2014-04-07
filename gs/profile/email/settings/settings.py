@@ -18,9 +18,11 @@ from zope.formlib import form
 from zope.i18nmessageid import MessageFactory
 _ = MessageFactory('groupserver')
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
+from gs.core import to_unicode_or_bust
 from gs.profile.base import ProfileForm
 from gs.profile.email.base.emailuser import EmailUser
 from gs.profile.email.verify.emailverificationuser import EmailVerificationUser
+from .error import RemoveAddressError, DeliveryAddressError
 from .interfaces import IGSEmailSettingsForm
 from .groupsettings import GroupEmailSettings
 from .update import RemoveUpdate, DeliveryUpdate
@@ -105,11 +107,13 @@ class ChangeEmailSettingsForm(ProfileForm):
 
         removeUpdate = self.remove_addresses(d, o, u)
         if removeUpdate.changed:
-            self.add_to_status(unicode(removeUpdate))
+            u = to_unicode_or_bust(removeUpdate)
+            self.add_to_status(u)
 
         deliveryUpdate = self.update_delivery_addresses(d)
         if deliveryUpdate.changed:
-            self.add_to_status(unicode(deliveryUpdate))
+            u = to_unicode_or_bust(deliveryUpdate)
+            self.add_to_status(u)
 
         self.__otherAddresses = self.__deliveryAddresses = None
         self.__unverifiedAddresses = None
@@ -118,8 +122,6 @@ class ChangeEmailSettingsForm(ProfileForm):
         if data.get('resendVerificationAddress', None):
             r = self.resend_verification(data['resendVerificationAddress'])
             self.add_to_status(r)
-
-        assert type(self.status) == unicode
 
     def fix_delivery(self, deliveryAddresses, otherAddresses):
         newDelivery = deliveryAddresses
@@ -154,7 +156,6 @@ class ChangeEmailSettingsForm(ProfileForm):
                     'instructions in the email before you can '
                     'use ') + e + _('. ')
             self.add_to_status(n)
-        assert type(self.status) == unicode
 
     def handle_failure(self, action, data, errors):
         if len(errors) == 1:
@@ -174,7 +175,6 @@ class ChangeEmailSettingsForm(ProfileForm):
         self.send_verification(address)
         e = markup_address(address)
         retval = self.verifyMesg + e + _('. ') + self.verifyCheckMesg
-        assert type(retval) == unicode
         return retval
 
     def send_verification(self, address):
@@ -194,10 +194,12 @@ class ChangeEmailSettingsForm(ProfileForm):
         oldVerifiedAddresses = self.emailUser.get_verified_addresses()
         newVerifiedAddresses = deliveryAddresses + otherAddresses
         for address in oldVerifiedAddresses:
-            assert address in self.emailUser.get_addresses(), \
-              'Address %s does not belong to %s (%s)' %\
-              (address, self.emailUser.userInfo.name,
-               self.emailUser.userInfo.id)
+            # TODO: check that get_addresses is right.
+            if address not in self.emailUser.get_addresses():
+                m = 'Old verified address <{0}> does not belong to {1} ({2})'
+                msg = m.format(address, self.emailUser.userInfo.name,
+                               self.emailUser.userInfo.id)
+                raise RemoveAddressError(msg)
             if address not in newVerifiedAddresses:
                 self.emailUser.remove_address(address)
                 retval.verified.append(address)
@@ -205,10 +207,11 @@ class ChangeEmailSettingsForm(ProfileForm):
         oldUnverifiedAddresses = self.emailUser.get_unverified_addresses()
         newUnverifiedAddresses = unverifiedAddresses
         for address in oldUnverifiedAddresses:
-            assert address in self.emailUser.get_addresses(), \
-              'Address %s does not belong to %s (%s)' %\
-              (address, self.emailUser.userInfo.name,
-               self.emailUser.userInfo.id)
+            if address not in self.emailUser.get_addresses():
+                m = 'Old unverified address <{0}> does not belong to {1} ({2})'
+                msg = m.format(address, self.emailUser.userInfo.name,
+                               self.emailUser.userInfo.id)
+                raise RemoveAddressError(msg)
             if address not in newUnverifiedAddresses:
                 self.emailUser.remove_address(address)
                 retval.unverified.append(address)
@@ -226,10 +229,11 @@ class ChangeEmailSettingsForm(ProfileForm):
           [a for a in oldAddresses if a not in newAddresses]
 
         for address in addedAddresses:
-            assert address in self.emailUser.get_addresses(), \
-              'Address %s does not belong to %s (%s)' %\
-              (address, self.emailUser.userInfo.name,
-               self.emailUser.userInfo.id)
+            if address not in self.emailUser.get_addresses():
+                m = 'New delivery address <{0}> does not belong to {1} ({2})'
+                msg = m.format(address, self.emailUser.userInfo.name,
+                               self.emailUser.userInfo.id)
+                raise DeliveryAddressError(msg)
             self.emailUser.set_delivery(address)
             retval.added.append(address)
 
