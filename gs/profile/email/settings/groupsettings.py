@@ -14,8 +14,10 @@
 ##############################################################################
 from __future__ import absolute_import, unicode_literals
 from zope.cachedescriptors.property import Lazy
-from zope.component import createObject
-from Products.XWFCore.XWFUtils import comma_comma_and
+from zope.component import createObject, getMultiAdapter
+from gs.core import comma_comma_and
+from gs.group.member.email.base.interfaces import IGroupEmailUser
+from gs.group.member.email.base import GroupEmailSetting
 from .utils import markup_address
 # TODO: Make a content provider
 # TODO: Remove depricated code
@@ -43,7 +45,7 @@ class GroupEmailSettings(object):
                                                             self.userInfo.user)
         grps = [createObject('groupserver.GroupInfo', g) for g in folders]
         u = self.userInfo
-        retval = [GroupEmailSetting(g, u) for g in grps]
+        retval = [GroupEmailSettingInfo(self.context, g, u) for g in grps]
         assert type(retval) == list
         return retval
 
@@ -57,7 +59,7 @@ class GroupEmailSettings(object):
         return iter(self.groupEmailSettings)
 
 
-class GroupEmailSetting(object):
+class GroupEmailSettingInfo(object):
     """Information about a user's group email settings.
 
     ATTRIBUTES
@@ -72,25 +74,22 @@ class GroupEmailSetting(object):
       addresses:  The address where posts are delivered.
     """
 
-    def __init__(self, groupInfo, userInfo):
-        assert groupInfo
-        assert userInfo
+    def __init__(self, context, groupInfo, userInfo):
         self.groupInfo = groupInfo
-        user = userInfo.user
-        self.setting = user.get_deliverySettingsByKey(groupInfo.id)
-        assert self.setting in range(0, 4)
+        groupEmailUser = getMultiAdapter((userInfo, groupInfo), IGroupEmailUser,
+                                            context=context)
+        self.setting = groupEmailUser.get_delivery_setting()
 
-        self.webOnly = self.setting == 0
-        self.email = self.setting in (1, 2)
-        self.digest = self.setting == 3
+        self.webOnly = self.setting == GroupEmailSetting.webonly
+        self.email = self.setting in (GroupEmailSetting.specific,
+                                        GroupEmailSetting.default)
+        self.digest = self.setting == GroupEmailSetting.digest
 
-        grpAddrs = user.get_specificEmailAddressesByKey(groupInfo.id)
+        grpAddrs = groupEmailUser.get_specific_email_addresses()
         self.default = len(grpAddrs) == 0
 
-        addrs = user.get_deliveryEmailAddressesByKey(groupInfo.id)
+        addrs = groupEmailUser.get_addresses()
         self.addresses = comma_comma_and([markup_address(a) for a in addrs])
 
         assert self.groupInfo
         assert self.groupInfo == groupInfo
-        assert type(self.setting) == int
-        assert type(self.addresses) in (str, unicode)
