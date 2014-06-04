@@ -246,7 +246,8 @@
                 <th>&#160;</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody tal:define="u string:?form.userId=${view/userInfo/id};
+                               userForm python:'' if view.userInfo.id == view.loggedInUser.id else u">
               <tr tal:repeat="setting view/groupSettings">
                 <td>
                   <a tal:content="setting/groupInfo/name"
@@ -263,7 +264,7 @@
                 </td>
                 <td>
                   <a class="btn btn-small"
-                    tal:attributes="href string:${setting/groupInfo/relativeURL}/email_settings.html"
+                    tal:attributes="href string:${setting/groupInfo/relativeURL}/email_settings.html${userForm}"
                     href="#">Change</a>
                 </td>
               </tr>
