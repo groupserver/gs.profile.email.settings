@@ -38,7 +38,7 @@ requires = [
         'zope.tal',
         'zope.tales',
         'Zope2',
-        'gs.content.form',
+        'gs.content.form.base',  # For the messsage content provider.
         'gs.content.js.jquery.base',
         'gs.content.layout',
         'gs.core',
