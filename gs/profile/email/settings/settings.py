@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-##############################################################################
+############################################################################
 #
 # Copyright © 2014 OnlineGroups.net and Contributors.
 # All Rights Reserved.
@@ -11,7 +11,7 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 #
-##############################################################################
+############################################################################
 from __future__ import absolute_import, unicode_literals
 from zope.cachedescriptors.property import Lazy
 from zope.formlib import form
@@ -21,7 +21,8 @@ from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from gs.core import to_unicode_or_bust
 from gs.profile.base import ProfileForm
 from gs.profile.email.base.emailuser import EmailUser
-from gs.profile.email.verify.emailverificationuser import EmailVerificationUser
+from gs.profile.email.verify.emailverificationuser import (
+    EmailVerificationUser)
 from .error import RemoveAddressError, DeliveryAddressError
 from .interfaces import IGSEmailSettingsForm
 from .groupsettings import GroupEmailSettings
@@ -39,7 +40,7 @@ class ChangeEmailSettingsForm(ProfileForm):
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
 
     verifyMesg = _('An email has been sent to <strong>verify</strong> '
-                    'that you control ')
+                   'that you control ')
     verifyCheckMesg =\
         _('<strong>Check</strong> your inbox (and Spam folder) for the '
             'email. ')
@@ -62,9 +63,10 @@ class ChangeEmailSettingsForm(ProfileForm):
         return retval
 
     def setUpWidgets(self, ignore_request=False):  # FIXME: change to True?
-        default_data = \
-          {'deliveryAddresses': '\n'.join(self.deliveryAddresses),
-           'otherAddresses': '\n'.join(self.otherAddresses)}
+        default_data = {
+            'deliveryAddresses': '\n'.join(self.deliveryAddresses),
+            'otherAddresses': '\n'.join(self.otherAddresses)
+        }
         self.widgets = form.setUpWidgets(
             self.form_fields, self.prefix, self.userInfo.user,
             self.request, data=default_data,
@@ -73,15 +75,16 @@ class ChangeEmailSettingsForm(ProfileForm):
     @property
     def deliveryAddresses(self):
         if self.__deliveryAddresses is None:
-            self.__deliveryAddresses = self.emailUser.get_delivery_addresses()
+            self.__deliveryAddresses = \
+                self.emailUser.get_delivery_addresses()
         return self.__deliveryAddresses
 
     @property
     def otherAddresses(self):
         if self.__otherAddresses is None:
             verifiedAddresses = self.emailUser.get_verified_addresses()
-            self.__otherAddresses = \
-              [a for a in verifiedAddresses if a not in self.deliveryAddresses]
+            self.__otherAddresses = [a for a in verifiedAddresses
+                                     if a not in self.deliveryAddresses]
         return self.__otherAddresses
 
     @property
@@ -152,9 +155,9 @@ class ChangeEmailSettingsForm(ProfileForm):
             self.add_to_status(m)
 
             n = self.verifyMesg + e + _('. ') + \
-                self.verifyCheckMesg + _('You must follow the '
-                    'instructions in the email before you can '
-                    'use ') + e + _('. ')
+                self.verifyCheckMesg + _(
+                    'You must follow the instructions in the email before '
+                    'you can use ') + e + _('. ')
             self.add_to_status(n)
 
     def handle_failure(self, action, data, errors):
@@ -178,12 +181,12 @@ class ChangeEmailSettingsForm(ProfileForm):
         return retval
 
     def send_verification(self, address):
-        emailVerificationUser = EmailVerificationUser(self.context,
-                                    self.userInfo, address)
+        emailVerificationUser = EmailVerificationUser(
+            self.context, self.userInfo, address)
         emailVerificationUser.send_verification(self.request)
 
     def remove_addresses(self, deliveryAddresses, otherAddresses,
-                            unverifiedAddresses):
+                         unverifiedAddresses):
         # --=mpj17=-- While the UI presents an interface for removing
         # addresses, it is actually handled through a side-effect. The
         # UI just removes the address from the list of delivery, other,
@@ -196,7 +199,8 @@ class ChangeEmailSettingsForm(ProfileForm):
         for address in oldVerifiedAddresses:
             # TODO: check that get_addresses is right.
             if address not in self.emailUser.get_addresses():
-                m = 'Old verified address <{0}> does not belong to {1} ({2})'
+                m = ('Old verified address <{0}> does not belong to {1} '
+                     '({2})')
                 msg = m.format(address, self.emailUser.userInfo.name,
                                self.emailUser.userInfo.id)
                 raise RemoveAddressError(msg)
@@ -208,7 +212,8 @@ class ChangeEmailSettingsForm(ProfileForm):
         newUnverifiedAddresses = unverifiedAddresses
         for address in oldUnverifiedAddresses:
             if address not in self.emailUser.get_addresses():
-                m = 'Old unverified address <{0}> does not belong to {1} ({2})'
+                m = ('Old unverified address <{0}> does not belong to {1}'
+                     '({2})')
                 msg = m.format(address, self.emailUser.userInfo.name,
                                self.emailUser.userInfo.id)
                 raise RemoveAddressError(msg)
@@ -223,14 +228,14 @@ class ChangeEmailSettingsForm(ProfileForm):
 
         oldAddresses = self.deliveryAddresses
         newAddresses = addresses
-        addedAddresses = \
-          [a for a in newAddresses if a not in oldAddresses]
-        removedAddresses = \
-          [a for a in oldAddresses if a not in newAddresses]
+        addedAddresses = [a for a in newAddresses if a not in oldAddresses]
+        removedAddresses = [a for a in oldAddresses
+                            if a not in newAddresses]
 
         for address in addedAddresses:
             if address not in self.emailUser.get_addresses():
-                m = 'New delivery address <{0}> does not belong to {1} ({2})'
+                m = ('New delivery address <{0}> does not belong to {1}'
+                     '({2})')
                 msg = m.format(address, self.emailUser.userInfo.name,
                                self.emailUser.userInfo.id)
                 raise DeliveryAddressError(msg)
