@@ -1,6 +1,13 @@
 Changelog
 =========
 
+2.3.1 (2015-01-08)
+------------------
+
+* Updating the ``README.rst`` and setup to point to GitHub_
+
+.. _GitHub: https://github.com/groupserver/gs.profile.email.settings
+
 2.3.0 (2014-06-04)
 ------------------
 

@@ -1,10 +1,41 @@
-This part of the code deals with requesting verification for, 
-and verifying, email addresses.
+=============================
+``gs.profile.email.settings``
+=============================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Update email address settings on GroupServer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The code for unverifying email addresses (i.e. disabling them after 
-bouncing) is currently in Products.XWFMailingListManager.bounceaudit
-but should probably be moved here. 
+:Author: `Michael JasonSmith`_
+:Contact: Michael JasonSmith <mpj17@onlinegroups.net>
+:Date: 2014-01-08
+:Organization: `GroupServer.org`_
+:Copyright: This document is licensed under a
+  `Creative Commons Attribution-Share Alike 4.0 International License`_
+  by `OnlineGroups.Net`_.
 
-The main code will be in gs.profile.email.base. It will include
-checks for whether an email address is or is not verified. The
-bounce-logging code could maybe be moved there, too.
+.. _Creative Commons Attribution-Share Alike 4.0 International License:
+    http://creativecommons.org/licenses/by-sa/4.0/
+
+Introduction
+============
+
+This product supplies the interface that allows a person to
+update his or her email address settings on their GroupServer_
+profile. It provides a complex interface for a complex task: a
+person can have multiple email addresses with multiple
+states. The ``gs.profile.email.base`` product defines the states
+[#base]_.
+
+Resources
+=========
+
+- Code repository: https://github.com/groupserver/gs.profile.email.settings/
+- Questions and comments to http://groupserver.org/groups/development
+- Report bugs at https://redmine.iopen.net/projects/groupserver
+
+.. [#base] See <https://github.com/groupserver/gs.profile.email.base/>
+
+.. _GroupServer: http://groupserver.org/
+.. _GroupServer.org: http://groupserver.org/
+.. _OnlineGroups.Net: https://onlinegroups.net/
+.. _Michael JasonSmith: http://groupserver.org/p/mpj17/
