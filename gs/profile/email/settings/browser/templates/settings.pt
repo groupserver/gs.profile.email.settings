@@ -212,7 +212,7 @@
           </ul>
         </div><!--unverified-->
       </div><!--addresslists-->
-      <div id="add-email-address"">
+      <div id="add-email-address">
         <a href="#" id="open-add">Add an address&#8230;</a>
         <div id="add-email-address-dialog" style="display:none;"
           title="Add an address">
