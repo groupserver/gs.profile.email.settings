@@ -5,8 +5,11 @@ Changelog
 ------------------
 
 * Updating the ``README.rst`` and setup to point to GitHub_
+* Fixing an XML error with the Settings page template, with
+  `thanks to Shayne Smith`_.
 
 .. _GitHub: https://github.com/groupserver/gs.profile.email.settings
+.. _thanks to Shayne Smith: http://groupserver.org/r/post/2NSogtNlD1KlMrJs6JOuTD
 
 2.3.0 (2014-06-04)
 ------------------
