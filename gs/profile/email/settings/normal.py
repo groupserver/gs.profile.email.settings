@@ -13,6 +13,7 @@
 #
 ############################################################################
 from __future__ import absolute_import, unicode_literals, print_function
+from json import dumps as to_json
 from zope.formlib import form
 from zope.i18n import translate
 from gs.profile.json import email_info
@@ -36,12 +37,13 @@ class DemoteAddress(AddressForm):
 
 :param action: The button that was clicked.
 :param dict data: The form data.'''
-        msg = self.demote(self.data['email'])
+        msg = self.demote(data['email'])
 
-        retval = {
+        r = {
             'status': 0,
             'message': msg,
             'email': email_info(self.siteInfo, self.userInfo), }
+        retval = to_json(r)
         return retval
 
     def demote(self, address):
