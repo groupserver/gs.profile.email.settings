@@ -35,6 +35,11 @@
 
   <!--JSON form endpoints-->
   <browser:page
+    name="gs-profile-email-settings-status.html"
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    class=".status.Status"
+    permission="zope2.ManageProperties"/>
+  <browser:page
     name="gs-profile-email-settings-add.html"
     for="Products.CustomUserFolder.interfaces.ICustomUser"
     class=".add.AddAddress"
