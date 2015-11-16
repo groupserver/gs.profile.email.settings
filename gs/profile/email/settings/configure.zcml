@@ -20,7 +20,8 @@
   <browser:page
     name="emailsettings.html"
     for="Products.CustomUserFolder.interfaces.ICustomUser"
-    class=".settings.ChangeEmailSettingsForm"
+    class="gs.profile.base.ProfilePage"
+    template="browser/templates/neosettings.pt"
     permission="zope2.ManageProperties"/>
   <browser:menuItems
     menu="user_profile_menu"
@@ -35,37 +36,42 @@
 
   <!--JSON form endpoints-->
   <browser:page
-    name="gs-profile-email-settings-status.html"
+    name="gs-profile-email-settings-status.json"
     for="Products.CustomUserFolder.interfaces.ICustomUser"
     class=".status.Status"
     permission="zope2.ManageProperties"/>
   <browser:page
-    name="gs-profile-email-settings-add.html"
+    name="gs-profile-email-settings-add.json"
     for="Products.CustomUserFolder.interfaces.ICustomUser"
     class=".add.AddAddress"
     permission="zope2.ManageProperties"/>
   <browser:page
-    name="gs-profile-email-settings-delete.html"
+    name="gs-profile-email-settings-delete.json"
     for="Products.CustomUserFolder.interfaces.ICustomUser"
     class=".delete.DeleteAddress"
     permission="zope2.ManageProperties"/>
   <browser:page
-    name="gs-profile-email-settings-demote.html"
+    name="gs-profile-email-settings-demote.json"
     for="Products.CustomUserFolder.interfaces.ICustomUser"
     class=".normal.DemoteAddress"
     permission="zope2.ManageProperties"/>
   <browser:page
-    name="gs-profile-email-settings-prefer.html"
+    name="gs-profile-email-settings-prefer.json"
     for="Products.CustomUserFolder.interfaces.ICustomUser"
     class=".prefer.PreferAddress"
     permission="zope2.ManageProperties"/>
   <browser:page
-    name="gs-profile-email-settings-resend.html"
+    name="gs-profile-email-settings-resend.json"
     for="Products.CustomUserFolder.interfaces.ICustomUser"
     class=".resend.ResendVerification"
     permission="zope2.ManageProperties"/>
 
   <!--JavaScript resources-->
+  <browser:resource
+    name="gs-profile-email-settings.js"
+    file="browser/javascript/neosettings.js"
+    permission="zope2.Public"/>
+
   <browser:resource
     name="emailsettings-20140321.js"
     file="browser/javascript/emailsettings.js"

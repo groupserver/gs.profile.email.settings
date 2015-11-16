@@ -46,30 +46,40 @@ tal:block
       </section><!--intro-->
       <section id="gs-profile-email-settings-preferred">
         <h2>Preferred addresses</h2>
+        <ul class="address-list">
+        </ul><!--address-list-->
       </section><!--gs-profile-email-settings-preferred-->
       <section id="gs-profile-email-settings-extra">
         <h2>Extra addresses</h2>
+        <ul class="address-list">
+        </ul><!--address-list-->
       </section><!--gs-profile-email-settings-extra-->
       <section id="gs-profile-email-settings-unverified">
         <h2>Unverified addresses</h2>
+        <ul class="address-list">
+        </ul><!--address-list-->
       </section><!--gs-profile-email-settings-unverified-->
-      <section id="gs-profile-email-settings-add">
-        <h2>Add an address</h2>
+      <div id="gs-profile-email-settings-add">
         <div class="form-widget">
-          <label for="gs-profile-email-settings-add-address">Address</label>
-          <input id="gs-profile-email-settings-add-address"
-                 type="email" class="textType" />
+          <h2 aria-labelfor="gs-profile-email-settings-add-address">
+            Add an address
+          </h2>
+          <input id="gs-profile-email-settings-add-address" class="textType"
+                 type="email" />
         </div><!--form-widget-->
         <button id="gs-profile-email-settings-add-button"
                 class="btn"><span class="muted">&#10010;</span> Add</button>
-      </section><!--gs-profile-email-settings-add-->
+      </div><!--gs-profile-email-settings-add-->
       <section>
         <h1>Group settings</h1>
       </section>
     </div><!--gs-profile-email-settings-->
     <script metal:fill-slot="javascript"
             id="gs-profile-email-settings-script"
-            data-add="gs-profile-email-settings-add"
+            data-preferred="#gs-profile-email-settings-preferred .address-list"
+            data-extra="#gs-profile-email-settings-extra .address-list"
+            data-unverified="#gs-profile-email-settings-unverified .address-list"
+            data-add="#gs-profile-email-settings-add"
             type="text/javascript"
             defer="defer"
             src="/++resource++gs-profile-email-settings.js"> </script>
