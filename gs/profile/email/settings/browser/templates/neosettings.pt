@@ -1,0 +1,77 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="gs.profile.email.settings"
+      metal:use-macro="context/@@groupserver_layout/page">
+  <head>
+    <title metal:fill-slot="title">
+      <span tal:replace="string:Change email settings: ${view/userInfo/name}: ${view/siteInfo/name}"/>
+    </title>
+    <tal:block metal:fill-slot="metadata">
+      <link rel="up" href="#" title="Profile"
+            tal:attributes="title string:Profile of ${view/userInfo/name};
+                            href view/userInfo/url" />
+    </tal:block>
+  </head>
+  <body>
+    <!--
+        TODO: Create a space for the messages to go in.
+tal:block
+      define="errors view/errors; status view/status; widgets view/widgets"
+      content="structure provider:groupserver.FormStatusMessage"
+      metal:fill-slot="messages">&#160;</tal:block-->
+    <ul metal:fill-slot="breadcrumb">
+      <li>
+        <a href="/" class="icon-alone">
+          <span aria-hidden="true" data-icon="&#x2302;"></span>
+          <span class="screen-reader-text">Site home page</span>
+        </a>
+      </li>
+      <li>
+        <a href="#"
+           tal:attributes="href view/userInfo/url"
+           title="Profile"><b class="fn"
+                              tal:content="view/userInfo/name">Profile</b></a>
+      </li>
+      <li>Change email settings</li>
+    </ul>
+    <div id="gs-profile-email-settings"
+         metal:fill-slot="body">
+      <h1>Change email settings</h1>
+      <section class="intro muted">
+        <p>
+          Do stuff with email.
+        </p>
+      </section><!--intro-->
+      <section id="gs-profile-email-settings-preferred">
+        <h2>Preferred addresses</h2>
+      </section><!--gs-profile-email-settings-preferred-->
+      <section id="gs-profile-email-settings-extra">
+        <h2>Extra addresses</h2>
+      </section><!--gs-profile-email-settings-extra-->
+      <section id="gs-profile-email-settings-unverified">
+        <h2>Unverified addresses</h2>
+      </section><!--gs-profile-email-settings-unverified-->
+      <section id="gs-profile-email-settings-add">
+        <h2>Add an address</h2>
+        <div class="form-widget">
+          <label for="gs-profile-email-settings-add-address">Address</label>
+          <input id="gs-profile-email-settings-add-address"
+                 type="email" class="textType" />
+        </div><!--form-widget-->
+        <button id="gs-profile-email-settings-add-button"
+                class="btn"><span class="muted">&#10010;</span> Add</button>
+      </section><!--gs-profile-email-settings-add-->
+      <section>
+        <h1>Group settings</h1>
+      </section>
+    </div><!--gs-profile-email-settings-->
+    <script metal:fill-slot="javascript"
+            id="gs-profile-email-settings-script"
+            data-add="gs-profile-email-settings-add"
+            type="text/javascript"
+            defer="defer"
+            src="/++resource++gs-profile-email-settings.js"> </script>
+  </body>
+</html>
