@@ -42,7 +42,7 @@ class GroupEmailSettings(object):
     @Lazy
     def groupEmailSettings(self):
         folders = self.groupsInfo.get_member_groups_for_user(self.context,
-                                                            self.userInfo.user)
+                                                             self.userInfo.user)
         grps = [createObject('groupserver.GroupInfo', g) for g in folders]
         u = self.userInfo
         retval = [GroupEmailSettingInfo(self.context, g, u) for g in grps]
@@ -77,12 +77,11 @@ class GroupEmailSettingInfo(object):
     def __init__(self, context, groupInfo, userInfo):
         self.groupInfo = groupInfo
         groupEmailUser = getMultiAdapter((userInfo, groupInfo), IGroupEmailUser,
-                                            context=context)
+                                         context=context)
         self.setting = groupEmailUser.get_delivery_setting()
 
         self.webOnly = self.setting == GroupEmailSetting.webonly
-        self.email = self.setting in (GroupEmailSetting.specific,
-                                        GroupEmailSetting.default)
+        self.email = self.setting in (GroupEmailSetting.specific, GroupEmailSetting.default)
         self.digest = self.setting == GroupEmailSetting.digest
 
         grpAddrs = groupEmailUser.get_specific_email_addresses()

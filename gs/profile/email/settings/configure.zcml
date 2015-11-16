@@ -33,6 +33,34 @@
       permission="zope2.ManageProperties"/>
   </browser:menuItems>
 
+  <!--JSON form endpoints-->
+  <browser:page
+    name="gs-profile-email-settings-add.html"
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    class=".add.AddAddress"
+    permission="zope2.ManageProperties"/>
+  <browser:page
+    name="gs-profile-email-settings-delete.html"
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    class=".delete.DeleteAddress"
+    permission="zope2.ManageProperties"/>
+  <browser:page
+    name="gs-profile-email-settings-demote.html"
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    class=".normal.DemoteAddress"
+    permission="zope2.ManageProperties"/>
+  <browser:page
+    name="gs-profile-email-settings-prefer.html"
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    class=".prefer.PreferAddress"
+    permission="zope2.ManageProperties"/>
+  <browser:page
+    name="gs-profile-email-settings-resend.html"
+    for="Products.CustomUserFolder.interfaces.ICustomUser"
+    class=".resend.ResendVerification"
+    permission="zope2.ManageProperties"/>
+
+  <!--JavaScript resources-->
   <browser:resource
     name="emailsettings-20140321.js"
     file="browser/javascript/emailsettings.js"
