@@ -115,12 +115,15 @@ function GSProfileEmailSettingsUpdate(modelSelector, preferredSelector,
     }
 
     function createPreferredItem(addr, multiple) {
-        var retval = null;
+        var retval = null, toolbar = null;
         retval = model.querySelector('.preferred-address').cloneNode(true);
         retval.querySelector('.email').textContent = addr;
         if (multiple) {
             retval.querySelector('.demote').onclick = demoteClicked
             retval.querySelector('.remove').onclick = removeClicked;
+        } else { // One is the lonliest number
+            toolbar = retval.querySelector('[role="toolbar"]');
+            retval.removeChild(toolbar);
         }
         return retval;
     }
@@ -153,9 +156,34 @@ function GSProfileEmailSettingsUpdate(modelSelector, preferredSelector,
         }
     } // setOther
 
+    function verifyClicked(event) {
+        var button = null, listItem = null, email = null, formData = null,
+            request = null;
+        button = event.target;
+        listItem = findItem(button);
+        email = listItem.querySelector('code.email').textContent;
+
+        formData = new FormData();
+        formData.append('email', email);
+        formData.append('resend', 'Resend');
+
+        request = new XMLHttpRequest();
+        request.addEventListener('load', verifyLoaded);
+        request.open('POST', 'gs-profile-email-settings-resend.json');
+        request.send(formData);
+    }
+
+    function verifyLoaded(event) {
+        var jsonResponse = null;
+        jsonResponse = JSON.parse(this.responseText);
+        // TODO: message, error
+        setAll(jsonResponse.email);
+    }
+
+
     function createUnverifiedItem(addr) {
         var retval = null;
-        retval = model.querySelector('.extra-address').cloneNode(true);
+        retval = model.querySelector('.unverified-address').cloneNode(true);
         retval.querySelector('.email').textContent = addr;
         retval.querySelector('.verify').onclick = verifyClicked;
         retval.querySelector('.remove').onclick = removeClicked;
@@ -163,10 +191,11 @@ function GSProfileEmailSettingsUpdate(modelSelector, preferredSelector,
     }
 
     function setUnverified(unverifiedAddrs) {
-        var i = 0, element = null;
+        var i = 0, element = null, list = null;
+        list = unverified.getElementsByTagName('ul')[0];  // There is only one
         for (i in unverifiedAddrs) {
             element = createUnverifiedItem(unverifiedAddrs[i]);
-            unverified.appendChild(element);
+            list.appendChild(element);
         }
     } // setUnverified
 
@@ -181,7 +210,7 @@ function GSProfileEmailSettingsUpdate(modelSelector, preferredSelector,
         clearAll();
         setPreferred(addresses.preferred);
         setOther(addresses.other);
-        //setUnverified(addresses.unverified);
+        setUnverified(addresses.unverified);
         addresses = addresses;
     } // setAll
 

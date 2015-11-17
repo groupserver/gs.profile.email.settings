@@ -108,7 +108,7 @@
           </div><!--toolbar-->
         </li>
 
-        <li class="gs-profile-email-settings-unverified-address">
+        <li class="unverified-address">
           <code class="email">person@example.com</code>
           <div role="toolbar">
             <button class="btn btn-small verify"
