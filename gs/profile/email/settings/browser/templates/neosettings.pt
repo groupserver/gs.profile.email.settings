@@ -18,6 +18,9 @@
 .remove {
   margin: 0 0 0 1.25em;
 }
+.demote {
+  transform: rotate(180deg);
+}
 
 #gs-profile-email-settings-model,
 .gs-profile-email-settings-address-list {
