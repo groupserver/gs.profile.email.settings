@@ -11,10 +11,10 @@
 // FITNESS FOR A PARTICULAR PURPOSE.
 jQuery.noConflict();
 
-function GSProfileEmailSettingsUpdate(preferredSelector, otherSelector,
-                                      unverifiedSelector) {
-    var preferred = null, other = null, unverified = null, addresses = null,
-        ITEM_CLASS = 'gs-profile-email-settings-item';
+function GSProfileEmailSettingsUpdate(modelSelector, preferredSelector, 
+                                      otherSelector, unverifiedSelector) {
+    var model = null, preferred = null, other = null, unverified = null, 
+        addresses = null, ITEM_CLASS = 'gs-profile-email-settings-item';
 
     function createItem(addr) {
         var retval = null, code = null;
@@ -30,33 +30,13 @@ function GSProfileEmailSettingsUpdate(preferredSelector, otherSelector,
 
     function findItem(element) {
         var retval = null;
-        retval = element.parentElement;
+        retval = element;
         while (retval != null) {
-            if (retval.className == ITEM_CLASS) {
+            if (retval.tagName.toLowerCase() == 'li') {
                 break;
             }
-            retval = listItem.parentElement;
+            retval = retval.parentElement;
         }
-        return retval;
-    }
-
-    function createRemoveButton() {
-        var retval = null, icon = null, text = null;
-        retval = document.createElement('button');
-        retval.className = 'btn btn-small icon-alone';
-        retval.setAttribute('title', 'Remove the email address');
-        retval.onclick = removeClicked;
-
-        icon = document.createElement('span');
-        icon.setAttribute('aria-hidden', 'true');
-        icon.setAttribute('data-icon', '🗑');
-        retval.appendChild(icon);
-
-        text = document.createElement('span');
-        text.className = 'screen-reader-text';
-        text.textContent = 'Remove';
-        retval.appendChild(text);
-
         return retval;
     }
 
@@ -85,25 +65,6 @@ function GSProfileEmailSettingsUpdate(preferredSelector, otherSelector,
         setAll(jsonResponse.email);
     }// removed
 
-    function createPreferButton() {
-        var retval = null, icon = null, text = null;
-        retval = document.createElement('button');
-        retval.className = 'btn btn-small icon-alone';
-        retval.setAttribute('title', 'Set the email address as preferred');
-        retval.onclick = preferredClicked;
-
-        icon = document.createElement('span');
-        icon.setAttribute('aria-hidden', 'true');
-        icon.setAttribute('data-icon', '\u2b06');
-        retval.appendChild(icon);
-
-        text = document.createElement('span');
-        text.className = 'screen-reader-text';
-        text.textContent = 'Prefer';
-        retval.appendChild(text);
-
-        return retval;
-    }// createPreferButton
 
     function preferredClicked(event) {
         var button = null, listItem = null, email = null, formData = null,
@@ -129,27 +90,6 @@ function GSProfileEmailSettingsUpdate(preferredSelector, otherSelector,
         setAll(jsonResponse.email);
     }
 
-    function createDemoteButton() {
-        var retval = null, icon = null, text = null;
-        retval = document.createElement('button');
-        retval.className = 'btn btn-small icon-alone';
-        retval.setAttribute('title',
-                            'Add the address to the list of extra addresses');
-        retval.onclick = demoteClicked;
-
-        icon = document.createElement('span');
-        icon.setAttribute('aria-hidden', 'true');
-        icon.setAttribute('data-icon', '-');
-        retval.appendChild(icon);
-
-        text = document.createElement('span');
-        text.className = 'screen-reader-text';
-        text.textContent = 'Add to extra addresses';
-        retval.appendChild(text);
-
-        return retval;
-    }// createDemoteButton
-
     function demoteClicked(event) {
         var button = null, listItem = null, email = null, formData = null,
             request = null;
@@ -174,44 +114,51 @@ function GSProfileEmailSettingsUpdate(preferredSelector, otherSelector,
         setAll(jsonResponse.email);
     }
 
+    function createPreferredItem(addr, multiple) {
+        var retval = null;
+        retval = model.querySelector('.preferred-address').cloneNode(true);
+        retval.querySelector('.email').textContent = addr;
+        if (multiple) {
+            retval.querySelector('.demote').onclick = demoteClicked
+            retval.querySelector('.remove').onclick = removeClicked;
+        }
+        return retval;
+    }
+
     function setPreferred(preferredAddrs) {
-        var i = 0, element = null, button = null;
+        var i = 0, element = null, multiple = false, list = null;
+        list = preferred.getElementsByTagName('ul')[0];  // There is only one
+        multiple = (preferredAddrs.length > 1);
         for (i in preferredAddrs) {
-            element = createItem(preferredAddrs[i]);
-            if (preferredAddrs.length > 1) {
-                button = createDemoteButton();
-                element.appendChild(button);
-                button = createRemoveButton();
-                element.appendChild(button);
-            }
-            preferred.appendChild(element);
+            element = createPreferredItem(preferredAddrs[i], multiple);
+            list.appendChild(element);
         }
     } // setPreferred
 
     function createOtherItem(addr) {
-        var retval = null, removeButton = null, preferButton = null;
-        retval = createItem(addr);
-        preferButton = createPreferButton();
-        retval.appendChild(preferButton);
-        removeButton = createRemoveButton();
-        retval.appendChild(removeButton);
+        var retval = null;
+        retval = model.querySelector('.extra-address').cloneNode(true);
+        retval.querySelector('.email').textContent = addr;
+        retval.querySelector('.prefer').onclick = preferredClicked;
+        retval.querySelector('.remove').onclick = removeClicked;
         return retval;
     }// createOtherItem
 
     function setOther(otherAddrs) {
-        var i = 0, element = null;
+        var i = 0, element = null, list = null;
+        list = other.getElementsByTagName('ul')[0];  // There is only one
         for (i in otherAddrs) {
             element = createOtherItem(otherAddrs[i]);
-            other.appendChild(element);
+            list.appendChild(element);
         }
     } // setOther
 
     function createUnverifiedItem(addr) {
-        var retval = null, removeButton = null;
-        retval = createItem(addr);
-        removeButton = createRemoveButton();
-        retval.appendChild(removeButton);
-        // retval.appendChild(code);
+        var retval = null;
+        retval = model.querySelector('.extra-address').cloneNode(true);
+        retval.querySelector('.email').textContent = addr;
+        retval.querySelector('.verify').onclick = verifyClicked;
+        retval.querySelector('.remove').onclick = removeClicked;
         return retval;
     }
 
@@ -223,7 +170,23 @@ function GSProfileEmailSettingsUpdate(preferredSelector, otherSelector,
         }
     } // setUnverified
 
+    function clearAll() {
+        clear(preferred.querySelector('ul'));
+        clear(other.querySelector('ul'));
+        clear(unverified.querySelector('ul'));
+        addresses = null;
+    } // clearAll
+
+    function setAll(addresses) {
+        clearAll();
+        setPreferred(addresses.preferred);
+        setOther(addresses.other);
+        //setUnverified(addresses.unverified);
+        addresses = addresses;
+    } // setAll
+
     function setUp() {
+        model = document.querySelector(modelSelector);
         preferred = document.querySelector(preferredSelector);
         other = document.querySelector(otherSelector);
         unverified = document.querySelector(unverifiedSelector);
@@ -236,20 +199,6 @@ function GSProfileEmailSettingsUpdate(preferredSelector, otherSelector,
         }
     } // clear
 
-    function clearAll() {
-        clear(preferred);
-        clear(other);
-        clear(unverified);
-        addresses = null;
-    } // clearAll
-
-    function setAll(addresses) {
-        clearAll();
-        setPreferred(addresses.preferred);
-        setOther(addresses.other);
-        setUnverified(addresses.unverified);
-        addresses = addresses;
-    } // setAll
 
     return {
         setAddresses: function(addresses) {
@@ -331,6 +280,7 @@ jQuery(window).load(function() {
     var scriptElement = null, updater = null, adder = null;
     scriptElement = document.getElementById('gs-profile-email-settings-script');
     updater = GSProfileEmailSettingsUpdate(
+        scriptElement.getAttribute('data-model'),
         scriptElement.getAttribute('data-preferred'),
         scriptElement.getAttribute('data-extra'),
         scriptElement.getAttribute('data-unverified'));
