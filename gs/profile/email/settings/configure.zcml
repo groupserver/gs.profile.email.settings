@@ -21,7 +21,7 @@
     name="emailsettings.html"
     for="Products.CustomUserFolder.interfaces.ICustomUser"
     class="gs.profile.base.ProfilePage"
-    template="browser/templates/neosettings.pt"
+    template="browser/templates/settings.pt"
     permission="zope2.ManageProperties"/>
   <browser:menuItems
     menu="user_profile_menu"
@@ -69,16 +69,16 @@
   <!--JavaScript resources-->
   <browser:resource
     name="gs-profile-email-settings.js"
-    file="browser/javascript/neosettings.js"
+    file="browser/javascript/settings.js"
     permission="zope2.Public"/>
 
   <browser:resource
     name="emailsettings-20140321.js"
-    file="browser/javascript/emailsettings.js"
+    file="browser/javascript/settings.js"
     permission="zope2.Public"/>
   <browser:resource
     name="emailsettings-min-20140321.js"
-    file="browser/javascript/emailsettings-min.js"
+    file="browser/javascript/settings-min.js"
     permission="zope2.Public"/>
 
   <!--help-->

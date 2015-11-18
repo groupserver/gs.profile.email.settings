@@ -3,78 +3,34 @@
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       i18n:domain="gs.profile.email.settings"
-      metal:use-macro="context/@@groupserver_menu_layout/page">
+      metal:use-macro="context/@@groupserver_layout/page">
   <head>
     <title metal:fill-slot="title">
-      <span tal:replace="string:${view/label}: ${view/userInfo/name}: ${view/siteInfo/name}"/>
+      <span tal:replace="string:Change email settings: ${view/userInfo/name}: ${view/siteInfo/name}"/>
     </title>
-    <tal:block metal:fill-slot="style">
-      <link rel="stylesheet" type="text/css"
-            href="/++resource++jquery-ui-1.10.3.css" />
-      <style type="text/css">
-        body {
-          text-align: left;
-        }
+    <style type="text/css" metal:fill-slot="style">
+.preferred-address [role="toolbar"],
+.extra-address [role="toolbar"],
+.unverified-address [role="toolbar"] {
+  padding: 0 0 0 1.25em;
+  display: inline-block;
+}
+.remove {
+  margin: 0 0 0 1.25em;
+}
+.demote {
+  transform: rotate(180deg);
+}
 
-        .hide {
-          display: none;
-        }
-
-        .draggable {
-          display: inline-block;
-        }
-
-        #change-email-settings-form {
-          display: None;
-        }
-        #delivery-addresses, #other-addresses, #unverified-addresses {
-          background: #EEEEEE;
-          list-style-type: none;
-          margin: 0.69em;
-          padding: 0.69em;
-        }
-        #delivery-addresses li, #other-addresses li, #unverified-addresses li {
-          list-style-type: none;
-          margin: 0.69em;
-          padding: 0.69em;
-        }
-
-        .addresslists li {
-          height: 33px;
-        }
-        .addresslists .email, .draggable {
-          margin-top: 5px;
-        }
-
-        .actions {
-          float: right;
-        }
-        .removeLink:hover, .resendLink:hover {
-          cursor: pointer;
-        }
-        .ui-sortable li.ui-state-highlight {
-          cursor: move;
-        }
-        #add-email-address-form {
-          margin: 0;
-        }
-        #widget-form\.newAddress, #add-email-address-form .buttons {
-          width: 80%;
-        }
-        #form\.newAddress {
-          width: 100%;
-        }
-        #add-email-address-form .buttons {
-          margin: 1.25em 0 0 1.875em;
-        }
-        #form\.actions\.add {
-          padding: 2px 9px;
-        }
-        #group-settings {
-          margin-top: 2.5em; /* 2u */
-        }
-      </style>
-    </tal:block>
+#gs-profile-email-settings-model,
+.gs-profile-email-settings-address-list {
+  margin: 1.25em 0 1.25em 1.25em;
+  list-style: none;
+}
+#gs-profile-email-settings-model {
+  display: none;
+}
+    </style>
     <tal:block metal:fill-slot="metadata">
       <link rel="up" href="#" title="Profile"
             tal:attributes="title string:Profile of ${view/userInfo/name};
@@ -82,16 +38,6 @@
     </tal:block>
   </head>
   <body>
-    <tal:block
-      define="errors view/errors; status view/status; widgets view/widgets"
-      content="structure provider:groupserver.FormStatusMessage"
-      metal:fill-slot="messages">&#160;</tal:block>
-    <tal:block metal:fill-slot="contextnavigation">
-      <span
-        tal:replace="structure provider:groupserver.ProfileContextMenu">
-        Context Menu
-      </span>
-    </tal:block>
     <ul metal:fill-slot="breadcrumb">
       <li>
         <a href="/" class="icon-alone">
@@ -102,180 +48,109 @@
       <li>
         <a href="#"
            tal:attributes="href view/userInfo/url"
-           title="Profile"><strong class="fn"
-                                   tal:content="view/userInfo/name">Profile</strong></a>
+           title="Profile"><b class="fn"
+                              tal:content="view/userInfo/name">Profile</b></a>
       </li>
-      <li tal:content="view/label">This page</li>
+      <li>Change email settings</li>
     </ul>
     <div id="gs-profile-email-settings"
-         class="gs-content-js-jqueryui"
          metal:fill-slot="body">
-      <h1 tal:content="view/label">Change Email Settings</h1>
-      <div id="change-email-intro"
-        i18n:translate="gs_profile_email_settings_settings_description">
-        <p tal:condition="view/showOtherAddresses">
-          To change the addresses that are used to send you email from
-          your groups,
-          <strong>click and drag</strong> the addresses between the
-          <samp class="list">Preferred Delivery Addresses</samp> and
-          <samp class="list">Extra Addresses</samp> lists.
+      <div id="gs-profile-email-settings-messagebox">
+      </div>
+      <h1>Change email settings</h1>
+      <section class="intro muted">
+        <p>
+          Do stuff with email.
         </p>
-        <p id="change-email-intro-add">
-          To <strong>add</strong> an address, click the
-          <samp class="button">Add an address&#8230;</samp> button below.
-        </p>
-      </div><!--change-email-intro-->
-      <form enctype="multipart/form-data"  method="post" action="."
-        id="change-email-settings-form" tal:attributes="action request/URL">
-        <tal:block define="widgets python:[w for w in view.widgets][:4]">
-          <tal:block replace="structure provider:groupserver.FormWidgets"/>
-        </tal:block>
-        <div class="buttons">
-          <tal:block define="action view/actions/form.actions.change">
-            <div class="formelementbutton">
-              <span tal:replace="structure action/render">Button</span>
-            </div>
-          </tal:block>
-        </div><!--buttons-->
-      </form><!-- form -->
-      <div class="addresslists">
-        <div id="preferred">
-          <h3 i18n:translate="XXX">Preferred Delivery Addresses</h3>
-          <ul id="delivery-addresses">
-            <tal:block condition="python:len(view.deliveryAddresses)==1">
-              <li class="ui-state-default ui-corner-all"
-                tal:define="address python:view.deliveryAddresses[0]"
-                tal:attributes="id address">
-                <samp class="email"
-                  tal:content="address">email@example.com</samp>
-                <span class="actions">
-                  <a class="removeLink" href="#"
-                    title="Remove this address from your profile"
-                    tal:condition="view/otherAddresses"
-                    tal:attributes="id string:remove-${address}">Remove</a>
-                </span><!--actions-->
-              </li>
-            </tal:block>
-            <li class="ui-state-highlight ui-corner-all"
-              tal:condition="python:len(view.deliveryAddresses)>1"
-              tal:repeat="address view/deliveryAddresses"
-              tal:attributes="id address"
-              title="Drag this address to the Extra Addresses list to stop recieving email on this address by default.">
-              <samp class="email"
-                tal:content="address">email@example.com</samp>
-              <span class="actions">
-                <a class="removeLink"
-                  title="Remove this address from your profile"
-                  tal:attributes="id string:remove-${address}">Remove</a>
-              </span><!--actions-->
-            </li>
-          </ul>
-        </div><!--preferred-->
-        <div id="other"
-          tal:attributes="class python:view.showOtherAddresses and 'show' or 'hide'">
-          <h3 i18n:translate="XXX">Extra Addresses</h3>
-          <ul id="other-addresses">
-            <li class="ui-state-highlight ui-corner-all"
-              tal:repeat="address view/otherAddresses"
-              tal:attributes="id address"
-              title="Drag this address to the Preferred Delivery Addresses list to recieve email on this address by default.">
-              <samp class="email"
-                tal:content="address">email@example.com</samp>
-              <span class="actions">
-                <a class="removeLink"
-                  title="Remove this address from your profile"
-                  tal:attributes="id string:remove-${address}">Remove</a>
-              </span><!--actions-->
-            </li>
-          </ul>
-        </div><!--other-->
-        <div id="unverified"
-          tal:define="show view/unverifiedAddresses"
-          tal:attributes="class python:show and 'show' or 'hide'">
-          <h3 i18n:translate="XXX">Unverified Addresses</h3>
-          <ul id="unverified-addresses">
-            <li class="ui-state-default ui-corner-all"
-              tal:repeat="address view/unverifiedAddresses"
-              tal:attributes="id address">
-              <samp class="email"
-                tal:content="address">email@example.com</samp>
-              <span class="actions">
-                <a href="#"
-                  title="Resend a verification email to this address"
-                class="resendLink">Resend</a>
-                <a class="removeLink"
-                  title="Remove this address from your profile"
-                  tal:condition="view/deliveryAddresses"
-                  tal:attributes="id string:remove-${address}">Remove</a>
-              </span><!--actions-->
-            </li>
-          </ul>
-        </div><!--unverified-->
-      </div><!--addresslists-->
-      <div id="add-email-address">
-        <a href="#" id="open-add">Add an address&#8230;</a>
-        <div id="add-email-address-dialog" style="display:none;"
-          title="Add an address">
-          <form enctype="multipart/form-data"  method="post" action="."
-            id="add-email-address-form" tal:attributes="action request/URL">
-            <tal:block
-              define="widgets python:[view.widgets['newAddress']];">
-              <tal:block replace="structure provider:groupserver.FormWidgets"/>
-            </tal:block>
-            <!--I know that the jQuery dialog does this, but it does
-              - not play nice with Zope. -->
-            <div class="buttons">
-              <tal:block define="action view/actions/form.actions.add">
-                <div class="formelementbutton">
-                  <span tal:replace="structure action/render">Button</span>
-                </div>
-              </tal:block>
-            </div><!--buttons-->
-          </form>
-        </div><!--add-email-address-dialog-->
-      </div><!--add-email-address-->
-      <div id="group-settings" class="disclosureWidget">
-        <h2><a class="disclosureButton">Group Settings</a></h2>
-        <div class="disclosureShowHide" style="display:none;">
-          <table id="group-settings-table" class="table">
-            <thead>
-              <tr>
-                <th>Group</th>
-                <th>Address</th>
-                <th>Setting</th>
-                <th>&#160;</th>
-              </tr>
-            </thead>
-            <tbody tal:define="u string:?form.userId=${view/userInfo/id};
-                               userForm python:'' if view.userInfo.id == view.loggedInUser.id else u">
-              <tr tal:repeat="setting view/groupSettings">
-                <td>
-                  <a tal:content="setting/groupInfo/name"
-                    tal:attributes="href setting/groupInfo/relativeURL"
-                    href="#">Group</a>
-                </td>
-                <td tal:content="structure setting/addresses">Address</td>
-                <td>
-                  <span tal:condition="setting/webOnly">Web only.</span>
-                  <span tal:condition="setting/digest">Daily digest of
-                    topics.</span>
-                  <span tal:condition="setting/email">One email per
-                    post.</span>
-                </td>
-                <td>
-                  <a class="btn btn-small"
-                    tal:attributes="href string:${setting/groupInfo/relativeURL}/email_settings.html${userForm}"
-                    href="#">Change</a>
-                </td>
-              </tr>
-            </tbody>
-          </table><!--group-settings-table-->
-        </div>
-      </div><!--group-settings-->
+      </section><!--intro-->
+      <section id="gs-profile-email-settings-preferred">
+        <h2>Preferred addresses</h2>
+        <ul class="gs-profile-email-settings-address-list">
+        </ul><!--gs-profile-email-settings-address-list-->
+      </section><!--gs-profile-email-settings-preferred-->
+      <section id="gs-profile-email-settings-extra">
+        <h2>Extra addresses</h2>
+        <ul class="gs-profile-email-settings-address-list">
+        </ul><!--gs-profile-email-settings-address-list-->
+      </section><!--gs-profile-email-settings-extra-->
+      <section id="gs-profile-email-settings-unverified">
+        <h2>Unverified addresses</h2>
+        <ul class="gs-profile-email-settings-address-list">
+        </ul><!--gs-profile-email-settings-address-list-->
+      </section><!--gs-profile-email-settings-unverified-->
+
+      <ul id="gs-profile-email-settings-model" aria-hidden="true">
+        <li class="preferred-address">
+          <code class="email">person@example.com</code>
+          <div role="toolbar">
+            <button class="btn btn-small icon-alone demote"
+                    title="Add the address to the list of extra addresses">
+              <span aria-hidden="true" data-icon="&#x2b06;"></span>
+              <span class="screen-reader-text">Add to extra addresses</span>
+            </button>
+            <button class="btn btn-small icon-alone remove"
+                    title="Remove the email address">
+              <span aria-hidden="true" data-icon="&#x1f5d1;"></span>
+              <span class="screen-reader-text">Remove</span>
+            </button>
+          </div><!--toolbar-->
+        </li>
+
+        <li class="extra-address">
+          <code class="email">person@example.com</code>
+          <div role="toolbar">
+            <button class="btn btn-small prefer"
+                    title="Add the address to the list of preferred addresses"
+                    data-icon="&#x2b06;">Prefer</button>
+            <button class="btn btn-small icon-alone remove"
+                    title="Remove the email address">
+              <span aria-hidden="true" data-icon="&#x1f5d1;"></span>
+              <span class="screen-reader-text">Remove</span>
+            </button>
+          </div><!--toolbar-->
+        </li>
+
+        <li class="unverified-address">
+          <code class="email">person@example.com</code>
+          <div role="toolbar">
+            <button class="btn btn-small verify"
+                    title="Resend the verification message for this address"
+                    data-icon="&#x2709;">Verify</button>
+            <button class="btn btn-small icon-alone remove"
+                    title="Remove the email address">
+              <span aria-hidden="true" data-icon="&#x1f5d1;"></span>
+              <span class="screen-reader-text">Remove</span>
+            </button>
+          </div><!--toolbar-->
+        </li>
+      </ul><!--gs-profile-email-settings-model-->
+
+      <div id="gs-profile-email-settings-add">
+        <div class="form-widget">
+          <h2 aria-labelfor="gs-profile-email-settings-add-address">
+            Add an address
+          </h2>
+          <input id="gs-profile-email-settings-add-address" class="textType"
+                 type="email" />
+        </div><!--form-widget-->
+        <button id="gs-profile-email-settings-add-button"
+                class="btn"><span class="muted">&#10010;</span> Add</button>
+      </div><!--gs-profile-email-settings-add-->
+
+      <section>
+        <h1>Group settings</h1>
+      </section>
     </div><!--gs-profile-email-settings-->
     <script metal:fill-slot="javascript"
+            id="gs-profile-email-settings-script"
+            data-model="#gs-profile-email-settings-model"
+            data-preferred="#gs-profile-email-settings-preferred"
+            data-extra="#gs-profile-email-settings-extra"
+            data-unverified="#gs-profile-email-settings-unverified"
+            data-add="#gs-profile-email-settings-add"
+            data-messagebox="#gs-profile-email-settings-messagebox"
             type="text/javascript"
             defer="defer"
-            src="/++resource++emailsettings-min-20140321.js"> </script>
+            src="/++resource++gs-profile-email-settings.js"> </script>
   </body>
 </html>
