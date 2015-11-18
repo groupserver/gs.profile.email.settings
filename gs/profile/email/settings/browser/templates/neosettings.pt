@@ -38,9 +38,6 @@
     </tal:block>
   </head>
   <body>
-    <!--
-        TODO: Create a space for the messages to go in.
-    -->
     <ul metal:fill-slot="breadcrumb">
       <li>
         <a href="/" class="icon-alone">
@@ -58,6 +55,8 @@
     </ul>
     <div id="gs-profile-email-settings"
          metal:fill-slot="body">
+      <div id="gs-profile-email-settings-messagebox">
+      </div>
       <h1>Change email settings</h1>
       <section class="intro muted">
         <p>
@@ -149,6 +148,7 @@
             data-extra="#gs-profile-email-settings-extra"
             data-unverified="#gs-profile-email-settings-unverified"
             data-add="#gs-profile-email-settings-add"
+            data-messagebox="#gs-profile-email-settings-messagebox"
             type="text/javascript"
             defer="defer"
             src="/++resource++gs-profile-email-settings.js"> </script>

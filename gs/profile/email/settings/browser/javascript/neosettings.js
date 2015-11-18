@@ -25,13 +25,63 @@ String.prototype.hashCode = function() {
         }
     }
     return hash;
-};
+}; // String.prototype.hashCode
 
 
-function GSProfileEmailSettingsUpdate(modelSelector, preferredSelector,
-                                      extraSelector, unverifiedSelector) {
+function GSProfileEmailSettingsMessage(messageBoxSelector) {
+    var messageBox = null;
+
+    function clearMessage() {
+        while (messageBox.firstChild) {
+            messageBox.removeChild(messageBox.firstChild);
+        }
+    }
+
+    function setMessage(html, errorLevel) {
+        var alert = null, msg = null, button = null;
+        alert = document.createElement('div');
+        alert.setAttribute('class', 'alert alert-block fade in' + errorLevel);
+        button = document.createElement('button');
+        button.setAttribute('type', 'button');
+        button.setAttribute('class', 'close');
+        button.setAttribute('data-dismiss', 'alert');
+        button.textContent = '\u00D7';
+        alert.appendChild(button);
+        msg = document.createElement('div');
+        msg.innerHTML = html;
+        alert.appendChild(msg);
+        messageBox.appendChild(alert);
+    }
+
+    function setUp() {
+        messageBox = document.querySelector(messageBoxSelector);
+    } // setUp
+    setUp(); // Note the automatic execution
+
+    return {
+        display: function(message, errorLevel) {
+            var e = null;
+            e = typeof(errorLevel) !== 'undefined' ? ' ' + errorLevel : '';
+            clearMessage();
+            setMessage(message, e);
+        }, // display
+        OK: '',
+        ERROR: 'alert-error',
+        SUCCESS: 'alert-success',
+        INFO: 'alert-info'
+    };
+}//GSProfileEmailSettingsMessage
+
+
+function GSProfileEmailSettingsUpdate(
+    modelSelector, preferredSelector, extraSelector, unverifiedSelector,
+    messageboxSelector) {
     var model = null, preferred = null, extra = null, unverified = null,
-        addresses = null;
+        addresses = null, messageBox = null,
+        URI = {delete: 'gs-profile-email-settings-delete.json',
+               prefer: 'gs-profile-email-settings-prefer.json',
+               demote: 'gs-profile-email-settings-demote.json',
+               resend: 'gs-profile-email-settings-resend.json'};
 
     function findItem(element) {
         var retval = null;
@@ -58,7 +108,7 @@ function GSProfileEmailSettingsUpdate(modelSelector, preferredSelector,
 
         request = new XMLHttpRequest();
         request.addEventListener('load', removed);
-        request.open('POST', 'gs-profile-email-settings-delete.json');
+        request.open('POST', URI.delete);
         request.send(formData);
         console.log(email);
     } // removeClicked
@@ -66,7 +116,8 @@ function GSProfileEmailSettingsUpdate(modelSelector, preferredSelector,
     function removed(event) {
         var jsonResponse = null;
         jsonResponse = JSON.parse(this.responseText);
-        // TODO: message, error
+        messageBox.display(jsonResponse.message);
+        // TODO: error
         setAll(jsonResponse.email);
     }// removed
 
@@ -84,14 +135,15 @@ function GSProfileEmailSettingsUpdate(modelSelector, preferredSelector,
 
         request = new XMLHttpRequest();
         request.addEventListener('load', preferredLoaded);
-        request.open('POST', 'gs-profile-email-settings-prefer.json');
+        request.open('POST', URI.prefer);
         request.send(formData);
     } // preferredClicked
 
     function preferredLoaded(event) {
         var jsonResponse = null;
         jsonResponse = JSON.parse(this.responseText);
-        // TODO: message, error
+        messageBox.display(jsonResponse.message);
+        // TODO: error
         setAll(jsonResponse.email);
     } // preferredLoaded
 
@@ -108,14 +160,15 @@ function GSProfileEmailSettingsUpdate(modelSelector, preferredSelector,
 
         request = new XMLHttpRequest();
         request.addEventListener('load', demoteLoaded);
-        request.open('POST', 'gs-profile-email-settings-demote.json');
+        request.open('POST', URI.demote);
         request.send(formData);
     } // demoteClicked
 
     function demoteLoaded(event) {
         var jsonResponse = null;
         jsonResponse = JSON.parse(this.responseText);
-        // TODO: message, error
+        messageBox.display(jsonResponse.message);
+        // TODO: error
         setAll(jsonResponse.email);
     } // demoteLoaded
 
@@ -180,7 +233,7 @@ function GSProfileEmailSettingsUpdate(modelSelector, preferredSelector,
 
         request = new XMLHttpRequest();
         request.addEventListener('load', verifyLoaded);
-        request.open('POST', 'gs-profile-email-settings-resend.json');
+        request.open('POST', URI.resend);
         request.send(formData);
     } // verifyClicked
 
@@ -238,6 +291,7 @@ function GSProfileEmailSettingsUpdate(modelSelector, preferredSelector,
         preferred = document.querySelector(preferredSelector);
         extra = document.querySelector(extraSelector);
         unverified = document.querySelector(unverifiedSelector);
+        messageBox = GSProfileEmailSettingsMessage(messageboxSelector);
     } // setUp
     setUp(); // Automatic exectution
 
@@ -247,10 +301,10 @@ function GSProfileEmailSettingsUpdate(modelSelector, preferredSelector,
         }, // setAddresses
         getAddresses: function() {return addresses;}
     };
-}
+} // GSProfileEmailSettingsUpdate
 
-function GSProfileEmailSettingsAdd(addSelector, updater) {
-    var add = null, input = null, button = null;
+function GSProfileEmailSettingsAdd(addSelector, messageBoxSelector, updater) {
+    var add = null, input = null, button = null, messageBox = null;
 
     function inputChanged(event) {
         if ((input.value.length > 0) &&
@@ -270,7 +324,9 @@ function GSProfileEmailSettingsAdd(addSelector, updater) {
     function added(event) {
         var jsonResponse = null;
         jsonResponse = JSON.parse(this.responseText);
-        // TODO: message, error
+        messageBox.display(jsonResponse.message, messageBox.SUCCESS);
+        // TODO: error
+
         updater.setAddresses(jsonResponse.email);
         input.value = '';
         input.removeAttribute('disabled');
@@ -298,9 +354,11 @@ function GSProfileEmailSettingsAdd(addSelector, updater) {
         button = add.getElementsByTagName('button')[0];
         button.setAttribute('disabled', 'disabled');
         button.addEventListener('click', addClicked);
+
+        messageBox = GSProfileEmailSettingsMessage(messageBoxSelector);
     } // setUp
     setUp(); // Note the automatic execution
-}
+} // GSProfileEmailSettingsAdd
 
 function gs_profile_email_settings_load(updater) {
     var request = null;
@@ -315,7 +373,8 @@ function gs_profile_email_settings_load(updater) {
     request.addEventListener('load', loaded);
     request.open('GET', 'gs-profile-email-settings-status.json');
     request.send();
-}
+} //gs_profile_email_settings_load
+
 
 window.addEventListener('load', function(event) {
     var scriptElement = null, updater = null, adder = null;
@@ -324,9 +383,12 @@ window.addEventListener('load', function(event) {
         scriptElement.getAttribute('data-model'),
         scriptElement.getAttribute('data-preferred'),
         scriptElement.getAttribute('data-extra'),
-        scriptElement.getAttribute('data-unverified'));
+        scriptElement.getAttribute('data-unverified'),
+        scriptElement.getAttribute('data-messagebox'));
     gs_profile_email_settings_load(updater);
 
-    adder = GSProfileEmailSettingsAdd(scriptElement.getAttribute('data-add'),
-                                      updater);
+    adder = GSProfileEmailSettingsAdd(
+        scriptElement.getAttribute('data-add'),
+        scriptElement.getAttribute('data-messagebox'),
+        updater);
 });
