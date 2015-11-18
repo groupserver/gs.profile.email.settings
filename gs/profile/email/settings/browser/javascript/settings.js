@@ -75,13 +75,9 @@ function GSProfileEmailSettingsMessage(messageBoxSelector) {
 
 function GSProfileEmailSettingsUpdate(
     modelSelector, preferredSelector, extraSelector, unverifiedSelector,
-    messageboxSelector) {
+    messageboxSelector, settingsAjax) {
     var model = null, preferred = null, extra = null, unverified = null,
-        addresses = null, messageBox = null,
-        URI = {delete: 'gs-profile-email-settings-delete.json',
-               prefer: 'gs-profile-email-settings-prefer.json',
-               demote: 'gs-profile-email-settings-demote.json',
-               resend: 'gs-profile-email-settings-resend.json'};
+        addresses = null, messageBox = null;
 
     function findItem(element) {
         var retval = null;
@@ -101,16 +97,7 @@ function GSProfileEmailSettingsUpdate(
         button = event.target;
         listItem = findItem(button);
         email = listItem.querySelector('code.email').textContent;
-
-        formData = new FormData();
-        formData.append('email', email);
-        formData.append('delete', 'Delete');
-
-        request = new XMLHttpRequest();
-        request.addEventListener('load', removed);
-        request.open('POST', URI.delete);
-        request.send(formData);
-        console.log(email);
+        settingsAjax.remove(email, removed);
     } // removeClicked
 
     function removed(event) {
@@ -128,15 +115,7 @@ function GSProfileEmailSettingsUpdate(
         button = event.target;
         listItem = findItem(button);
         email = listItem.querySelector('code.email').textContent;
-
-        formData = new FormData();
-        formData.append('email', email);
-        formData.append('prefer', 'Prefer');
-
-        request = new XMLHttpRequest();
-        request.addEventListener('load', preferredLoaded);
-        request.open('POST', URI.prefer);
-        request.send(formData);
+        settingsAjax.prefer(email, preferredLoaded);
     } // preferredClicked
 
     function preferredLoaded(event) {
@@ -153,15 +132,7 @@ function GSProfileEmailSettingsUpdate(
         button = event.target;
         listItem = findItem(button);
         email = listItem.querySelector('code.email').textContent;
-
-        formData = new FormData();
-        formData.append('email', email);
-        formData.append('demote', 'Demote');
-
-        request = new XMLHttpRequest();
-        request.addEventListener('load', demoteLoaded);
-        request.open('POST', URI.demote);
-        request.send(formData);
+        settingsAjax.demote(email, demoteLoaded);
     } // demoteClicked
 
     function demoteLoaded(event) {
@@ -226,15 +197,7 @@ function GSProfileEmailSettingsUpdate(
         button = event.target;
         listItem = findItem(button);
         email = listItem.querySelector('code.email').textContent;
-
-        formData = new FormData();
-        formData.append('email', email);
-        formData.append('resend', 'Resend');
-
-        request = new XMLHttpRequest();
-        request.addEventListener('load', verifyLoaded);
-        request.open('POST', URI.resend);
-        request.send(formData);
+        settingsAjax.verify(email, verifyLoaded);
     } // verifyClicked
 
     function verifyLoaded(event) {
@@ -303,7 +266,8 @@ function GSProfileEmailSettingsUpdate(
     };
 } // GSProfileEmailSettingsUpdate
 
-function GSProfileEmailSettingsAdd(addSelector, messageBoxSelector, updater) {
+function GSProfileEmailSettingsAdd(addSelector, messageBoxSelector,
+                                   settingsAjax, updater) {
     var add = null, input = null, button = null, messageBox = null;
 
     function inputChanged(event) {
@@ -335,15 +299,7 @@ function GSProfileEmailSettingsAdd(addSelector, messageBoxSelector, updater) {
     function addClicked(event) {
         var request = null, formData = null;
         input.setAttribute('disabled', 'disabled');
-
-        formData = new FormData();
-        formData.append('email', input.value);
-        formData.append('add', 'Add'); // The button
-
-        request = new XMLHttpRequest();
-        request.addEventListener('load', added);
-        request.open('POST', 'gs-profile-email-settings-add.json');
-        request.send(formData);
+        settingsAjax.add(input.value, added);
     }// addClicked
 
     function setUp() {
@@ -360,32 +316,107 @@ function GSProfileEmailSettingsAdd(addSelector, messageBoxSelector, updater) {
     setUp(); // Note the automatic execution
 } // GSProfileEmailSettingsAdd
 
-function gs_profile_email_settings_load(updater) {
-    var request = null;
-
+function gs_profile_email_settings_load(settingsAjax, updater) {
     function loaded(event) {
         var jsonResponse = null;
         jsonResponse = JSON.parse(this.responseText);
         updater.setAddresses(jsonResponse);
     }
-
-    request = new XMLHttpRequest();
-    request.addEventListener('load', loaded);
-    request.open('GET', 'gs-profile-email-settings-status.json');
-    request.send();
+    settingsAjax.status(loaded);
 } //gs_profile_email_settings_load
+
+function GSProfileEmailSettingsAJAX() {
+    var removeEndpoint = null, preferEndpoint = null, demoteEndpoint = null,
+        resendEndpoint = null, addEndpoint = null;
+
+    function AjaxEndpoint(uri, buttonName, buttonValue) {
+        function AjaxRequest(listener) {
+            var r = null;
+            r = new XMLHttpRequest();
+            if (typeof(listener) !== 'undefined') {
+                r.addEventListener('load', listener);
+            }
+            r.open('POST', uri);
+            return r;
+        } // AjaxRequest
+
+        return {
+            send: function(address, listener) {
+                var request = null, formData = null;
+                formData = new FormData();
+                formData.append(buttonName, buttonValue);
+                formData.append('email', address);
+
+                request = new AjaxRequest(listener);
+                request.send(formData);
+            }
+        };
+    } // AjaxEndpoint
+
+    function getStatus(listener) {
+        var request = null;
+        request = new XMLHttpRequest();
+        if (typeof(request) !== 'undefined') {
+            request.addEventListener('load', listener);
+        }
+        request.open('GET', 'gs-profile-email-settings-status.json');
+        request.send();
+    } // getStatus
+
+    function setUp() {
+        removeEndpoint = new AjaxEndpoint(
+            'gs-profile-email-settings-delete.json', 'delete', 'Delete');
+        preferEndpoint = new AjaxEndpoint(
+            'gs-profile-email-settings-prefer.json', 'prefer',
+            'Prefer');
+        demoteEndpoint = new AjaxEndpoint(
+            'gs-profile-email-settings-demote.json', 'demote',
+            'Demote');
+        resendEndpoint = new AjaxEndpoint(
+            'gs-profile-email-settings-resend.json', 'resend',
+            'Resend');
+        addEndpoint = new AjaxEndpoint(
+            'gs-profile-email-settings-add.json', 'add', 'Add');
+    }
+    setUp(); // Automatic execution
+
+    return {
+        remove: function(address, listener) {
+            removeEndpoint.send(address, listener);
+        },
+        prefer: function(address, listener) {
+            preferEndpoint.send(address, listener);
+        },
+        demote: function(address, listener) {
+            demoteEndpoint.send(address, listener);
+        },
+        resend: function(address, listener) {
+            resendEndpoint.send(address, listener);
+        },
+        add: function(address, listener) {
+            addEndpoint.send(address, listener);
+        },
+        status: function(listener) {
+            getStatus(listener);
+        }
+    };
+} // GSProfileEmailSettingsAJAX
 
 
 window.addEventListener('load', function(event) {
-    var scriptElement = null, updater = null, adder = null;
+    var scriptElement = null, updater = null, adder = null, settingsAjax = null;
+
+    settingsAjax = new GSProfileEmailSettingsAJAX();
+
     scriptElement = document.getElementById('gs-profile-email-settings-script');
     updater = GSProfileEmailSettingsUpdate(
         scriptElement.getAttribute('data-model'),
         scriptElement.getAttribute('data-preferred'),
         scriptElement.getAttribute('data-extra'),
         scriptElement.getAttribute('data-unverified'),
-        scriptElement.getAttribute('data-messagebox'));
-    gs_profile_email_settings_load(updater);
+        scriptElement.getAttribute('data-messagebox'),
+        settingsAjax);
+    gs_profile_email_settings_load(settingsAjax, updater);
 
     adder = GSProfileEmailSettingsAdd(
         scriptElement.getAttribute('data-add'),
