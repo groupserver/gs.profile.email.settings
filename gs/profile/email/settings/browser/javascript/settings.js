@@ -27,17 +27,29 @@ String.prototype.hashCode = function() {
     return hash;
 }; // String.prototype.hashCode
 
-
+/** The message area
+ * @constructor
+ * @param {String} messageBoxSelector - The selector for the message box
+ */
 function GSProfileEmailSettingsMessage(messageBoxSelector) {
-    var messageBox = null;
-
-    function clearMessage() {
-        while (messageBox.firstChild) {
-            messageBox.removeChild(messageBox.firstChild);
-        }
+    this.messageBox = document.querySelector(messageBoxSelector);
+    this.OK = '';
+    this.ERROR = 'alert-error';
+    this.SUCCESS = 'alert-success';
+    this.INFO = 'alert-info';
+}
+/** Clear the previous message */
+GSProfileEmailSettingsMessage.prototype.clearMessage = function() {
+    while (this.messageBox.firstChild) {
+        this.messageBox.removeChild(this.messageBox.firstChild);
     }
-
-    function setMessage(html, errorLevel) {
+}; // clearMessage
+/** Set a message
+ * @param {String} html - The HTML to display
+ * @param {String} errorLevel - The Twitter Bootstrap alert error-level
+ */
+GSProfileEmailSettingsMessage.prototype.setMessage =
+    function(html, errorLevel) {
         var alert = null, msg = null, button = null;
         alert = document.createElement('div');
         alert.setAttribute('class', 'alert alert-block fade in' + errorLevel);
@@ -50,280 +62,19 @@ function GSProfileEmailSettingsMessage(messageBoxSelector) {
         msg = document.createElement('div');
         msg.innerHTML = html;
         alert.appendChild(msg);
-        messageBox.appendChild(alert);
-    }
-
-    function setUp() {
-        messageBox = document.querySelector(messageBoxSelector);
-    } // setUp
-    setUp(); // Note the automatic execution
-
-    return {
-        display: function(message, errorLevel) {
-            var e = null;
-            e = typeof(errorLevel) !== 'undefined' ? ' ' + errorLevel : '';
-            clearMessage();
-            setMessage(message, e);
-        }, // display
-        OK: '',
-        ERROR: 'alert-error',
-        SUCCESS: 'alert-success',
-        INFO: 'alert-info'
-    };
-}//GSProfileEmailSettingsMessage
-
-
-function GSProfileEmailSettingsUpdate(
-    modelSelector, preferredSelector, extraSelector, unverifiedSelector,
-    messageboxSelector, settingsAjax) {
-    var model = null, preferred = null, extra = null, unverified = null,
-        addresses = null, messageBox = null;
-
-    function findItem(element) {
-        var retval = null;
-        retval = element;
-        while (retval != null) {
-            if (retval.tagName.toLowerCase() == 'li') {
-                break;
-            }
-            retval = retval.parentElement;
-        }
-        return retval;
-    } // findItem
-
-    function removeClicked(event) {
-        var button = null, listItem = null, email = null, formData = null,
-            request = null;
-        button = event.target;
-        listItem = findItem(button);
-        email = listItem.querySelector('code.email').textContent;
-        settingsAjax.remove(email, removed);
-    } // removeClicked
-
-    function removed(event) {
-        var jsonResponse = null;
-        jsonResponse = JSON.parse(this.responseText);
-        messageBox.display(jsonResponse.message);
-        // TODO: error
-        setAll(jsonResponse.email);
-    }// removed
-
-
-    function preferredClicked(event) {
-        var button = null, listItem = null, email = null, formData = null,
-            request = null;
-        button = event.target;
-        listItem = findItem(button);
-        email = listItem.querySelector('code.email').textContent;
-        settingsAjax.prefer(email, preferredLoaded);
-    } // preferredClicked
-
-    function preferredLoaded(event) {
-        var jsonResponse = null;
-        jsonResponse = JSON.parse(this.responseText);
-        messageBox.display(jsonResponse.message);
-        // TODO: error
-        setAll(jsonResponse.email);
-    } // preferredLoaded
-
-    function demoteClicked(event) {
-        var button = null, listItem = null, email = null, formData = null,
-            request = null;
-        button = event.target;
-        listItem = findItem(button);
-        email = listItem.querySelector('code.email').textContent;
-        settingsAjax.demote(email, demoteLoaded);
-    } // demoteClicked
-
-    function demoteLoaded(event) {
-        var jsonResponse = null;
-        jsonResponse = JSON.parse(this.responseText);
-        messageBox.display(jsonResponse.message);
-        // TODO: error
-        setAll(jsonResponse.email);
-    } // demoteLoaded
-
-    function createPreferredItem(addr, multiple) {
-        var retval = null, toolbar = null;
-        retval = model.querySelector('.preferred-address').cloneNode(true);
-        retval.setAttribute('id', 'email' + addr.hashCode());
-        retval.querySelector('.email').textContent = addr;
-        if (multiple) {
-            retval.querySelector('.demote').addEventListener(
-                'click', demoteClicked);
-            retval.querySelector('.remove').addEventListener(
-                'click', removeClicked);
-        } else { // One is the lonliest number
-            toolbar = retval.querySelector('[role="toolbar"]');
-            retval.removeChild(toolbar);
-        }
-        return retval;
-    } // createPreferredItem
-
-    function setPreferred(preferredAddrs) {
-        var i = 0, element = null, multiple = false, list = null;
-        list = preferred.getElementsByTagName('ul')[0];  // There is only one
-        multiple = (preferredAddrs.length > 1);
-        for (i in preferredAddrs) {
-            element = createPreferredItem(preferredAddrs[i], multiple);
-            list.appendChild(element);
-        }
-    } // setPreferred
-
-    function createExtraItem(addr) {
-        var retval = null;
-        retval = model.querySelector('.extra-address').cloneNode(true);
-        retval.setAttribute('id', 'email' + addr.hashCode());
-        retval.querySelector('.email').textContent = addr;
-        retval.querySelector('.prefer').addEventListener(
-                'click', preferredClicked);
-        retval.querySelector('.remove').addEventListener(
-                'click', removeClicked);
-        return retval;
-    }// createExtraItem
-
-    function setExtra(extraAddrs) {
-        var i = 0, element = null, list = null;
-        list = extra.getElementsByTagName('ul')[0];  // There is only one
-        for (i in extraAddrs) {
-            element = createExtraItem(extraAddrs[i]);
-            list.appendChild(element);
-        }
-    } // setExtra
-
-    function verifyClicked(event) {
-        var button = null, listItem = null, email = null, formData = null,
-            request = null;
-        button = event.target;
-        listItem = findItem(button);
-        email = listItem.querySelector('code.email').textContent;
-        settingsAjax.verify(email, verifyLoaded);
-    } // verifyClicked
-
-    function verifyLoaded(event) {
-        var jsonResponse = null;
-        jsonResponse = JSON.parse(this.responseText);
-        // TODO: message, error
-        setAll(jsonResponse.email);
-    } // verifiyLoaded
-
-    function createUnverifiedItem(addr) {
-        var retval = null;
-        retval = model.querySelector('.unverified-address').cloneNode(true);
-        retval.setAttribute('id', 'email' + addr.hashCode());
-        retval.querySelector('.email').textContent = addr;
-        retval.querySelector('.verify').addEventListener(
-                'click', verifyClicked);
-        retval.querySelector('.remove').addEventListener(
-                'click', removeClicked);
-        return retval;
-    } // createUnverifiedItem
-
-    function setUnverified(unverifiedAddrs) {
-        var i = 0, element = null, list = null;
-        list = unverified.getElementsByTagName('ul')[0];  // There is only one
-        for (i in unverifiedAddrs) {
-            element = createUnverifiedItem(unverifiedAddrs[i]);
-            list.appendChild(element);
-        }
-    } // setUnverified
-
-    function clear(list) {
-        while (list.firstChild) {
-            list.removeChild(list.firstChild);
-        }
-    } // clear
-
-    function clearAll() {
-        clear(preferred.querySelector('ul'));
-        clear(extra.querySelector('ul'));
-        clear(unverified.querySelector('ul'));
-        addresses = null;
-    } // clearAll
-
-    function setAll(addresses) {
-        clearAll();
-        setPreferred(addresses.preferred);
-        setExtra(addresses.other);
-        setUnverified(addresses.unverified);
-        addresses = addresses;
-    } // setAll
-
-    function setUp() {
-        model = document.querySelector(modelSelector);
-        preferred = document.querySelector(preferredSelector);
-        extra = document.querySelector(extraSelector);
-        unverified = document.querySelector(unverifiedSelector);
-        messageBox = GSProfileEmailSettingsMessage(messageboxSelector);
-    } // setUp
-    setUp(); // Automatic exectution
-
-    return {
-        setAddresses: function(addresses) {
-            setAll(addresses);
-        }, // setAddresses
-        getAddresses: function() {return addresses;}
-    };
-} // GSProfileEmailSettingsUpdate
-
-function GSProfileEmailSettingsAdd(addSelector, messageBoxSelector,
-                                   settingsAjax, updater) {
-    var add = null, input = null, button = null, messageBox = null;
-
-    function inputChanged(event) {
-        if ((input.value.length > 0) &&
-            button.hasAttribute('disabled') &&
-            (!('validity' in input) || input.validity.valid)) {
-            button.removeAttribute('disabled');
-        } else if ((event.key == 'Enter') &&
-                   !button.hasAttribute('disabled')) {
-            button.click();
-        } else if (!button.hasAttribute('disabled') &&
-                   (input.value.length == 0) ||
-                   (('validity' in input) && !input.validity.valid)) {
-            button.setAttribute('disabled', 'disabled');
-        }
-    }// inputChanged
-
-    function added(event) {
-        var jsonResponse = null;
-        jsonResponse = JSON.parse(this.responseText);
-        messageBox.display(jsonResponse.message, messageBox.SUCCESS);
-        // TODO: error
-
-        updater.setAddresses(jsonResponse.email);
-        input.value = '';
-        input.removeAttribute('disabled');
-    } // added
-
-    function addClicked(event) {
-        var request = null, formData = null;
-        input.setAttribute('disabled', 'disabled');
-        settingsAjax.add(input.value, added);
-    }// addClicked
-
-    function setUp() {
-        add = document.querySelector(addSelector);
-        input = add.getElementsByTagName('input')[0];  // There is only one
-        input.addEventListener('keyup', inputChanged);
-
-        button = add.getElementsByTagName('button')[0];
-        button.setAttribute('disabled', 'disabled');
-        button.addEventListener('click', addClicked);
-
-        messageBox = GSProfileEmailSettingsMessage(messageBoxSelector);
-    } // setUp
-    setUp(); // Note the automatic execution
-} // GSProfileEmailSettingsAdd
-
-function gs_profile_email_settings_load(settingsAjax, updater) {
-    function loaded(event) {
-        var jsonResponse = null;
-        jsonResponse = JSON.parse(this.responseText);
-        updater.setAddresses(jsonResponse);
-    }
-    settingsAjax.status(loaded);
-} //gs_profile_email_settings_load
+        this.messageBox.appendChild(alert);
+    }; // setMessage
+/** Display a new message, clearing the other message first
+ * @param {String} message - The HTML-formatted message to display
+ * @param {String} errorLevel - The Twitter Bootstrap alert error-level
+ */
+GSProfileEmailSettingsMessage.prototype.display =
+    function(message, errorLevel) {
+        var e = null;
+        e = typeof(errorLevel) !== 'undefined' ? ' ' + errorLevel : this.OK;
+        this.clearMessage();
+        this.setMessage(message, e);
+    }; // display
 
 function GSProfileEmailSettingsAJAX() {
     var removeEndpoint = null, preferEndpoint = null, demoteEndpoint = null,
@@ -403,6 +154,401 @@ function GSProfileEmailSettingsAJAX() {
 } // GSProfileEmailSettingsAJAX
 
 
+// --=mpj17=-- The event uses the old API for creating events,
+// because IE (10 & 11) only support this API, rather than the
+// new event creation.
+function GSProfileEmailSettingsRemoveEvent(data) {
+    var evt = document.createEvent('CustomEvent');
+    evt.initCustomEvent('GSProfileEmailSettingsRemove', true, true, data);
+    return evt;
+} // GSProfileEmailSettingsRemoveEvent
+
+
+/** Abstract base-class for the settings areas
+ * @constructor
+ * @param {Element} elem - The HTML element for the area
+ * @param {Element} model - The HTML element for the list-item models
+ *
+ * Concrete impmentations of a settings area should implement an
+ * update method.
+ */
+function GSProfileEmailSettingsArea(elem, model) {
+    this.elem = elem;
+    this.list = elem.getElementsByTagName('ul')[0];  // There is only one
+    this.model = model;
+}
+/** Find a list-item starting at an element
+ * @param {Element} element The HTML element where the search starts.
+ * @return {Element} The HTML element for the list-item.
+ */
+GSProfileEmailSettingsArea.prototype.findItem = function(element) {
+    var retval = null;
+    retval = element;
+    while (retval != null) {
+        if (retval.tagName.toLowerCase() == 'li') {
+            break;
+        }
+        retval = retval.parentElement;
+    }
+    return retval;
+}; // findItem
+/** Clear the list */
+GSProfileEmailSettingsArea.prototype.clear = function() {
+    while (this.list.firstChild) {
+        this.list.removeChild(this.list.firstChild);
+    }
+}; // clear
+/** Find the email address associated with an event.
+ * @param {Event} event The HTML event that triggered the search
+ * @return {String} The email address in the list-item.
+ */
+GSProfileEmailSettingsArea.prototype.emailFromEvent = function(event) {
+    var button = null, listItem = null, retval = null;
+    button = event.target;
+    listItem = this.findItem(button);
+    retval = listItem.querySelector('code.email').textContent;
+    return retval;
+}; // emailFromEvent
+/** Handle the Remove button being clicked
+ * @param {Event} event The HTML click-event on the Remove button
+ */
+GSProfileEmailSettingsArea.prototype.removeClicked = function(event) {
+    var email = null, removeEvent = null;
+    email = this.emailFromEvent(event);
+    removeEvent = GSProfileEmailSettingsRemoveEvent({'email': email});
+    event.target.dispatchEvent(removeEvent);
+}; // removeClicked
+
+
+function GSProfileEmailSettingsDemoteEvent(data) {
+    var evt = document.createEvent('CustomEvent');
+    evt.initCustomEvent('GSProfileEmailSettingsDemote', true, true, data);
+    return evt;
+} // GSProfileEmailSettingsDemoteEvent
+
+
+/** Area for the preferred email-addresses.
+ * @constructor
+ * @extends GSProfileEmailSettingsArea
+ * @param {Element} elem - The HTML element for the area
+ * @param {Element} model - The HTML element for the list-item models
+*/
+function GSProfileEmailSettingsPreferred(elem, model) {
+    GSProfileEmailSettingsArea.call(this, elem, model);
+}
+GSProfileEmailSettingsPreferred.prototype =
+    Object.create(GSProfileEmailSettingsArea.prototype);
+/** Why? */
+GSProfileEmailSettingsPreferred.prototype.constructor =
+    GSProfileEmailSettingsPreferred;
+/** Handle the Demote button being clicked
+ * @param {Event} event The HTML click-event on the Demote button
+ */
+GSProfileEmailSettingsPreferred.prototype.demoteClicked = function(event) {
+    var email = null, demoteEvent = null;
+    email = this.emailFromEvent(event);
+    demoteEvent = GSProfileEmailSettingsDemoteEvent({'email': email});
+    event.target.dispatchEvent(demoteEvent);
+}; // demoteClicked
+/** Create an item for the Preferred address list
+ * @param {String} addr The email address for the item
+ * @param {Bool} multiple If there are multiple email addresses
+ * @return {Element} An HTML element for the new item
+ */
+GSProfileEmailSettingsPreferred.prototype.createItem =
+    function(addr, multiple) {
+        var retval = null;
+        retval = this.model.querySelector('.preferred-address').cloneNode(true);
+        retval.setAttribute('id', 'email' + addr.hashCode());
+        retval.querySelector('.email').textContent = addr;
+        if (multiple) {
+            // --=mpj17=-- Note the use of .bind(this) so the this in
+            // this.demoteClicked is this this.
+            retval.querySelector('.demote').addEventListener(
+                'click', this.demoteClicked.bind(this));
+            retval.querySelector('.remove').addEventListener(
+                'click', this.removeClicked.bind(this));
+        } else { // One is the lonliest number
+            toolbar = retval.querySelector('[role="toolbar"]');
+            retval.removeChild(toolbar);
+        }
+        return retval;
+    }; // CreateItem
+/** Update the preferred email-address list
+ * @param {Object} data - The data containing the email addresses
+ */
+GSProfileEmailSettingsPreferred.prototype.update = function(data) {
+    var newItem = null, multiple = false, i = 0;
+    this.clear();
+    multiple = (data.preferred.length > 1);
+    for (i in data.preferred) {
+        newItem = this.createItem(data.preferred[i], multiple);
+        this.list.appendChild(newItem);
+    }
+}; // update
+
+
+function GSProfileEmailSettingsPreferEvent(data) {
+    var evt = document.createEvent('CustomEvent');
+    evt.initCustomEvent('GSProfileEmailSettingsPrefer', true, true, data);
+    return evt;
+} // GSProfileEmailSettingsPreferEvent
+
+
+/** Area for the extra email-addresses.
+ * @constructor
+ * @extends GSProfileEmailSettingsArea
+ * @param {Element} elem - The HTML element for the area
+ * @param {Element} model - The HTML element for the list-item models
+*/
+function GSProfileEmailSettingsExtra(elem, model) {
+    GSProfileEmailSettingsArea.call(this, elem, model);
+}
+GSProfileEmailSettingsExtra.prototype =
+    Object.create(GSProfileEmailSettingsArea.prototype);
+/** Why? */
+GSProfileEmailSettingsExtra.prototype.constructor =
+    GSProfileEmailSettingsExtra;
+/** Handle the Prefer button being clicked
+ * @param {Event} event The HTML click-event on the Prefer button
+ */
+GSProfileEmailSettingsExtra.prototype.preferClicked = function(event) {
+    var email = null, preferEvent = null;
+    email = this.emailFromEvent(event);
+    preferEvent = GSProfileEmailSettingsPreferEvent({'email': email});
+    event.target.dispatchEvent(preferEvent);
+}; // demoteClicked
+/** Create an item for the Extra address list
+ * @param {String} addr The email address for the item
+ * @return {Element} An HTML element for the new item
+ */
+GSProfileEmailSettingsExtra.prototype.createItem = function(addr) {
+    var retval = null;
+    retval = this.model.querySelector('.extra-address').cloneNode(true);
+    retval.setAttribute('id', 'email' + addr.hashCode());
+    retval.querySelector('.email').textContent = addr;
+    retval.querySelector('.prefer').addEventListener(
+        'click', this.preferClicked.bind(this));
+    retval.querySelector('.remove').addEventListener(
+        'click', this.removeClicked.bind(this));
+    return retval;
+    }; // createItem
+/** Update the preferred email-address list
+ * @param {Object} data - The data containing the email addresses
+ */
+GSProfileEmailSettingsExtra.prototype.update = function(data) {
+    var newItem = null, i = 0;
+    this.clear();
+    for (i in data.other) {
+        newItem = this.createItem(data.other[i]);
+        this.list.appendChild(newItem);
+    }
+}; // update
+
+
+function GSProfileEmailSettingsResendEvent(data) {
+    var evt = document.createEvent('CustomEvent');
+    evt.initCustomEvent('GSProfileEmailSettingsResend', true, true, data);
+    return evt;
+} // GSProfileEmailSettingsResendEvent
+
+
+/** Area for the unverified email-addresses.
+ * @constructor
+ * @extends GSProfileEmailSettingsArea
+ * @param {Element} elem - The HTML element for the area
+ * @param {Element} model - The HTML element for the list-item models
+*/
+function GSProfileEmailSettingsUnverified(elem, model) {
+    GSProfileEmailSettingsArea.call(this, elem, model);
+}
+GSProfileEmailSettingsUnverified.prototype =
+    Object.create(GSProfileEmailSettingsArea.prototype);
+/** Why? */
+GSProfileEmailSettingsUnverified.prototype.constructor =
+    GSProfileEmailSettingsUnverified;
+/** Handle the Resend verification button being clicked
+ * @param {Event} event The HTML click-event on the Resend verification button
+ */
+GSProfileEmailSettingsArea.prototype.verifyClicked = function(event) {
+    var email = null, verifyEvent = null;
+    email = this.emailFromEvent(event);
+    verifyEvent = GSProfileEmailSettingsResendEvent({'email': email});
+    event.target.dispatchEvent(verifyEvent);
+}; // removeClicked
+/** Create an item for the Unverified address list
+ * @param {String} addr The email address for the item
+ * @return {Element} An HTML element for the new item
+ */
+GSProfileEmailSettingsUnverified.prototype.createItem = function(addr) {
+    var retval = null;
+    retval = this.model.querySelector('.unverified-address').cloneNode(true);
+    retval.setAttribute('id', 'email' + addr.hashCode());
+    retval.querySelector('.email').textContent = addr;
+    retval.querySelector('.verify').addEventListener(
+        'click', this.verifyClicked.bind(this));
+    retval.querySelector('.remove').addEventListener(
+        'click', this.removeClicked.bind(this));
+    return retval;
+}; // createItem
+/** Update the preferred email-address list
+ * @param {Object} data - The data containing the email addresses
+ */
+GSProfileEmailSettingsUnverified.prototype.update = function(data) {
+    var newItem = null, i = 0;
+    this.clear();
+    for (i in data.unverified) {
+        newItem = this.createItem(data.unverified[i]);
+        this.list.appendChild(newItem);
+    }
+}; // update
+
+
+function GSProfileEmailSettingsAddEvent(data) {
+    var evt = document.createEvent('CustomEvent');
+    evt.initCustomEvent('GSProfileEmailSettingsAdd', true, true, data);
+    return evt;
+} // GSProfileEmailSettingsAddEvent
+
+
+/** The area that allows email addresses to be added.
+ * @constructor
+ * @param {Element} elem - The HTML element for the area
+ */
+function GSProfileEmailSettingsAdd(elem) {
+    this.elem = elem;
+    this.input = elem.getElementsByTagName('input')[0];  // There is only one
+    this.input.addEventListener('keyup', this.inputChanged.bind(this));
+    this.button = elem.getElementsByTagName('button')[0];
+    this.button.setAttribute('disabled', 'disabled');
+    this.button.addEventListener('click', this.addClicked.bind(this));
+} // GSProfileEmailSettingsAdd
+/** Handle the text-entry being updated
+ * @param {Event} event - The key-up event
+ *
+ * The button should only be enabled when there is valid input in
+ * the text-entry.
+ */
+GSProfileEmailSettingsAdd.prototype.inputChanged = function(event) {
+    if ((this.input.value.length > 0) &&
+        this.button.hasAttribute('disabled') &&
+        (!('validity' in this.input) || this.input.validity.valid)) {
+        this.button.removeAttribute('disabled');
+    } else if ((event.key == 'Enter') &&
+               !this.button.hasAttribute('disabled')) {
+        this.button.click();
+    } else if (!this.button.hasAttribute('disabled') &&
+               (this.input.value.length == 0) ||
+               (('validity' in this.input) && !this.input.validity.valid)) {
+        this.button.setAttribute('disabled', 'disabled');
+    }
+}; // inputChanged
+/** Handle the Add buttom being clicked
+ * @param {Event} event - The click event
+ */
+GSProfileEmailSettingsAdd.prototype.addClicked = function(event) {
+    var request = null, formData = null, addEvent = null;
+    this.input.setAttribute('disabled', 'disabled');
+    addEvent = GSProfileEmailSettingsAddEvent({'email': this.input.value});
+    event.target.dispatchEvent(addEvent);
+}; // addClicked
+/** Reset the form
+ */
+GSProfileEmailSettingsAdd.prototype.reset = function() {
+    this.input.value = '';
+    this.input.removeAttribute('disabled');
+}; // reset
+
+
+function GSProfileEmailSettingsUpdate(
+    preferredSelector, extraSelector, unverifiedSelector, addSelector, 
+    modelSelector, messageBoxSelector) {
+    var settingsAjax = null, preferred = null, extra = null, unverified = null,
+        messageBox = null, adder = null;
+
+    function load(event) {
+        var jsonResponse = null;
+        jsonResponse = JSON.parse(event.target.responseText);
+        updateAll(jsonResponse);
+    } // load
+
+    function updateAll(addrs) {
+        preferred.update(addrs);
+        extra.update(addrs);
+        unverified.update(addrs);
+    }
+
+    function remove(event) {
+        settingsAjax.remove(event.detail.email, ajaxReturn);
+    }
+
+    function prefer(event) {
+        settingsAjax.prefer(event.detail.email, ajaxReturn);
+    }
+
+    function demote(event) {
+        settingsAjax.demote(event.detail.email, ajaxReturn);
+    }
+
+    function resend(event) {
+        settingsAjax.resend(event.detail.email, ajaxReturn);
+    }
+
+    function ajaxReturn(event) {
+        var jsonResponse = null;
+        jsonResponse = JSON.parse(event.target.responseText);
+        // TODO: error
+        messageBox.display(jsonResponse.message);
+        updateAll(jsonResponse.email);
+    }
+
+    function add(event) {
+        settingsAjax.add(event.detail.email, addAjaxReturn);
+    }
+
+    function addAjaxReturn(event) {
+        var jsonResponse = null;
+        jsonResponse = JSON.parse(this.responseText);
+        messageBox.display(jsonResponse.message, messageBox.SUCCESS);
+        // TODO: error
+        updateAll(jsonResponse.email);
+        adder.reset();
+    } // addReturn
+
+    function setUp() {
+        var prefElem = null, extraElem = null, unverifiedElem = null,
+            addElem = null, modelElem = null;
+        messageBox = new GSProfileEmailSettingsMessage(messageBoxSelector);
+
+        modelElem = document.querySelector(modelSelector);
+
+        prefElem = document.querySelector(preferredSelector);
+        prefElem.addEventListener('GSProfileEmailSettingsRemove', remove);
+        prefElem.addEventListener('GSProfileEmailSettingsDemote', demote);
+        preferred = new GSProfileEmailSettingsPreferred(prefElem, modelElem);
+
+        extraElem = document.querySelector(extraSelector);
+        extraElem.addEventListener('GSProfileEmailSettingsRemove', remove);
+        extraElem.addEventListener('GSProfileEmailSettingsPrefer', prefer);
+        extra = new GSProfileEmailSettingsExtra(extraElem, modelElem);
+
+        unverifiedElem = document.querySelector(unverifiedSelector);
+        unverifiedElem.addEventListener('GSProfileEmailSettingsRemove', remove);
+        unverifiedElem.addEventListener('GSProfileEmailSettingsResend', resend);
+        unverified = new GSProfileEmailSettingsUnverified(unverifiedElem,
+                                                          modelElem);
+
+        addElem = document.querySelector(addSelector);
+        adder = new GSProfileEmailSettingsAdd(addElem);
+        addElem.addEventListener('GSProfileEmailSettingsAdd', add);
+
+        settingsAjax = new GSProfileEmailSettingsAJAX();
+        settingsAjax.status(load);
+    }
+    setUp(); // Note the automatic execution
+}
+
+
 window.addEventListener('load', function(event) {
     var scriptElement = null, updater = null, adder = null, settingsAjax = null;
 
@@ -410,16 +556,10 @@ window.addEventListener('load', function(event) {
 
     scriptElement = document.getElementById('gs-profile-email-settings-script');
     updater = GSProfileEmailSettingsUpdate(
-        scriptElement.getAttribute('data-model'),
         scriptElement.getAttribute('data-preferred'),
         scriptElement.getAttribute('data-extra'),
         scriptElement.getAttribute('data-unverified'),
-        scriptElement.getAttribute('data-messagebox'),
-        settingsAjax);
-    gs_profile_email_settings_load(settingsAjax, updater);
-
-    adder = GSProfileEmailSettingsAdd(
         scriptElement.getAttribute('data-add'),
-        scriptElement.getAttribute('data-messagebox'),
-        updater);
+        scriptElement.getAttribute('data-model'),
+        scriptElement.getAttribute('data-messagebox'));
 });
