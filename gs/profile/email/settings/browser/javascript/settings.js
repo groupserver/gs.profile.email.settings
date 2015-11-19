@@ -550,10 +550,7 @@ function GSProfileEmailSettingsUpdate(
 
 
 window.addEventListener('load', function(event) {
-    var scriptElement = null, updater = null, adder = null, settingsAjax = null;
-
-    settingsAjax = new GSProfileEmailSettingsAJAX();
-
+    var scriptElement = null, updater = null;
     scriptElement = document.getElementById('gs-profile-email-settings-script');
     updater = GSProfileEmailSettingsUpdate(
         scriptElement.getAttribute('data-preferred'),
