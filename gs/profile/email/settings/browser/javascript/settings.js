@@ -176,6 +176,7 @@ function GSProfileEmailSettingsArea(elem, model) {
     this.elem = elem;
     this.list = elem.getElementsByTagName('ul')[0];  // There is only one
     this.model = model;
+    this.addrs = null;
 }
 /** Find a list-item starting at an element
  * @param {Element} element The HTML element where the search starts.
@@ -194,10 +195,19 @@ GSProfileEmailSettingsArea.prototype.findItem = function(element) {
 }; // findItem
 /** Clear the list */
 GSProfileEmailSettingsArea.prototype.clear = function() {
+    this.addrs = null;
     while (this.list.firstChild) {
         this.list.removeChild(this.list.firstChild);
     }
 }; // clear
+/* Updates all the addresses */
+GSProfileEmailSettingsArea.prototype.updateAddrs = function () {
+    var i = 0, newItem = null;
+    for (i in this.addrs) {
+        newItem = this.createItem(this.addrs[i]);
+        this.list.appendChild(newItem);
+    }
+}; // updateAddrs
 /** Find the email address associated with an event.
  * @param {Event} event The HTML event that triggered the search
  * @return {String} The email address in the list-item.
@@ -231,6 +241,21 @@ GSProfileEmailSettingsArea.prototype.isAddr = function(event) {
     }
     return retval;
 } // isAddr
+/** Should we handle the email address being dropped?
+ * @param {Event} event The HTML dragover event
+ *
+ * Calls event.preventDefault() if the address can be handled
+ */
+GSProfileEmailSettingsArea.prototype.dragOver = function(event) {
+    var email = null;
+    if (this.isAddr(event)) { // If we are dragging an email address
+        email = event.dataTransfer.getData('application/x-gs-address');
+        if (this.addrs.indexOf(email) == -1) { // And we do not have the address
+            event.preventDefault();  // Announce that we will handle the drop
+        }
+    }
+}// dragOver
+
 
 function GSProfileEmailSettingsPreferEvent(data) {
     var evt = document.createEvent('CustomEvent');
@@ -275,11 +300,6 @@ GSProfileEmailSettingsPreferred.prototype.demoteClicked = function(event) {
     demoteEvent = GSProfileEmailSettingsDemoteEvent({'email': email});
     event.target.dispatchEvent(demoteEvent);
 }; // demoteClicked
-GSProfileEmailSettingsPreferred.prototype.dragOver = function(event) {
-    if (this.isAddr(event)) {
-        event.preventDefault();  // Announce that we will handle the drop
-    }
-}// dragOver
 GSProfileEmailSettingsPreferred.prototype.drop = function(event) {
     var email = null, preferEvent = null;
     event.preventDefault();
@@ -329,9 +349,10 @@ GSProfileEmailSettingsPreferred.prototype.createItem =
 GSProfileEmailSettingsPreferred.prototype.update = function(data) {
     var newItem = null, multiple = false, i = 0;
     this.clear();
-    multiple = (data.preferred.length > 1);
-    for (i in data.preferred) {
-        newItem = this.createItem(data.preferred[i], multiple);
+    this.addrs = data.preferred;
+    multiple = (this.addrs.length > 1);
+    for (i in this.addrs) {
+        newItem = this.createItem(this.addrs[i], multiple);
         this.list.appendChild(newItem);
     }
 }; // update
@@ -369,14 +390,6 @@ GSProfileEmailSettingsExtra.prototype.preferClicked = function(event) {
     preferEvent = GSProfileEmailSettingsPreferEvent({'email': email});
     event.target.dispatchEvent(preferEvent);
 }; // demoteClicked
-/** Handle the an item being dragged over
- * @param {Event} event The HTML drag-event
- */
-GSProfileEmailSettingsExtra.prototype.dragOver = function(event) {
-    if (this.isAddr(event)) {
-        event.preventDefault();  // Announce that we will handle the drop
-    }
-}; // dragOver
 /** Handle an email being dropped
  * @param {Event} event The HTML drop event
  */
@@ -419,12 +432,9 @@ GSProfileEmailSettingsExtra.prototype.createItem = function(addr) {
  * @param {Object} data - The data containing the email addresses
  */
 GSProfileEmailSettingsExtra.prototype.update = function(data) {
-    var newItem = null, i = 0;
     this.clear();
-    for (i in data.other) {
-        newItem = this.createItem(data.other[i]);
-        this.list.appendChild(newItem);
-    }
+    this.addrs = data.other;
+    this.updateAddrs();
 }; // update
 
 
@@ -477,12 +487,9 @@ GSProfileEmailSettingsUnverified.prototype.createItem = function(addr) {
  * @param {Object} data - The data containing the email addresses
  */
 GSProfileEmailSettingsUnverified.prototype.update = function(data) {
-    var newItem = null, i = 0;
     this.clear();
-    for (i in data.unverified) {
-        newItem = this.createItem(data.unverified[i]);
-        this.list.appendChild(newItem);
-    }
+    this.addrs = data.unverified;
+    this.updateAddrs();
 }; // update
 
 
