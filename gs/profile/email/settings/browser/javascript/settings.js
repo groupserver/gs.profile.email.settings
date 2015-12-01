@@ -179,7 +179,7 @@ function GSProfileEmailSettingsArea(elem, model) {
     this.addrs = null;
 }
 /** Find a list-item starting at an element
- * @param {Element} element The HTML element where the search starts.
+ * @param {Element} element - The HTML element where the search starts.
  * @return {Element} The HTML element for the list-item.
  */
 GSProfileEmailSettingsArea.prototype.findItem = function(element) {
@@ -200,8 +200,8 @@ GSProfileEmailSettingsArea.prototype.clear = function() {
         this.list.removeChild(this.list.firstChild);
     }
 }; // clear
-/* Updates all the addresses */
-GSProfileEmailSettingsArea.prototype.updateAddrs = function () {
+/** Updates all the addresses */
+GSProfileEmailSettingsArea.prototype.updateAddrs = function() {
     var i = 0, newItem = null;
     for (i in this.addrs) {
         newItem = this.createItem(this.addrs[i]);
@@ -229,18 +229,18 @@ GSProfileEmailSettingsArea.prototype.removeClicked = function(event) {
     event.target.dispatchEvent(removeEvent);
 }; // removeClicked
 /** Does the drag-n-drop event contain a GroupServer address
- * @param {Event} event The HTML event
- * @return (Boolean} True if the event contains "application/x-gs-address" data
+ * @param {Event} event - The HTML event
+ * @return {Boolean} True if the event contains "application/x-gs-address" data
  */
 GSProfileEmailSettingsArea.prototype.isAddr = function(event) {
     var retval = false;
-    for( var i = 0; i < event.dataTransfer.types.length; ++i )
+    for (var i = 0; i < event.dataTransfer.types.length; ++i)
     {
-        if(event.dataTransfer.types[i] === "application/x-gs-address")
+        if (event.dataTransfer.types[i] === 'application/x-gs-address')
             retval = true;
     }
     return retval;
-} // isAddr
+}; // isAddr
 /** Should we handle the email address being dropped?
  * @param {Event} event The HTML dragover event
  *
@@ -254,7 +254,7 @@ GSProfileEmailSettingsArea.prototype.dragOver = function(event) {
             event.preventDefault();  // Announce that we will handle the drop
         }
     }
-}// dragOver
+}; // dragOver
 
 
 function GSProfileEmailSettingsPreferEvent(data) {
@@ -292,7 +292,7 @@ GSProfileEmailSettingsPreferred.prototype =
 GSProfileEmailSettingsPreferred.prototype.constructor =
     GSProfileEmailSettingsPreferred;
 /** Handle the Demote button being clicked
- * @param {Event} event The HTML click-event on the Demote button
+ * @param {Event} event - The HTML click-event on the Demote button
  */
 GSProfileEmailSettingsPreferred.prototype.demoteClicked = function(event) {
     var email = null, demoteEvent = null;
@@ -300,13 +300,19 @@ GSProfileEmailSettingsPreferred.prototype.demoteClicked = function(event) {
     demoteEvent = GSProfileEmailSettingsDemoteEvent({'email': email});
     event.target.dispatchEvent(demoteEvent);
 }; // demoteClicked
+/** Handle the drop event
+ * @param {Event} event - The HTML drop-event
+ */
 GSProfileEmailSettingsPreferred.prototype.drop = function(event) {
     var email = null, preferEvent = null;
     event.preventDefault();
     email = event.dataTransfer.getData('application/x-gs-address');
     preferEvent = GSProfileEmailSettingsPreferEvent({'email': email});
     event.target.dispatchEvent(preferEvent);
-}// drop
+}; // drop
+/** Handle the drag-start event
+ * @param {Event} event - The HTML drag-start event
+ */
 GSProfileEmailSettingsPreferred.prototype.dragStart = function(event) {
     var email = null, dragStartEvent = null;
     email = this.emailFromEvent(event);
