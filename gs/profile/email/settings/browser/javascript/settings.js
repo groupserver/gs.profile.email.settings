@@ -433,14 +433,28 @@ GSProfileEmailSettingsExtra.prototype.createItem = function(addr) {
     retval.querySelector('.remove').addEventListener(
         'click', this.removeClicked.bind(this));
     return retval;
-    }; // createItem
+}; // createItem
+GSProfileEmailSettingsExtra.prototype.dropPrepare = function() {
+    var cssClasses = '';
+    cssClasses = this.list.className;
+    if (cssClasses.indexOf('drop-prepare') == -1) {
+        this.list.className = cssClasses + ' drop-prepare';
+    }
+}; // dropPrepare
 /** Update the preferred email-address list
  * @param {Object} data - The data containing the email addresses
  */
 GSProfileEmailSettingsExtra.prototype.update = function(data) {
+    var cssClasses = '', i = 0;
     this.clear();
     this.addrs = data.other;
     this.updateAddrs();
+    cssClasses = this.list.className;
+    i = cssClasses.indexOf(' drop-prepare');
+    if (i != -1) {
+        this.list.className = cssClasses.slice(0, i) +
+            cssClasses.slice(i + ' drop-prepare'.length);
+    }
 }; // update
 
 
@@ -621,6 +635,10 @@ function GSProfileEmailSettingsUpdate(
         prefElem.addEventListener('GSProfileEmailSettingsRemove', remove);
         prefElem.addEventListener('GSProfileEmailSettingsPrefer', prefer);
         prefElem.addEventListener('GSProfileEmailSettingsDemote', demote);
+        prefElem.addEventListener('GSProfileEmailPreferDragStart',
+                                  function(event) {
+                                      extra.dropPrepare();
+                                  });
         preferred = new GSProfileEmailSettingsPreferred(prefElem, modelElem);
 
         extraElem = document.querySelector(extraSelector);
