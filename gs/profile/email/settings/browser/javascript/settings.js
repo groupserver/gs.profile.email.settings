@@ -226,6 +226,11 @@ function GSProfileEmailSettingsDemoteEvent(data) {
     return evt;
 } // GSProfileEmailSettingsDemoteEvent
 
+function GSProfileEmailPreferDragStart(data) {
+    var evt = document.createEvent('CustomEvent');
+    evt.initCustomEvent('GSProfileEmailPreferDragStart', true, true, data);
+    return evt;
+} // GSProfileEmailPreferDragStart
 
 /** Area for the preferred email-addresses.
  * @constructor
@@ -250,6 +255,14 @@ GSProfileEmailSettingsPreferred.prototype.demoteClicked = function(event) {
     demoteEvent = GSProfileEmailSettingsDemoteEvent({'email': email});
     event.target.dispatchEvent(demoteEvent);
 }; // demoteClicked
+GSProfileEmailSettingsPreferred.prototype.dragStart = function(event) {
+    var email = null, dragStartEvent = null;
+    email = this.emailFromEvent(event);
+    event.dataTransfer.setData('application/x-gs-address', email);
+    event.dataTransfer.effectAllowed = 'move';
+    dragStartEvent = GSProfileEmailPreferDragStart();
+    event.target.dispatchEvent(dragStartEvent);
+}; // demoteClicked
 /** Create an item for the Preferred address list
  * @param {String} addr The email address for the item
  * @param {Bool} multiple If there are multiple email addresses
@@ -257,10 +270,11 @@ GSProfileEmailSettingsPreferred.prototype.demoteClicked = function(event) {
  */
 GSProfileEmailSettingsPreferred.prototype.createItem =
     function(addr, multiple) {
-        var retval = null;
+        var retval = null, email = null;
         retval = this.model.querySelector('.preferred-address').cloneNode(true);
         retval.setAttribute('id', 'email' + addr.hashCode());
-        retval.querySelector('.email').textContent = addr;
+        email = retval.querySelector('.email');
+        email.textContent = addr;
         if (multiple) {
             // --=mpj17=-- Note the use of .bind(this) so the this in
             // this.demoteClicked is this this.
@@ -268,6 +282,9 @@ GSProfileEmailSettingsPreferred.prototype.createItem =
                 'click', this.demoteClicked.bind(this));
             retval.querySelector('.remove').addEventListener(
                 'click', this.removeClicked.bind(this));
+            // We can drag 'n' drop if we have more than one preferred address
+            email.setAttribute('draggable', 'true');
+            email.addEventListener('dragstart', this.dragStart.bind(this));
         } else { // One is the lonliest number
             toolbar = retval.querySelector('[role="toolbar"]');
             retval.removeChild(toolbar);
@@ -461,7 +478,7 @@ GSProfileEmailSettingsAdd.prototype.reset = function() {
 
 
 function GSProfileEmailSettingsUpdate(
-    preferredSelector, extraSelector, unverifiedSelector, addSelector, 
+    preferredSelector, extraSelector, unverifiedSelector, addSelector,
     modelSelector, messageBoxSelector) {
     var settingsAjax = null, preferred = null, extra = null, unverified = null,
         messageBox = null, adder = null;
@@ -530,6 +547,23 @@ function GSProfileEmailSettingsUpdate(
         extraElem = document.querySelector(extraSelector);
         extraElem.addEventListener('GSProfileEmailSettingsRemove', remove);
         extraElem.addEventListener('GSProfileEmailSettingsPrefer', prefer);
+        extraElem.addEventListener('dragover', function(event) {
+            var isAddr = false;
+            for( var i = 0; i < event.dataTransfer.types.length; ++i )
+            {
+                if(event.dataTransfer.types[i] === "application/x-gs-address")
+                    isAddr = true;
+            }
+            if (isAddr) {
+                event.preventDefault();
+            }
+            console.info('dragover');});
+        extraElem.addEventListener('drop', function(event) {
+            event.preventDefault();
+            settingsAjax.demote(
+                event.dataTransfer.getData('application/x-gs-address'),
+                ajaxReturn);
+            console.info('drop');});
         extra = new GSProfileEmailSettingsExtra(extraElem, modelElem);
 
         unverifiedElem = document.querySelector(unverifiedSelector);
