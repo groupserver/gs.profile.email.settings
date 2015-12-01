@@ -168,6 +168,11 @@ function GSProfileEmailDragStart(data) {
     evt.initCustomEvent('GSProfileEmailDragStart', true, true, data);
     return evt;
 } // GSProfileEmailDragStart
+function GSProfileEmailDragEnd(data) {
+    var evt = document.createEvent('CustomEvent');
+    evt.initCustomEvent('GSProfileEmailDragEnd', true, true, data);
+    return evt;
+} // GSProfileEmailDragEnd
 
 /** Abstract base-class for the settings areas
  * @constructor
@@ -271,6 +276,33 @@ GSProfileEmailSettingsArea.prototype.dragOver = function(event) {
         }
     }
 }; // dragOver
+/** Prepare for the drop */
+GSProfileEmailSettingsArea.prototype.dropPrepare = function() {
+    var cssClasses = '';
+    cssClasses = this.list.className;
+    if (cssClasses.indexOf('drop-prepare') == -1) {
+        this.list.className = cssClasses + ' drop-prepare';
+    }
+}; // dropPrepare
+/** Clear the dropprepare CSS class */
+GSProfileEmailSettingsArea.prototype.clearDropPrepare = function() {
+    var cssClasses = '', i = 0;
+    cssClasses = this.list.className;
+    i = cssClasses.indexOf(' drop-prepare');
+    if (i != -1) { // If ' drop-prepare' is in the class names
+        // Set the class-names to everything up to it, and everything after it
+        this.list.className = cssClasses.slice(0, i) +
+            cssClasses.slice(i + ' drop-prepare'.length);
+    }
+}; // clearDropPrepare
+/** Handle dragging of the email ending
+ * @param {Event} event - The HTML dragend event
+ */
+GSProfileEmailSettingsArea.prototype.dragEnd = function(event) {
+    var dragEndEvent = null;
+    dragEndEvent = GSProfileEmailDragEnd();
+    event.target.dispatchEvent(dragEndEvent);
+}; // dragEnd
 
 
 function GSProfileEmailSettingsPreferEvent(data) {
@@ -295,6 +327,7 @@ function GSProfileEmailSettingsPreferred(elem, model) {
     GSProfileEmailSettingsArea.call(this, elem, model);
     elem.addEventListener('dragover', this.dragOver.bind(this));
     elem.addEventListener('drop', this.drop.bind(this));
+    elem.addEventListener('dragend', this.dragEnd.bind(this));
 }
 GSProfileEmailSettingsPreferred.prototype =
     Object.create(GSProfileEmailSettingsArea.prototype);
@@ -373,6 +406,7 @@ function GSProfileEmailSettingsExtra(elem, model) {
     GSProfileEmailSettingsArea.call(this, elem, model);
     elem.addEventListener('dragover', this.dragOver.bind(this));
     elem.addEventListener('drop', this.drop.bind(this));
+    elem.addEventListener('dragend', this.dragEnd.bind(this));
 }
 GSProfileEmailSettingsExtra.prototype =
     Object.create(GSProfileEmailSettingsArea.prototype);
@@ -415,25 +449,6 @@ GSProfileEmailSettingsExtra.prototype.createItem = function(addr) {
         'click', this.removeClicked.bind(this));
     return retval;
 }; // createItem
-/** Prepare for the drop */
-GSProfileEmailSettingsExtra.prototype.dropPrepare = function() {
-    var cssClasses = '';
-    cssClasses = this.list.className;
-    if (cssClasses.indexOf('drop-prepare') == -1) {
-        this.list.className = cssClasses + ' drop-prepare';
-    }
-}; // dropPrepare
-/** Clear the dropprepare CSS class */
-GSProfileEmailSettingsExtra.prototype.clearDropPrepare = function() {
-    var cssClasses = '', i = 0;
-    cssClasses = this.list.className;
-    i = cssClasses.indexOf(' drop-prepare');
-    if (i != -1) { // If ' drop-prepare' is in the class names
-        // Set the class-names to everything up to it, and everything after it
-        this.list.className = cssClasses.slice(0, i) +
-            cssClasses.slice(i + ' drop-prepare'.length);
-    }
-}; // clearDropPrepare
 /** Update the preferred email-address list
  * @param {Object} data - The data containing the email addresses
  */
@@ -623,10 +638,6 @@ function GSProfileEmailSettingsUpdate(
         prefElem.addEventListener('GSProfileEmailSettingsRemove', remove);
         prefElem.addEventListener('GSProfileEmailSettingsPrefer', prefer);
         prefElem.addEventListener('GSProfileEmailSettingsDemote', demote);
-        prefElem.addEventListener('GSProfileEmailDragStart',
-                                  function(event) {
-                                      extra.dropPrepare();
-                                  });
         preferred = new GSProfileEmailSettingsPreferred(prefElem, modelElem);
 
         extraElem = document.querySelector(extraSelector);
@@ -634,6 +645,24 @@ function GSProfileEmailSettingsUpdate(
         extraElem.addEventListener('GSProfileEmailSettingsPrefer', prefer);
         extraElem.addEventListener('GSProfileEmailSettingsDemote', demote);
         extra = new GSProfileEmailSettingsExtra(extraElem, modelElem);
+
+        prefElem.addEventListener(
+            'GSProfileEmailDragStart', function(event) {
+                extra.dropPrepare();
+            });
+        prefElem.addEventListener(
+            'GSProfileEmailDragEnd', function(event) {
+                extra.clearDropPrepare();
+            });
+
+        extraElem.addEventListener(
+            'GSProfileEmailDragStart', function(event) {
+                preferred.dropPrepare();
+            });
+        extraElem.addEventListener(
+            'GSProfileEmailDragEnd', function(event) {
+                preferred.clearDropPrepare();
+            });
 
         unverifiedElem = document.querySelector(unverifiedSelector);
         unverifiedElem.addEventListener('GSProfileEmailSettingsRemove', remove);
