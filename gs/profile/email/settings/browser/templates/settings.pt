@@ -24,8 +24,32 @@
 
 #gs-profile-email-settings-model,
 .gs-profile-email-settings-address-list {
-  margin: 1.25em 0 1.25em 1.25em;
+  margin: 1.25em 0 1.25em 0;
   list-style: none;
+}
+.gs-profile-email-settings-address-list li {
+  margin: 0.625em 0 0.625em 0;
+}
+.gs-profile-email-settings-address-list .email {
+  display: inline-block;
+  width: 18.624em; /*15u - (thin * 2) */
+  line-height: 20px;
+  vertical-align: middle;
+  border: 0.063em solid rgba(0, 0, 0, 0);
+  padding: 2px 0.625em 2px 0.625em; /*2px is the same as the bootstrap buttons*/
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  transition-property: border-color, background, box-shadow;
+  transition-delay: 0.15s;
+  transition-duration: 0.95s;
+  transition-timing-function: ease;
+}
+.gs-profile-email-settings-address-list .email[draggable=true]:hover {
+  border-color: #cccccc;
+  background: #eeeeee;
+  box-shadow: 0.625em 0.625em 0.625em 0 #cdcdcd;
+  cursor: move;
 }
 #gs-profile-email-settings-model {
   display: none;
