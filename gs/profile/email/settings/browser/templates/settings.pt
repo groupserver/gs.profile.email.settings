@@ -36,7 +36,7 @@
 }
 .gs-profile-email-settings-address-list.drop-prepare {
   border-color: #cccccc;
-  box-shadow: inset 0 0 0.375em 0.375em #cdcdcd;
+  box-shadow: inset 0.375em 0.375em 0.375em 0 #cdcdcd;
 }
 .gs-profile-email-settings-address-list li {
   margin: 0.625em 0 0.625em 0;
