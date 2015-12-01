@@ -80,8 +80,8 @@
       </section><!--gs-profile-email-settings-unverified-->
 
       <ul id="gs-profile-email-settings-model" aria-hidden="true">
-        <li class="preferred-address" dragable="false">
-          <code class="email">person@example.com</code>
+        <li class="preferred-address">
+          <code class="email" draggable="false">person@example.com</code>
           <div role="toolbar">
             <button class="btn btn-small icon-alone demote"
                     title="Add the address to the list of extra addresses">
@@ -96,8 +96,8 @@
           </div><!--toolbar-->
         </li>
 
-        <li class="extra-address" draggable="true">
-          <code class="email">person@example.com</code>
+        <li class="extra-address">
+          <code class="email" draggable="true">person@example.com</code>
           <div role="toolbar">
             <button class="btn btn-small prefer"
                     title="Add the address to the list of preferred addresses"

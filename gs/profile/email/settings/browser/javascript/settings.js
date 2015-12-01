@@ -218,7 +218,25 @@ GSProfileEmailSettingsArea.prototype.removeClicked = function(event) {
     removeEvent = GSProfileEmailSettingsRemoveEvent({'email': email});
     event.target.dispatchEvent(removeEvent);
 }; // removeClicked
+/** Does the drag-n-drop event contain a GroupServer address
+ * @param {Event} event The HTML event
+ * @return (Boolean} True if the event contains "application/x-gs-address" data
+ */
+GSProfileEmailSettingsArea.prototype.isAddr = function(event) {
+    var retval = false;
+    for( var i = 0; i < event.dataTransfer.types.length; ++i )
+    {
+        if(event.dataTransfer.types[i] === "application/x-gs-address")
+            retval = true;
+    }
+    return retval;
+} // isAddr
 
+function GSProfileEmailSettingsPreferEvent(data) {
+    var evt = document.createEvent('CustomEvent');
+    evt.initCustomEvent('GSProfileEmailSettingsPrefer', true, true, data);
+    return evt;
+} // GSProfileEmailSettingsPreferEvent
 
 function GSProfileEmailSettingsDemoteEvent(data) {
     var evt = document.createEvent('CustomEvent');
@@ -240,6 +258,8 @@ function GSProfileEmailPreferDragStart(data) {
 */
 function GSProfileEmailSettingsPreferred(elem, model) {
     GSProfileEmailSettingsArea.call(this, elem, model);
+    elem.addEventListener('dragover', this.dragOver.bind(this));
+    elem.addEventListener('drop', this.drop.bind(this));
 }
 GSProfileEmailSettingsPreferred.prototype =
     Object.create(GSProfileEmailSettingsArea.prototype);
@@ -255,6 +275,18 @@ GSProfileEmailSettingsPreferred.prototype.demoteClicked = function(event) {
     demoteEvent = GSProfileEmailSettingsDemoteEvent({'email': email});
     event.target.dispatchEvent(demoteEvent);
 }; // demoteClicked
+GSProfileEmailSettingsPreferred.prototype.dragOver = function(event) {
+    if (this.isAddr(event)) {
+        event.preventDefault();  // Announce that we will handle the drop
+    }
+}// dragOver
+GSProfileEmailSettingsPreferred.prototype.drop = function(event) {
+    var email = null, preferEvent = null;
+    event.preventDefault();
+    email = event.dataTransfer.getData('application/x-gs-address');
+    preferEvent = GSProfileEmailSettingsPreferEvent({'email': email});
+    event.target.dispatchEvent(preferEvent);
+}// drop
 GSProfileEmailSettingsPreferred.prototype.dragStart = function(event) {
     var email = null, dragStartEvent = null;
     email = this.emailFromEvent(event);
@@ -305,11 +337,11 @@ GSProfileEmailSettingsPreferred.prototype.update = function(data) {
 }; // update
 
 
-function GSProfileEmailSettingsPreferEvent(data) {
+function GSProfileEmailExtraDragStart(data) {
     var evt = document.createEvent('CustomEvent');
-    evt.initCustomEvent('GSProfileEmailSettingsPrefer', true, true, data);
+    evt.initCustomEvent('GSProfileEmailExtraDragStart', true, true, data);
     return evt;
-} // GSProfileEmailSettingsPreferEvent
+} // GSProfileEmailPreferDragStart
 
 
 /** Area for the extra email-addresses.
@@ -320,6 +352,8 @@ function GSProfileEmailSettingsPreferEvent(data) {
 */
 function GSProfileEmailSettingsExtra(elem, model) {
     GSProfileEmailSettingsArea.call(this, elem, model);
+    elem.addEventListener('dragover', this.dragOver.bind(this));
+    elem.addEventListener('drop', this.drop.bind(this));
 }
 GSProfileEmailSettingsExtra.prototype =
     Object.create(GSProfileEmailSettingsArea.prototype);
@@ -335,15 +369,46 @@ GSProfileEmailSettingsExtra.prototype.preferClicked = function(event) {
     preferEvent = GSProfileEmailSettingsPreferEvent({'email': email});
     event.target.dispatchEvent(preferEvent);
 }; // demoteClicked
+/** Handle the an item being dragged over
+ * @param {Event} event The HTML drag-event
+ */
+GSProfileEmailSettingsExtra.prototype.dragOver = function(event) {
+    if (this.isAddr(event)) {
+        event.preventDefault();  // Announce that we will handle the drop
+    }
+}; // dragOver
+/** Handle an email being dropped
+ * @param {Event} event The HTML drop event
+ */
+GSProfileEmailSettingsExtra.prototype.drop = function(event) {
+    var email = null, preferEvent = null;
+    event.preventDefault();
+    email = event.dataTransfer.getData('application/x-gs-address');
+    preferEvent = GSProfileEmailSettingsDemoteEvent({'email': email});
+    event.target.dispatchEvent(preferEvent);
+}; // drop
+/** Handle an email being dropped
+ * @param {Event} event The HTML drop event
+ */
+GSProfileEmailSettingsExtra.prototype.dragStart = function(event) {
+    var email = null, dragStartEvent = null;
+    email = this.emailFromEvent(event);
+    event.dataTransfer.setData('application/x-gs-address', email);
+    event.dataTransfer.effectAllowed = 'move';
+    dragStartEvent = GSProfileEmailExtraDragStart();
+    event.target.dispatchEvent(dragStartEvent);
+}; // dragStart
 /** Create an item for the Extra address list
  * @param {String} addr The email address for the item
  * @return {Element} An HTML element for the new item
  */
 GSProfileEmailSettingsExtra.prototype.createItem = function(addr) {
-    var retval = null;
+    var retval = null, email = null;
     retval = this.model.querySelector('.extra-address').cloneNode(true);
     retval.setAttribute('id', 'email' + addr.hashCode());
-    retval.querySelector('.email').textContent = addr;
+    email = retval.querySelector('.email');
+    email.textContent = addr;
+    email.addEventListener('dragstart', this.dragStart.bind(this));
     retval.querySelector('.prefer').addEventListener(
         'click', this.preferClicked.bind(this));
     retval.querySelector('.remove').addEventListener(
@@ -541,29 +606,14 @@ function GSProfileEmailSettingsUpdate(
 
         prefElem = document.querySelector(preferredSelector);
         prefElem.addEventListener('GSProfileEmailSettingsRemove', remove);
+        prefElem.addEventListener('GSProfileEmailSettingsPrefer', prefer);
         prefElem.addEventListener('GSProfileEmailSettingsDemote', demote);
         preferred = new GSProfileEmailSettingsPreferred(prefElem, modelElem);
 
         extraElem = document.querySelector(extraSelector);
         extraElem.addEventListener('GSProfileEmailSettingsRemove', remove);
         extraElem.addEventListener('GSProfileEmailSettingsPrefer', prefer);
-        extraElem.addEventListener('dragover', function(event) {
-            var isAddr = false;
-            for( var i = 0; i < event.dataTransfer.types.length; ++i )
-            {
-                if(event.dataTransfer.types[i] === "application/x-gs-address")
-                    isAddr = true;
-            }
-            if (isAddr) {
-                event.preventDefault();
-            }
-            console.info('dragover');});
-        extraElem.addEventListener('drop', function(event) {
-            event.preventDefault();
-            settingsAjax.demote(
-                event.dataTransfer.getData('application/x-gs-address'),
-                ajaxReturn);
-            console.info('drop');});
+        extraElem.addEventListener('GSProfileEmailSettingsDemote', demote);
         extra = new GSProfileEmailSettingsExtra(extraElem, modelElem);
 
         unverifiedElem = document.querySelector(unverifiedSelector);
