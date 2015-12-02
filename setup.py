@@ -36,7 +36,6 @@ requires = [
     'zope.formlib',
     'zope.i18nmessageid',
     'zope.interface',
-    'zope.schema',
     'zope.tal',
     'zope.tales',
     'Zope2',
