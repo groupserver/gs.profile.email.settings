@@ -19,6 +19,7 @@ from zope.i18n import translate
 from gs.profile.email.verify.emailverificationuser import EmailVerificationUser
 from gs.profile.json import email_info
 from .addressform import AddressForm
+from .error import AddressExists
 from .interfaces import IAddAddress
 from .utils import markup_address
 from . import GSMessageFactory as _
@@ -29,15 +30,19 @@ class AddAddress(AddressForm):
 
     def __init__(self, profile, request):
         super(AddAddress, self).__init__(profile, request)
-        self.label = _('add-label', 'Add an email address')
+        self.label = 'Add an email address'
 
-    @form.action(label=_('add-button', 'Add'), name='add', prefix='',
-                 failure='handle_failure')
+    @form.action(label='Add', name='add', prefix='', failure='handle_failure')
     def handle_add(self, action, data):
         '''Add an email address
 
 :param action: The button that was clicked.
 :param dict data: The form data.'''
+        if data['email'] in self.emailUser:
+            m = '{0} ({1}) already has the email address <{2}>'
+            msg = m.format(self.userInfo.name, self.userInfo.id, data['email'])
+            raise AddressExists(msg)
+
         msg = self.add(data['email'])
 
         r = {
@@ -48,6 +53,13 @@ class AddAddress(AddressForm):
         return retval
 
     def add(self, address):
+        '''Add an address to the profile
+
+:param str address: The email address to add
+
+If the person currently lacks a preferred address the new address is maked
+as *preferred* **and** *unverified*; otherwise it is just marked as
+**unverified**. A verification email is sent to the address.'''
         if not address:
             raise ValueError('Address is required')
 

@@ -19,6 +19,7 @@ from zope.i18n import translate
 from gs.profile.email.verify.emailverificationuser import EmailVerificationUser
 from gs.profile.json import email_info
 from .addressform import AddressForm
+from .error import AddressMissing, AddressVerified
 from .interfaces import IResendVerification
 from .utils import markup_address
 from . import GSMessageFactory as _
@@ -29,15 +30,24 @@ class ResendVerification(AddressForm):
 
     def __init__(self, profile, request):
         super(ResendVerification, self).__init__(profile, request)
-        self.label = _('resend-label', 'Resend a email-verification message for an address')
+        self.label = 'Resend a email-verification message for an address'
 
-    @form.action(label=_('resend-button', 'Resend'), name='resend', prefix='',
-                 failure='handle_failure')
+    @form.action(label='Resend', name='resend', prefix='', failure='handle_failure')
     def handle_resend(self, action, data):
         '''Resend an email address verification message
 
 :param action: The button that was clicked.
 :param dict data: The form data.'''
+        e = data['email'].lower()
+        if (e not in self.emailUser):
+            m = '{0} ({1}) lacks the address <{2}>'
+            msg = m.format(self.userInfo.name, self.userInfo.id, data['email'])
+            raise AddressMissing(msg)
+        elif (e in self.emailUser.verified):
+            m = '{0} ({1}) has already verified the address <{2}>'
+            msg = m.format(self.userInfo.name, self.userInfo.id, data['email'])
+            raise AddressVerified(msg)
+
         msg = self.resend(data['email'])
 
         r = {

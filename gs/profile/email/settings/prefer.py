@@ -18,6 +18,7 @@ from zope.formlib import form
 from zope.i18n import translate
 from gs.profile.json import email_info
 from .addressform import AddressForm
+from .error import AddressMissing, AddressPreferred, AddressUnverified
 from .interfaces import IPreferAddress
 from .utils import markup_address
 from . import GSMessageFactory as _
@@ -28,15 +29,26 @@ class PreferAddress(AddressForm):
 
     def __init__(self, profile, request):
         super(PreferAddress, self).__init__(profile, request)
-        self.label = _('prefer-label', 'Prefer an email address')
+        self.label = 'Prefer an email address'
 
-    @form.action(label=_('prefer-button', 'Prefer'), name='prefer', prefix='',
-                 failure='handle_failure')
+    @form.action(label='Prefer', name='prefer', prefix='', failure='handle_failure')
     def handle_prefer(self, action, data):
         '''Prefer an email address
 
 :param action: The button that was clicked.
 :param dict data: The form data.'''
+        e = data['email'].lower()
+        if (e not in self.emailUser):
+            m = '{0} ({1}) lacks the address <{2}>'
+            msg = m.format(self.userInfo.name, self.userInfo.id, data['email'])
+            raise AddressMissing(msg)
+        elif (e in self.emailUser.preferred):
+            msg = 'The address <{0}> is already preferred'.format(data['email'])
+            raise AddressPreferred(msg)
+        elif (e in self.emailUser.unverified):
+            msg = 'The address <{0}> is unverified'.format(data['email'])
+            raise AddressUnverified(msg)
+
         msg = self.prefer(data['email'])
 
         r = {

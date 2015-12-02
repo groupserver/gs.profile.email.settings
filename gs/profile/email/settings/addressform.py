@@ -27,6 +27,7 @@ class AddressForm(EndpointMixin, ProfileForm):
 
     @Lazy
     def emailUser(self):
+        '''The gs.profile.email.base.EmailUser for the current user'''
         retval = EmailUser(self.context, self.userInfo)
         return retval
 

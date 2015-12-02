@@ -18,6 +18,7 @@ from zope.formlib import form
 from zope.i18n import translate
 from gs.profile.json import email_info
 from .addressform import AddressForm
+from .error import AddressMissing, AddressExtra, AddressUnverified
 from .interfaces import IDemoteAddress
 from .utils import markup_address
 from . import GSMessageFactory as _
@@ -28,15 +29,25 @@ class DemoteAddress(AddressForm):
 
     def __init__(self, profile, request):
         super(DemoteAddress, self).__init__(profile, request)
-        self.label = _('demote-label', 'Demote an email address')
+        self.label = 'Demote an email address'
 
-    @form.action(label=_('demote-button', 'Demote'), name='demote', prefix='',
-                 failure='handle_failure')
+    @form.action(label='Demote', name='demote', prefix='', failure='handle_failure')
     def handle_demote(self, action, data):
         '''Demote an email address
 
 :param action: The button that was clicked.
 :param dict data: The form data.'''
+        e = data['email'].lower()
+        if (e not in self.emailUser):
+            m = '{0} ({1}) lacks the address <{2}>'
+            msg = m.format(self.userInfo.name, self.userInfo.id, data['email'])
+            raise AddressMissing(msg)
+        elif (e in self.emailUser.unverified):
+            raise AddressUnverified(msg)
+        elif (e in self.emailUser.extra):
+            msg = 'The address <{0}> is not preferred'.format(data['email'])
+            raise AddressExtra(msg)
+
         msg = self.demote(data['email'])
 
         r = {

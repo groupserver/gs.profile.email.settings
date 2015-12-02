@@ -20,13 +20,25 @@ class EmailAddressSettingsError(ValueError):
     address.'''
 
 
-class RemoveAddressError(EmailAddressSettingsError):
-    '''An error with removing an email address.'''
+class AddressExists(EmailAddressSettingsError):
+    'An address already exists on the profile'
 
 
-class AddAddressError(EmailAddressSettingsError):
-    '''An error with adding an email address.'''
+class AddressPreferred(AddressExists):
+    'An address is already preferred'
 
 
-class DeliveryAddressError(EmailAddressSettingsError):
-    '''An email with setting the delivery address.'''
+class AddressExtra(AddressExists):
+    'An address is already extra'
+
+
+class AddressVerified(AddressExists):
+    'An address is already verified'
+
+
+class AddressUnverified(AddressExists):
+    'An address is already unverified'
+
+
+class AddressMissing(EmailAddressSettingsError):
+    'An address is missing'

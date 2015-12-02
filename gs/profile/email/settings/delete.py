@@ -18,6 +18,7 @@ from zope.formlib import form
 from zope.i18n import translate
 from gs.profile.json import email_info
 from .addressform import AddressForm
+from .error import AddressMissing, RemovingOnlyPreferred
 from .interfaces import IDeleteAddress
 from .utils import markup_address
 from . import GSMessageFactory as _
@@ -28,15 +29,23 @@ class DeleteAddress(AddressForm):
 
     def __init__(self, profile, request):
         super(DeleteAddress, self).__init__(profile, request)
-        self.label = _('delete-label', 'Delete an email address')
+        self.label = 'Delete an email address'
 
-    @form.action(label=_('delete-button', 'Delete'), name='delete', prefix='',
-                 failure='handle_failure')
+    @form.action(label='Delete', name='delete', prefix='', failure='handle_failure')
     def handle_delete(self, action, data):
         '''Delete an email address
 
 :param action: The button that was clicked.
 :param dict data: The form data.'''
+        e = data['email'].lower()
+        if (e not in self.emailUser):
+            m = '{0} ({1}) lacks the address <{2}>'
+            msg = m.format(self.userInfo.name, self.userInfo.id, data['email'])
+            raise AddressMissing(msg)
+        elif ((len(self.emailUser.preferred) == 1) and (e in self.emailUser.preferred)):
+            msg = 'Not deleting the only preferred address <{0}>'.format(data['email'])
+            raise RemovingOnlyPreferred(msg)
+
         msg = self.delete(data['email'])
 
         r = {
