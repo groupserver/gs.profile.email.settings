@@ -54,7 +54,7 @@ class DemoteAddress(AddressForm):
         addr = markup_address(address)
         msg = _(
             'demote-message',
-            'You have set the email address ${address} as <b>normal</b>. You can post from email '
+            'You have set the email address ${address} as an <b>extra</b> address. You can post '
             'to your groups from this address, but by default messages will be sent to your '
             '<i>preferred</i> addresses',
             mapping={'address': addr})

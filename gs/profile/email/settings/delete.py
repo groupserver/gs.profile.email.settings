@@ -54,7 +54,7 @@ class DeleteAddress(AddressForm):
         addr = markup_address(address)
         msg = _(
             'delete-message',
-            'You have <b>deleted</b> the email address ${address} from your profile.',
+            'You have <b>removed</b> the email address ${address} from your profile.',
             mapping={'address': addr})
         retval = translate(msg)
         return retval

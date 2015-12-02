@@ -57,7 +57,7 @@ class ResendVerification(AddressForm):
         addr = markup_address(address)
         msg = _(
             'resend-message',
-            'You have sent a <b>verification message</b> to the email address ${address}.',
+            'You have sent a new <b>verification message</b> to the email address ${address}.',
             mapping={'address': addr})
         retval = translate(msg)
         return retval
