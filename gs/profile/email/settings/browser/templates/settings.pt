@@ -24,10 +24,11 @@
 
 #gs-profile-email-settings-model,
 .gs-profile-email-settings-address-list {
-  margin: 1.25em 0 1.25em 0;
+  margin: 1.25em 0 1.25em 0.625em;
   list-style: none;
   border: 0.063em solid rgba(0, 0, 0, 0);
   box-shadow: none;
+  min-height: 1.25em;
 
   transition-property: border-color, box-shadow;
   transition-delay: 0;
@@ -65,6 +66,11 @@
 #gs-profile-email-settings-model {
   display: none;
 }
+
+p.intro {
+  margin-left: 1.25em;
+  max-width: 41.875em;
+}
     </style>
     <tal:block metal:fill-slot="metadata">
       <link rel="up" href="#" title="Profile"
@@ -93,23 +99,32 @@
       <div id="gs-profile-email-settings-messagebox">
       </div>
       <h1>Change email settings</h1>
-      <section class="intro muted">
-        <p>
-          Do stuff with email.
-        </p>
-      </section><!--intro-->
       <section id="gs-profile-email-settings-preferred">
         <h2>Preferred addresses</h2>
+        <p class="muted intro">
+          You can post to your groups from any of your
+          <i>preferred</i> addresses; messages from your
+          groups are sent to these addresses by default.
+        </p>
         <ul class="gs-profile-email-settings-address-list">
         </ul><!--gs-profile-email-settings-address-list-->
       </section><!--gs-profile-email-settings-preferred-->
       <section id="gs-profile-email-settings-extra">
         <h2>Extra addresses</h2>
+        <p class="muted intro">
+          You can post to your groups from any of your
+          <i>extra</i> addresses.
+        </p>
         <ul class="gs-profile-email-settings-address-list">
         </ul><!--gs-profile-email-settings-address-list-->
       </section><!--gs-profile-email-settings-extra-->
       <section id="gs-profile-email-settings-unverified">
         <h2>Unverified addresses</h2>
+        <p class="muted intro">
+          You must verify that you control an email address.
+          Click the <samp class="button">Verify</samp> button
+          to send a new verification message.
+        </p>
         <ul class="gs-profile-email-settings-address-list">
         </ul><!--gs-profile-email-settings-address-list-->
       </section><!--gs-profile-email-settings-unverified-->
@@ -160,19 +175,23 @@
         </li>
       </ul><!--gs-profile-email-settings-model-->
 
-      <div id="gs-profile-email-settings-add">
+      <section id="gs-profile-email-settings-add">
         <div class="form-widget">
           <h2 aria-labelfor="gs-profile-email-settings-add-address">
             Add an address
           </h2>
+          <p class="muted intro">
+            Enter your new email address below and click the
+            <samp class="button">Add</samp> button.
+          </p>
           <input id="gs-profile-email-settings-add-address" class="textType"
                  type="email" />
         </div><!--form-widget-->
         <button id="gs-profile-email-settings-add-button"
                 class="btn"><span class="muted">&#10010;</span> Add</button>
-      </div><!--gs-profile-email-settings-add-->
+      </section><!--gs-profile-email-settings-add-->
 
-      <section>
+      <section style="display:none;">
         <h1>Group settings</h1>
       </section>
     </div><!--gs-profile-email-settings-->

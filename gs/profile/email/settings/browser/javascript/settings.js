@@ -27,7 +27,8 @@ String.prototype.hashCode = function() {
     return hash;
 }; // String.prototype.hashCode
 
-/** The message area
+/** The message area, which tells the user what has happened
+ *
  * @constructor
  * @param {String} messageBoxSelector - The selector for the message box
  */
@@ -76,10 +77,18 @@ GSProfileEmailSettingsMessage.prototype.display =
         this.setMessage(message, e);
     }; // display
 
+// The proxy-class for communicating to the different AJAX end-points
 function GSProfileEmailSettingsAJAX() {
     var removeEndpoint = null, preferEndpoint = null, demoteEndpoint = null,
         resendEndpoint = null, addEndpoint = null;
 
+    /** An proxy for an AJAX request
+     * @constructor
+     * @param {String} uri - The URI for the AJAX endpoint
+     * @param {String} buttonName - The name of the form "button" that will be
+     *                              pressed (for zope.formlib)
+     * @param {String} buttonValue - The value of the form button
+     */
     function AjaxEndpoint(uri, buttonName, buttonValue) {
         function AjaxRequest(listener) {
             var r = null;
@@ -92,6 +101,10 @@ function GSProfileEmailSettingsAJAX() {
         } // AjaxRequest
 
         return {
+            /** Send an email address to an endpoint
+             * @param {String} address - The email-address to send
+             * @param {Function} listener - The call-back when the
+             */
             send: function(address, listener) {
                 var request = null, formData = null;
                 formData = new FormData();
@@ -104,6 +117,10 @@ function GSProfileEmailSettingsAJAX() {
         };
     } // AjaxEndpoint
 
+    /** Get the email-address status.
+     * It is less complex than most, because it is only a GET request
+     * @param {Function} listener - The listener
+     */
     function getStatus(listener) {
         var request = null;
         request = new XMLHttpRequest();
@@ -157,17 +174,30 @@ function GSProfileEmailSettingsAJAX() {
 // --=mpj17=-- The event uses the old API for creating events,
 // because IE (10 & 11) only support this API, rather than the
 // new event creation.
+/** The event for someone removing an email address
+ * @param {Object} data - The data to send with the event
+ * @return {CustomEvent} 'GSProfileEmailSettingsRemove'
+ */
 function GSProfileEmailSettingsRemoveEvent(data) {
     var evt = document.createEvent('CustomEvent');
     evt.initCustomEvent('GSProfileEmailSettingsRemove', true, true, data);
     return evt;
 } // GSProfileEmailSettingsRemoveEvent
 
+/** The event for someone starting to drag an email address
+ * @param {Object} data - The data to send with the event
+ * @return {CustomEvent} 'GSProfileEmailDragStart'
+ */
 function GSProfileEmailDragStart(data) {
     var evt = document.createEvent('CustomEvent');
     evt.initCustomEvent('GSProfileEmailDragStart', true, true, data);
     return evt;
 } // GSProfileEmailDragStart
+
+/** The event for someone ending a drag of an email address
+ * @param {Object} data - The data to send with the event
+ * @return {CustomEvent} 'GSProfileEmailDragEnd'
+ */
 function GSProfileEmailDragEnd(data) {
     var evt = document.createEvent('CustomEvent');
     evt.initCustomEvent('GSProfileEmailDragEnd', true, true, data);
@@ -203,7 +233,21 @@ GSProfileEmailSettingsArea.prototype.findItem = function(element) {
     }
     return retval;
 }; // findItem
-/** Clear the list */
+/** Show the settings-area */
+GSProfileEmailSettingsArea.prototype.show = function() {
+    if (this.elem.hasAttribute('style')) {
+        this.elem.removeAttribute('style');
+    }
+    if (this.elem.hasAttribute('aria-hidden')) {
+        this.elem.removeAttribute('aria-hidden');
+    }
+}; // show
+/** Hide the settings-area */
+GSProfileEmailSettingsArea.prototype.hide = function() {
+    this.elem.setAttribute('style', 'display:none;');
+    this.elem.setAttribute('aria-hidden', 'true');
+}; // hide
+/** Clear the items from the settings area */
 GSProfileEmailSettingsArea.prototype.clear = function() {
     this.addrs = null;
     while (this.list.firstChild) {
@@ -460,7 +504,10 @@ GSProfileEmailSettingsExtra.prototype.update = function(data) {
     this.clearDropPrepare();
 }; // update
 
-
+/** The event for someone asking for a resend-verification event
+ * @param {Object} data - The data to send with the event
+ * @return {CustomEvent} 'GSProfileEmailSettingsResend'
+ */
 function GSProfileEmailSettingsResendEvent(data) {
     var evt = document.createEvent('CustomEvent');
     evt.initCustomEvent('GSProfileEmailSettingsResend', true, true, data);
@@ -571,7 +618,8 @@ GSProfileEmailSettingsAdd.prototype.reset = function() {
     this.input.removeAttribute('disabled');
 }; // reset
 
-
+// The mediator. This is the business end of the system, which connects
+// the other parts of the system
 function GSProfileEmailSettingsUpdate(
     preferredSelector, extraSelector, unverifiedSelector, addSelector,
     modelSelector, messageBoxSelector) {
@@ -588,6 +636,26 @@ function GSProfileEmailSettingsUpdate(
         preferred.update(addrs);
         extra.update(addrs);
         unverified.update(addrs);
+
+        if (addrs.unverified.length > 0) {
+            unverified.show();
+        } else {
+            unverified.hide();
+        }
+
+        if (addrs.preferred.length > 0) {
+            preferred.show();
+        } else if ((addrs.preferred.length == 0) && (addrs.extra.length > 0)) {
+            preferred.show(); // For the drop target.
+        } else { // No preferred nor any extra addresses
+            preferred.hide();
+        }
+
+        if ((addrs.extra.length > 0) || (addrs.preferred.length > 1)) {
+            extra.show();
+        } else {
+            extra.hide();
+        }
     }
 
     function remove(event) {
