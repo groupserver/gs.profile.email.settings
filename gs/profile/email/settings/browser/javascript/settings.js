@@ -91,11 +91,14 @@ function GSProfileEmailSettingsAJAX() {
      * @param {String} buttonValue - The value of the form button
      */
     function AjaxEndpoint(uri, buttonName, buttonValue) {
-        function AjaxRequest(listener) {
+        function AjaxRequest(load, error) {
             var r = null;
             r = new XMLHttpRequest();
-            if (typeof(listener) !== 'undefined') {
-                r.addEventListener('load', listener);
+            if (typeof(load) !== 'undefined') {
+                r.addEventListener('load', load);
+            }
+            if (typeof(error) !== 'undefined') {
+                r.addEventListener('error', error);
             }
             r.open('POST', uri);
             return r;
@@ -104,15 +107,16 @@ function GSProfileEmailSettingsAJAX() {
         return {
             /** Send an email address to an endpoint
              * @param {String} address - The email-address to send
-             * @param {Function} listener - The call-back when the
+             * @param {Function} load - The call-back when the endpoint returs
+             * @param {Function} error - The call-back when there is an error
              */
-            send: function(address, listener) {
+            send: function(address, load, error) {
                 var request = null, formData = null;
                 formData = new FormData();
                 formData.append(buttonName, buttonValue);
                 formData.append('email', address);
 
-                request = new AjaxRequest(listener);
+                request = new AjaxRequest(load, error);
                 request.send(formData);
             }
         };
@@ -150,23 +154,23 @@ function GSProfileEmailSettingsAJAX() {
     setUp(); // Automatic execution
 
     return {
-        remove: function(address, listener) {
-            removeEndpoint.send(address, listener);
+        remove: function(address, load, error) {
+            removeEndpoint.send(address, load, error);
         },
-        prefer: function(address, listener) {
-            preferEndpoint.send(address, listener);
+        prefer: function(address, load, error) {
+            preferEndpoint.send(address, load, error);
         },
-        demote: function(address, listener) {
-            demoteEndpoint.send(address, listener);
+        demote: function(address, load, error) {
+            demoteEndpoint.send(address, load, error);
         },
-        resend: function(address, listener) {
-            resendEndpoint.send(address, listener);
+        resend: function(address, load, error) {
+            resendEndpoint.send(address, load, error);
         },
-        add: function(address, listener) {
-            addEndpoint.send(address, listener);
+        add: function(address, load, error) {
+            addEndpoint.send(address, load, error);
         },
-        status: function(listener) {
-            getStatus(listener);
+        status: function(load) {
+            getStatus(load);
         }
     };
 } // GSProfileEmailSettingsAJAX
@@ -712,13 +716,23 @@ function GSProfileEmailSettingsUpdate(
     }
 
     function ajaxReturn(event) {
-        var jsonResponse = null;
+        var jsonResponse = null, msg = '';
         window.clearTimeout(progressTimeout);
         progressTimeout = null;
-        jsonResponse = JSON.parse(event.target.responseText);
-        // TODO: error
-        messageBox.display(jsonResponse.message);
-        updateAll(jsonResponse.email);
+
+        if (this.status == 200) {
+            jsonResponse = JSON.parse(event.target.responseText);
+            if (jsonResponse.status == 0) {
+                messageBox.display(jsonResponse.message);
+                updateAll(jsonResponse.email);
+            } else {
+                messageBox.display(jsonResponse.message[0], messageBox.INFO);
+            }
+        } else { // Low-level error
+            msg = 'There was a problem: ' +
+                this.statusText + ' (' + this.status + ').';
+            messageBox.display(msg, messageBox.ERROR);
+        }
     }
 
     function add(event) {
@@ -727,20 +741,36 @@ function GSProfileEmailSettingsUpdate(
         msg = feedback_message('adding', email);
         progressTimeout = window.setTimeout(show_progress, 100, msg);
 
-        settingsAjax.add(email, addAjaxReturn);
+        settingsAjax.add(email, addAjaxReturn, addError);
     }
 
     function addAjaxReturn(event) {
-        var jsonResponse = null;
+        var jsonResponse = null, msg = '';
         window.clearTimeout(progressTimeout);
         progressTimeout = null;
 
-        jsonResponse = JSON.parse(this.responseText);
-        messageBox.display(jsonResponse.message, messageBox.SUCCESS);
-        // TODO: error: Especially with existing addr!!
-        updateAll(jsonResponse.email);
+        if (this.status == 200) {
+            jsonResponse = JSON.parse(this.responseText);
+            if (jsonResponse.status == 0) {
+                messageBox.display(jsonResponse.message, messageBox.SUCCESS);
+                updateAll(jsonResponse.email);
+            } else { // Error from high-level Python
+                messageBox.display(jsonResponse.message[0], messageBox.INFO);
+            }
+        } else { // Low-level error
+            msg = 'There was a problem: ' +
+                this.statusText + ' (' + this.status + ').';
+            messageBox.display(msg, messageBox.ERROR);
+        }
         adder.reset();
     } // addReturn
+
+    function addError(event) {
+        window.clearTimeout(progressTimeout);
+        progressTimeout = null;
+        console.log('Issues');
+        messageBox.display('Issues', messageBox.ERROR);
+    } // addError
 
     function setUp() {
         var prefElem = null, extraElem = null, unverifiedElem = null,
