@@ -75,6 +75,7 @@ GSProfileEmailSettingsMessage.prototype.display =
         e = typeof(errorLevel) !== 'undefined' ? ' ' + errorLevel : this.OK;
         this.clearMessage();
         this.setMessage(message, e);
+        window.scrollTo(0, 0);
     }; // display
 
 // The proxy-class for communicating to the different AJAX end-points
@@ -622,9 +623,31 @@ GSProfileEmailSettingsAdd.prototype.reset = function() {
 // the other parts of the system
 function GSProfileEmailSettingsUpdate(
     preferredSelector, extraSelector, unverifiedSelector, addSelector,
-    modelSelector, messageBoxSelector) {
+    modelSelector, messageBoxSelector, feedbackSelector) {
     var settingsAjax = null, preferred = null, extra = null, unverified = null,
-        messageBox = null, adder = null;
+        messageBox = null, feedback = null, adder = null,
+        progressTimeout = null;
+
+    // Deal with progress feedback here.
+    function feedback_message(type, address) {
+        var feedbackElem = null, newElem = null, emailElem = null;
+        // There is only one
+        feedbackElem = feedback.getElementsByClassName(type)[0];
+        newElem = feedbackElem.cloneNode(true);
+        emailElem = feedbackElem.getElementsByClassName('email')[0];
+        emailElem.textContent = address;
+        return newElem.innerHTML;
+    } // feedback_message
+    // Set a timeout of 100ms: if no response then update the messageBox
+    // with the progress
+    function show_progress(progressMessage) {
+        var msg = '';
+        msg = '<span id="gs-profile-email-settings-progress-feedback">' +
+            '<span data-icon="&#xe619;" aria-hidden="true" ' +
+            'class="loading"> </span> ' + progressMessage +
+            '</span><!--gs-profile-email-settings-progress-feedback-->';
+        messageBox.display(msg);
+    } // show_progress
 
     function load(event) {
         var jsonResponse = null;
@@ -645,13 +668,13 @@ function GSProfileEmailSettingsUpdate(
 
         if (addrs.preferred.length > 0) {
             preferred.show();
-        } else if ((addrs.preferred.length == 0) && (addrs.extra.length > 0)) {
+        } else if ((addrs.preferred.length == 0) && (addrs.other.length > 0)) {
             preferred.show(); // For the drop target.
         } else { // No preferred nor any extra addresses
             preferred.hide();
         }
 
-        if ((addrs.extra.length > 0) || (addrs.preferred.length > 1)) {
+        if ((addrs.other.length > 0) || (addrs.preferred.length > 1)) {
             extra.show();
         } else {
             extra.hide();
@@ -659,23 +682,44 @@ function GSProfileEmailSettingsUpdate(
     }
 
     function remove(event) {
+        var email = '', msg = '';
+        email = event.detail.email;
+        msg = feedback_message('removing', email);
+        progressTimeout = window.setTimeout(show_progress, 100, msg);
+
         settingsAjax.remove(event.detail.email, ajaxReturn);
     }
 
     function prefer(event) {
+        var email = '', msg = '';
+        email = event.detail.email;
+        msg = feedback_message('preferring', email);
+        progressTimeout = window.setTimeout(show_progress, 100, msg);
+
         settingsAjax.prefer(event.detail.email, ajaxReturn);
     }
 
     function demote(event) {
+        var email = '', msg = '';
+        email = event.detail.email;
+        msg = feedback_message('extra', email);
+        progressTimeout = window.setTimeout(show_progress, 100, msg);
+
         settingsAjax.demote(event.detail.email, ajaxReturn);
     }
 
     function resend(event) {
-        settingsAjax.resend(event.detail.email, ajaxReturn);
+        var email = '', msg = '';
+        email = event.detail.email;
+        msg = feedback_message('resend', email);
+        progressTimeout = window.setTimeout(show_progress, 100, msg);
+
+        settingsAjax.resend(email, ajaxReturn);
     }
 
     function ajaxReturn(event) {
         var jsonResponse = null;
+        window.clearTimeout(progressTimeout);
         jsonResponse = JSON.parse(event.target.responseText);
         // TODO: error
         messageBox.display(jsonResponse.message);
@@ -683,14 +727,20 @@ function GSProfileEmailSettingsUpdate(
     }
 
     function add(event) {
-        settingsAjax.add(event.detail.email, addAjaxReturn);
+        var email = '', msg = '';
+        email = event.detail.email;
+        msg = feedback_message('adding', email);
+        progressTimeout = window.setTimeout(show_progress, 100, msg);
+
+        settingsAjax.add(email, addAjaxReturn);
     }
 
     function addAjaxReturn(event) {
         var jsonResponse = null;
+        window.clearTimeout(progressTimeout);
         jsonResponse = JSON.parse(this.responseText);
         messageBox.display(jsonResponse.message, messageBox.SUCCESS);
-        // TODO: error
+        // TODO: error: Especially with existing addr!!
         updateAll(jsonResponse.email);
         adder.reset();
     } // addReturn
@@ -699,8 +749,8 @@ function GSProfileEmailSettingsUpdate(
         var prefElem = null, extraElem = null, unverifiedElem = null,
             addElem = null, modelElem = null;
         messageBox = new GSProfileEmailSettingsMessage(messageBoxSelector);
-
         modelElem = document.querySelector(modelSelector);
+        feedback = document.querySelector(feedbackSelector);
 
         prefElem = document.querySelector(preferredSelector);
         prefElem.addEventListener('GSProfileEmailSettingsRemove', remove);
@@ -758,5 +808,6 @@ window.addEventListener('load', function(event) {
         scriptElement.getAttribute('data-unverified'),
         scriptElement.getAttribute('data-add'),
         scriptElement.getAttribute('data-model'),
-        scriptElement.getAttribute('data-messagebox'));
+        scriptElement.getAttribute('data-messagebox'),
+        scriptElement.getAttribute('data-feedback'));
 });

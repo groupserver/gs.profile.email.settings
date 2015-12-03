@@ -63,7 +63,7 @@
   box-shadow: 0.625em 0.625em 0.625em 0 #cdcdcd;
   cursor: move;
 }
-#gs-profile-email-settings-model {
+#gs-profile-email-settings-model, #gs-profile-email-settings-feedback {
   display: none;
 }
 
@@ -191,6 +191,27 @@ p.intro {
                 class="btn"><span class="muted">&#10010;</span> Add</button>
       </section><!--gs-profile-email-settings-add-->
 
+      <div id="gs-profile-email-settings-feedback">
+        <span class="removing">
+          Removing  <code class="email">email@example.com</code>&#8230;
+        </span>
+        <span class="preferring">
+          Making <code class="email">email@example.com</code> a
+          preferred address&#8230;
+        </span>
+        <span class="extra">
+          Setting <code class="email">email@example.com</code> as an
+          extra address&#8230;
+        </span>
+        <span class="resend">
+          Sending a new verification message to
+          <code class="email">email@example.com</code>&#8230;
+        </span>
+        <span class="adding">
+          Adding <code class="email">email@example.com</code>&#8230;
+        </span>
+      </div>
+
       <section style="display:none;">
         <h1>Group settings</h1>
       </section>
@@ -203,6 +224,7 @@ p.intro {
             data-unverified="#gs-profile-email-settings-unverified"
             data-add="#gs-profile-email-settings-add"
             data-messagebox="#gs-profile-email-settings-messagebox"
+            data-feedback="#gs-profile-email-settings-feedback"
             type="text/javascript"
             defer="defer"
             src="/++resource++gs-profile-email-settings.js"> </script>
