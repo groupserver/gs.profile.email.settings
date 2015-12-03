@@ -42,3 +42,7 @@ class AddressUnverified(AddressExists):
 
 class AddressMissing(EmailAddressSettingsError):
     'An address is missing'
+
+
+class RemovingOnlyPreferred(EmailAddressSettingsError):
+    'The only preferred address is being removed'
