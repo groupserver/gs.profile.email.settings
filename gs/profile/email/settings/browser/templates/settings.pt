@@ -193,21 +193,31 @@ p.intro {
 
       <div id="gs-profile-email-settings-feedback">
         <span class="removing">
+          <span data-icon="&#xe619;" aria-hidden="true"
+                class="loading"> </span>
           Removing  <code class="email">email@example.com</code>&#8230;
         </span>
         <span class="preferring">
+          <span data-icon="&#xe619;" aria-hidden="true"
+                class="loading"> </span>
           Making <code class="email">email@example.com</code> a
           preferred address&#8230;
         </span>
         <span class="extra">
+          <span data-icon="&#xe619;" aria-hidden="true"
+                class="loading"> </span>
           Setting <code class="email">email@example.com</code> as an
           extra address&#8230;
         </span>
         <span class="resend">
+          <span data-icon="&#xe619;" aria-hidden="true"
+                class="loading"> </span>
           Sending a new verification message to
           <code class="email">email@example.com</code>&#8230;
         </span>
         <span class="adding">
+          <span data-icon="&#xe619;" aria-hidden="true"
+                class="loading"> </span>
           Adding <code class="email">email@example.com</code>&#8230;
         </span>
       </div>

@@ -628,7 +628,7 @@ function GSProfileEmailSettingsUpdate(
         messageBox = null, feedback = null, adder = null,
         progressTimeout = null;
 
-    // Deal with progress feedback here.
+    // Create a feedback message, based on the templates in the page
     function feedback_message(type, address) {
         var feedbackElem = null, newElem = null, emailElem = null;
         // There is only one
@@ -638,15 +638,9 @@ function GSProfileEmailSettingsUpdate(
         emailElem.textContent = address;
         return newElem.innerHTML;
     } // feedback_message
-    // Set a timeout of 100ms: if no response then update the messageBox
-    // with the progress
+    // Show the progress. I may do something more here later.
     function show_progress(progressMessage) {
-        var msg = '';
-        msg = '<span id="gs-profile-email-settings-progress-feedback">' +
-            '<span data-icon="&#xe619;" aria-hidden="true" ' +
-            'class="loading"> </span> ' + progressMessage +
-            '</span><!--gs-profile-email-settings-progress-feedback-->';
-        messageBox.display(msg);
+        messageBox.display(progressMessage);
     } // show_progress
 
     function load(event) {
@@ -720,6 +714,7 @@ function GSProfileEmailSettingsUpdate(
     function ajaxReturn(event) {
         var jsonResponse = null;
         window.clearTimeout(progressTimeout);
+        progressTimeout = null;
         jsonResponse = JSON.parse(event.target.responseText);
         // TODO: error
         messageBox.display(jsonResponse.message);
@@ -738,6 +733,8 @@ function GSProfileEmailSettingsUpdate(
     function addAjaxReturn(event) {
         var jsonResponse = null;
         window.clearTimeout(progressTimeout);
+        progressTimeout = null;
+
         jsonResponse = JSON.parse(this.responseText);
         messageBox.display(jsonResponse.message, messageBox.SUCCESS);
         // TODO: error: Especially with existing addr!!
