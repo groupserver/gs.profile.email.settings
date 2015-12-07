@@ -14,6 +14,7 @@
 ##############################################################################
 from __future__ import unicode_literals
 from zope.interface import Interface
+from zope.schema import ASCIILine
 from gs.profile.email.base.emailaddress import NewEmailAddress, EmailAddress
 
 
@@ -50,3 +51,11 @@ class IResendVerification(Interface):
         title='Email address',
         description='The email address to send the verification message to',
         required=True)
+
+
+class IGroupSettingsContentProvider(Interface):
+    'The interface that the group email-settings content provider uses'
+    pageTemplateFileName = ASCIILine(
+        title='Page template file name',
+        description='The page template for the group-settings',
+        default=b'browser/templates/groupsettings.pt')

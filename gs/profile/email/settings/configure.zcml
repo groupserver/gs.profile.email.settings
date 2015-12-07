@@ -81,6 +81,21 @@
     file="browser/javascript/settings-min.js"
     permission="zope2.Public"/>
 
+  <!--The group email-settings content provider-->
+  <interface
+    interface=".interfaces.IGroupSettingsContentProvider"
+    type="zope.contentprovider.interfaces.ITALNamespaceData"/>
+  <class class=".groupsettings.GroupSettingsContentProvider">
+    <implements interface=".interfaces.IGroupSettingsContentProvider"/>
+  </class>
+  <adapter
+    name="gs-profile-email-settings-groups"
+    for="Products.CustomUserFolder.interfaces.ICustomUser
+         zope.publisher.interfaces.browser.IDefaultBrowserLayer
+         zope.interface.Interface"
+    factory=".groupsettings.GroupSettingsContentProvider"
+    provides="zope.contentprovider.interfaces.IContentProvider" />
+
   <!--help-->
   <browser:viewlet
     name="gs-profile-email-settings-help"

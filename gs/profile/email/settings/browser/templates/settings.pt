@@ -221,10 +221,9 @@ p.intro {
           Adding <code class="email">email@example.com</code>&#8230;
         </span>
       </div>
-
-      <section style="display:none;">
-        <h1>Group settings</h1>
-      </section>
+      <div tal:content="structure provider:gs-profile-email-settings-groups">
+        The group-specific email settings
+      </div>
     </div><!--gs-profile-email-settings-->
     <script metal:fill-slot="javascript"
             id="gs-profile-email-settings-script"
