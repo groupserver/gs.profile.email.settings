@@ -30,12 +30,11 @@
             tal:content="structure groupSetting/addresses">
           person@example.com
         </td>
-        <td class="group-setting-setting">
+        <td class="gs-profile-email-settings-group-setting-setting">
           <span tal:condition="groupSetting/oneEmailPerPost"
-                class="group-setting-setting-email">One email per post</span>
+                class="group-setting-setting-email">Email per post</span>
           <span tal:condition="groupSetting/digest"
-                class="group-setting-setting-digest">Daily digest of
-          topics</span>
+                class="group-setting-setting-digest">Daily digest</span>
           <span tal:condition="groupSetting/webOnly"
                 class="group-setting-setting-webOnly">Web only</span>
         </td>
@@ -43,7 +42,7 @@
           <a class="btn"
              tal:attributes="title string:Change your email settings for the group ${groupSetting/groupInfo/name};
                              href string:${groupSetting/groupInfo/relative_url}/email_settings.html"
-             href="#">Change</a>
+             href="#" data-icon="&#x2699;">Change</a>
         </td>
       </tr>
     </tbody>

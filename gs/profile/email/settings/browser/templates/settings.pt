@@ -70,7 +70,11 @@
 p.intro {
   margin-left: 1.25em;
   max-width: 41.875em;
-}
+  }
+
+  .gs-profile-email-settings-group-setting-setting {
+  min-width: 5.625em; /* 4.5u */
+  }
     </style>
     <tal:block metal:fill-slot="metadata">
       <link rel="up" href="#" title="Profile"
