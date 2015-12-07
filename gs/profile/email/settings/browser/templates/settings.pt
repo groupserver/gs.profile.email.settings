@@ -157,9 +157,9 @@
           Adding <code class="email">email@example.com</code>&#8230;
         </span>
       </div>
-      <div tal:content="structure provider:gs-profile-email-settings-groups">
+      <tal:block content="structure provider:gs-profile-email-settings-groups">
         The group-specific email settings
-      </div>
+      </tal:block>
     </div><!--gs-profile-email-settings-->
     <script metal:fill-slot="javascript"
             id="gs-profile-email-settings-script"
