@@ -740,7 +740,8 @@ function GSProfileEmailSettingsUpdate(
         email = event.detail.email;
         msg = feedback_message('adding', email);
         progressTimeout = window.setTimeout(show_progress, 100, msg);
-
+        // TODO: Start a timed check for the unverified-address becoming
+        // verified
         settingsAjax.add(email, addAjaxReturn, addError);
     }
 
