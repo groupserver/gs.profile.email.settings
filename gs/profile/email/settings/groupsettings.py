@@ -14,7 +14,6 @@
 ##############################################################################
 from __future__ import absolute_import, unicode_literals
 from collections import Mapping
-from enum import Enum
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope.component import createObject, getMultiAdapter

@@ -6,7 +6,7 @@
   xmlns:i18n="http://xml.zope.org/namespaces/i18n"
   i18n:domain="gs.profile.email.settings"
   tal:condition="python:len(view.groupEmailSettings) &gt; 0">
-  <h1>Group settings</h1>
+  <h1 i18n:translate="group-settings">Group settings</h1>
   <table class="table">
     <caption class="muted">
       Change the addresses that are used by each group, and how
@@ -14,10 +14,12 @@
     </caption>
     <thead>
       <tr>
-        <th class="gs-profile-email-settings-group-group">Group</th>
-        <th class="gs-profile-email-settings-group-address">Address used</th>
+        <th class="gs-profile-email-settings-group-group"
+            i18n:translate="group">Group</th>
+        <th class="gs-profile-email-settings-group-address"
+            i18n:translate="address-used">Address used</th>
         <th class="gs-profile-email-settings-group-setting"
-            colspan="2">Setting</th>
+            colspan="2" i18n:translate="setting">Setting</th>
       </tr>
     </thead>
     <tbody>
@@ -26,7 +28,7 @@
         <td class="gs-profile-email-settings-group-group">
           <a class="group" href="#"
              tal:attributes="href groupSetting/groupInfo/relative_url"
-            tal:content="groupSetting/groupInfo/name">Group name</a>
+             tal:content="groupSetting/groupInfo/name">Group name</a>
         </td>
         <td class="gs-profile-email-settings-group-address"
             tal:content="structure groupSetting/addresses">
@@ -34,17 +36,21 @@
         </td>
         <td class="gs-profile-email-settings-group-setting-setting">
           <span tal:condition="groupSetting/oneEmailPerPost"
-                class="group-setting-setting-email">Email per post</span>
+                class="group-setting-setting-email"
+                i18n:translate="setting-email-per-post">Email per post</span>
           <span tal:condition="groupSetting/digest"
-                class="group-setting-setting-digest">Daily digest</span>
+                class="group-setting-setting-digest"
+                i18n:translate="setting-digest">Daily digest</span>
           <span tal:condition="groupSetting/webOnly"
-                class="group-setting-setting-webOnly">Web only</span>
+                class="group-setting-setting-webOnly"
+                i18n:translate="setting-web-only">Web only</span>
         </td>
         <td class="gs-profile-email-settings-group-setting-change">
           <a class="btn"
              tal:attributes="title string:Change your email settings for the group ${groupSetting/groupInfo/name};
                              href string:${groupSetting/groupInfo/relative_url}/email_settings.html"
-             href="#" data-icon="&#x2699;">Change</a>
+             href="#" data-icon="&#x2699;"
+             i18n:translate="button-change">Change</a>
         </td>
       </tr>
     </tbody>

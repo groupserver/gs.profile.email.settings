@@ -1,0 +1,181 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2015-12-08 00:31+0000\n"
+"PO-Revision-Date: 2015-12-07 16:33-0800\n"
+"Last-Translator: Michael JasonSmith <mpj17@onlinegroups.net>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"Language-Code: en\n"
+"Language-Name: English\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: DOMAIN\n"
+
+#. Default: "Add an address"
+#: ./browser/templates/settings.pt:124
+msgid "add-h"
+msgstr ""
+
+#. Default: "Enter your new email address below and click the <samp class=\"button\">Add</samp> button."
+#: ./browser/templates/settings.pt:126
+msgid "add-intro"
+msgstr ""
+
+#. Default: "You have <b>added</b> the email address ${address} to your profile. An email message has been sent to verify that you control the address. You must follow the instructions in the message before you can post to your groups from ${address}."
+#: ./add.py:70
+msgid "add-message"
+msgstr "Default: \"You have <b>added</b> the email address ${address} to your profile. An email message has been sent to verify that you control the address. You must follow the instructions in the message before you can post to your groups from ${address}."
+
+#. Default: "Address used"
+#: ./browser/templates/groupsettings.pt:19
+msgid "address-used"
+msgstr "Addresses used"
+
+#. Default: "${icon} Add"
+#: ./browser/templates/settings.pt:134
+msgid "button-add"
+msgstr "Add"
+
+#. Default: "Change"
+#: ./browser/templates/groupsettings.pt:49
+msgid "button-change"
+msgstr "Change"
+
+#. Default: "Add to extra addresses"
+#: ./browser/templates/settings.pt:77
+msgid "button-extra"
+msgstr "Add to extra addresses"
+
+#. Default: "Prefer"
+#: ./browser/templates/settings.pt:92
+msgid "button-prefer"
+msgstr "Prefer"
+
+#. Default: "Remove"
+#: ./browser/templates/settings.pt:83
+msgid "button-remove"
+msgstr "Remove"
+
+#. Default: "Verify"
+#: ./browser/templates/settings.pt:108
+msgid "button-verify"
+msgstr "Verify"
+
+#. Default: "Change email settings"
+#: ./browser/templates/settings.pt:33
+msgid "change"
+msgstr "Change email settings"
+
+#. Default: "You have <b>removed</b> the email address ${address} from your profile."
+#: ./delete.py:64
+msgid "delete-message"
+msgstr "You have <b>removed</b> the email address ${address} from your profile."
+
+#. Default: "You have set the email address ${address} as an <b>extra</b> address. You can post to your groups from this address, but by default messages will be sent to your <i>preferred</i> addresses"
+#: ./normal.py:66
+msgid "demote-message"
+msgstr "You have set the email address ${address} as an <b>extra</b> address. You can post to your groups from this address, but by default messages will be sent to your <i>preferred</i> addresses."
+
+#. Default: "Extra addresses"
+#: ./browser/templates/settings.pt:51
+msgid "extra-h"
+msgstr "Extra addresses"
+
+#. Default: "You can post to your groups from any of your <i>extra</i> addresses."
+#: ./browser/templates/settings.pt:52
+msgid "extra-intro"
+msgstr "You can post to your groups from any of your <i>extra</i> addresses."
+
+#. Default: "Group"
+#: ./browser/templates/groupsettings.pt:17
+msgid "group"
+msgstr "Group"
+
+#. Default: "Group settings"
+#: ./browser/templates/groupsettings.pt:9
+msgid "group-settings"
+msgstr "Group settings"
+
+#. Default: "Change email settings: ${groupName}: ${siteName}"
+#: ./browser/templates/settings.pt:11
+msgid "page-title"
+msgstr "Change email settings: ${groupName}: ${siteName}"
+
+#. Default: "You have set the email address ${address} as <b>preferred</b>. You will recieve email from your groups at this address by default."
+#: ./prefer.py:67
+msgid "prefer-message"
+msgstr "You have set the email address ${address} as <b>preferred.</b> You will recieve email from your groups at this address by default."
+
+#. Default: "Preferred addresses"
+#: ./browser/templates/settings.pt:41
+msgid "preferred-h"
+msgstr "Preferred addresses"
+
+#. Default: "You can post to your groups from any of your <i>preferred</i> addresses; messages from your groups are sent to these addresses by default."
+#: ./browser/templates/settings.pt:42
+msgid "preferred-intro"
+msgstr "You can post to your groups from any of your <i>preferred</i> addresses; messages from your groups are sent to these addresses by default."
+
+#. Default: "${icon} Adding ${email}…"
+#: ./browser/templates/settings.pt:167
+msgid "progress-adding"
+msgstr "${icon} Adding ${email}…"
+
+#. Default: "${icon} Making ${email} a preferred address…"
+#: ./browser/templates/settings.pt:148
+msgid "progress-preferring"
+msgstr "${icon} Making ${email} a preferred address…"
+
+#. Default: "${icon} Removing ${email}…"
+#: ./browser/templates/settings.pt:142
+msgid "progress-removing"
+msgstr "${icon} Removing ${email}…"
+
+#. Default: "${icon} Sending a new verification message to ${email}…"
+#: ./browser/templates/settings.pt:162
+msgid "progress-resending"
+msgstr "${icon} Sending a new verification message to ${email}…"
+
+#. Default: "${icon} Setting ${email} as an extra address…"
+#: ./browser/templates/settings.pt:155
+msgid "progress-setting-extra"
+msgstr "${icon} Setting ${email} as an extra address…"
+
+#. Default: "You have sent a new <b>verification message</b> to the email address ${address}."
+#: ./resend.py:68
+msgid "resend-message"
+msgstr "You have sent a new <b>verification message</b> to the email address ${address}."
+
+#. Default: "Setting"
+#: ./browser/templates/groupsettings.pt:21
+msgid "setting"
+msgstr "Setting"
+
+#. Default: "Daily digest"
+#: ./browser/templates/groupsettings.pt:41
+msgid "setting-digest"
+msgstr "Daily digest"
+
+#. Default: "Email per post"
+#: ./browser/templates/groupsettings.pt:38
+msgid "setting-email-per-post"
+msgstr "Email per post"
+
+#. Default: "Web only"
+#: ./browser/templates/groupsettings.pt:44
+msgid "setting-web-only"
+msgstr "Web only"
+
+#. Default: "Unverified addresses"
+#: ./browser/templates/settings.pt:60
+msgid "unverified-h"
+msgstr "Unverified addresses"
+
+#. Default: "You must verify that you control an email address. Click the <samp class=\"button\">Verify</samp> button to send a new verification message."
+#: ./browser/templates/settings.pt:61
+msgid "unverified-intro"
+msgstr "You must verify that you control an email address. Click the <samp class=\"button\">Verify</samp> button to send a new verification message."
+

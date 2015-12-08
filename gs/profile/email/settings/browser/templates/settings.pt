@@ -5,8 +5,10 @@
       i18n:domain="gs.profile.email.settings"
       metal:use-macro="context/@@groupserver_layout/page">
   <head>
-    <title metal:fill-slot="title">
-      <span tal:replace="string:Change email settings: ${view/userInfo/name}: ${view/siteInfo/name}"/>
+    <title metal:fill-slot="title" i18n:translate="page-title">
+      Change email settings:
+      <span tal:replace="view/userInfo/name" i18n:name="groupName"/>:
+      <span tal:replace="view/siteInfo/name" i18n:name="siteName"/>
     </title>
     <tal:block metal:fill-slot="metadata">
       <link rel="up" href="#" title="Profile"
@@ -28,16 +30,16 @@
            title="Profile"><b class="fn"
                               tal:content="view/userInfo/name">Profile</b></a>
       </li>
-      <li>Change email settings</li>
+      <li i18n:translate="change">Change email settings</li>
     </ul>
     <div id="gs-profile-email-settings"
          metal:fill-slot="body">
       <div id="gs-profile-email-settings-messagebox">
       </div>
-      <h1>Change email settings</h1>
+      <h1 i18n:translate="change">Change email settings</h1>
       <section id="gs-profile-email-settings-preferred">
-        <h2>Preferred addresses</h2>
-        <p class="muted intro">
+        <h2 i18n:translate="preferred-h">Preferred addresses</h2>
+        <p i18n:translate="preferred-intro" class="muted intro">
           You can post to your groups from any of your
           <i>preferred</i> addresses; messages from your
           groups are sent to these addresses by default.
@@ -46,8 +48,8 @@
         </ul><!--gs-profile-email-settings-address-list-->
       </section><!--gs-profile-email-settings-preferred-->
       <section id="gs-profile-email-settings-extra">
-        <h2>Extra addresses</h2>
-        <p class="muted intro">
+        <h2 i18n:translate="extra-h">Extra addresses</h2>
+        <p i18n:translate="extra-intro" class="muted intro">
           You can post to your groups from any of your
           <i>extra</i> addresses.
         </p>
@@ -55,8 +57,8 @@
         </ul><!--gs-profile-email-settings-address-list-->
       </section><!--gs-profile-email-settings-extra-->
       <section id="gs-profile-email-settings-unverified">
-        <h2>Unverified addresses</h2>
-        <p class="muted intro">
+        <h2 i18n:translate="unverified-h">Unverified addresses</h2>
+        <p i18n:translate="unverified-intro" class="muted intro">
           You must verify that you control an email address.
           Click the <samp class="button">Verify</samp> button
           to send a new verification message.
@@ -72,12 +74,14 @@
             <button class="btn btn-small icon-alone demote"
                     title="Add the address to the list of extra addresses">
               <span aria-hidden="true" data-icon="&#x2b06;"></span>
-              <span class="screen-reader-text">Add to extra addresses</span>
+              <span class="screen-reader-text"
+                    i18n:translate="button-extra">Add to extra addresses</span>
             </button>
             <button class="btn btn-small icon-alone remove"
                     title="Remove the email address">
               <span aria-hidden="true" data-icon="&#x1f5d1;"></span>
-              <span class="screen-reader-text">Remove</span>
+              <span class="screen-reader-text"
+                    i18n:translate="button-remove">Remove</span>
             </button>
           </div><!--toolbar-->
         </li>
@@ -87,11 +91,13 @@
           <div role="toolbar">
             <button class="btn btn-small prefer"
                     title="Add the address to the list of preferred addresses"
-                    data-icon="&#x2b06;">Prefer</button>
+                    data-icon="&#x2b06;"
+                    i18n:translate="button-prefer">Prefer</button>
             <button class="btn btn-small icon-alone remove"
                     title="Remove the email address">
               <span aria-hidden="true" data-icon="&#x1f5d1;"></span>
-              <span class="screen-reader-text">Remove</span>
+              <span class="screen-reader-text"
+                    i18n:translate="button-remove">Remove</span>
             </button>
           </div><!--toolbar-->
         </li>
@@ -101,11 +107,13 @@
           <div role="toolbar">
             <button class="btn btn-small verify"
                     title="Resend the verification message for this address"
-                    data-icon="&#x2709;">Verify</button>
+                    data-icon="&#x2709;"
+                    i18n:translate="button-verify">Verify</button>
             <button class="btn btn-small icon-alone remove"
                     title="Remove the email address">
               <span aria-hidden="true" data-icon="&#x1f5d1;"></span>
-              <span class="screen-reader-text">Remove</span>
+              <span class="screen-reader-text"
+                           i18n:translate="button-remove">Remove</span>
             </button>
           </div><!--toolbar-->
         </li>
@@ -113,10 +121,9 @@
 
       <section id="gs-profile-email-settings-add">
         <div class="form-widget">
-          <h2 aria-labelfor="gs-profile-email-settings-add-address">
-            Add an address
-          </h2>
-          <p class="muted intro">
+          <h2 aria-labelfor="gs-profile-email-settings-add-address"
+              i18n:translate="add-h">Add an address</h2>
+          <p i18n:translate="add-intro" class="muted intro">
             Enter your new email address below and click the
             <samp class="button">Add</samp> button.
           </p>
@@ -124,37 +131,40 @@
                  type="email" />
         </div><!--form-widget-->
         <button id="gs-profile-email-settings-add-button"
-                class="btn"><span class="muted">&#10010;</span> Add</button>
+                class="btn" i18n:translate="button-add"><span i18n:name="icon" class="muted">&#10010;</span> Add</button>
       </section><!--gs-profile-email-settings-add-->
 
       <div id="gs-profile-email-settings-feedback">
-        <span class="removing">
-          <span data-icon="&#xe619;" aria-hidden="true"
+        <span class="removing" i18n:translate="progress-removing">
+          <span data-icon="&#xe619;" aria-hidden="true" i18n:name="icon"
                 class="loading"> </span>
-          Removing  <code class="email">email@example.com</code>&#8230;
+          Removing
+          <code i18n:name="email" class="email">email@example.com</code>&#8230;
         </span>
-        <span class="preferring">
-          <span data-icon="&#xe619;" aria-hidden="true"
+        <span class="preferring" i18n:translate="progress-preferring">
+          <span data-icon="&#xe619;" aria-hidden="true" i18n:name="icon"
                 class="loading"> </span>
-          Making <code class="email">email@example.com</code> a
+          Making
+          <code i18n:name="email" class="email">email@example.com</code> a
           preferred address&#8230;
         </span>
-        <span class="extra">
-          <span data-icon="&#xe619;" aria-hidden="true"
+        <span class="extra" i18n:translate="progress-setting-extra">
+          <span data-icon="&#xe619;" aria-hidden="true" i18n:name="icon"
                 class="loading"> </span>
-          Setting <code class="email">email@example.com</code> as an
-          extra address&#8230;
+          Setting
+          <code i18n:name="email" class="email">email@example.com</code>
+          as an extra address&#8230;
         </span>
-        <span class="resend">
-          <span data-icon="&#xe619;" aria-hidden="true"
+        <span class="resend" i18n:translate="progress-resending">
+          <span data-icon="&#xe619;" aria-hidden="true" i18n:name="icon"
                 class="loading"> </span>
           Sending a new verification message to
-          <code class="email">email@example.com</code>&#8230;
+          <code i18n:name="email" class="email">email@example.com</code>&#8230;
         </span>
-        <span class="adding">
-          <span data-icon="&#xe619;" aria-hidden="true"
+        <span class="adding" i18n:translate="progress-adding">
+          <span data-icon="&#xe619;" aria-hidden="true" i18n:name="icon"
                 class="loading"> </span>
-          Adding <code class="email">email@example.com</code>&#8230;
+          Adding <code i18n:name="email" class="email">email@example.com</code>&#8230;
         </span>
       </div>
       <tal:block content="structure provider:gs-profile-email-settings-groups">
