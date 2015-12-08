@@ -1,30 +1,37 @@
+# 
+# Translators:
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: gs.profile.email.settings\n"
 "POT-Creation-Date: 2015-12-08 00:31+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2015-12-08 00:48+0000\n"
+"Last-Translator: Michael JasonSmith <mpj17@onlinegroups.net>\n"
+"Language-Team: German (http://www.transifex.com/groupserver/gs-profile-email-settings/language/de/)\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0\n"
+"Domain: DOMAIN\n"
+"Language: de\n"
 "Language-Code: en\n"
 "Language-Name: English\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Preferred-Encodings: utf-8 latin1\n"
-"Domain: DOMAIN\n"
 
 #. Default: "Add an address"
 #: ./browser/templates/settings.pt:124
 msgid "add-h"
 msgstr ""
 
-#. Default: "Enter your new email address below and click the <samp class=\"button\">Add</samp> button."
+#. Default: "Enter your new email address below and click the <samp
+#. class=\"button\">Add</samp> button."
 #: ./browser/templates/settings.pt:126
 msgid "add-intro"
 msgstr ""
 
-#. Default: "You have <b>added</b> the email address ${address} to your profile. An email message has been sent to verify that you control the address. You must follow the instructions in the message before you can post to your groups from ${address}."
+#. Default: "You have <b>added</b> the email address ${address} to your
+#. profile. An email message has been sent to verify that you control the
+#. address. You must follow the instructions in the message before you can
+#. post to your groups from ${address}."
 #: ./add.py:70
 msgid "add-message"
 msgstr ""
@@ -69,12 +76,15 @@ msgstr ""
 msgid "change"
 msgstr ""
 
-#. Default: "You have <b>removed</b> the email address ${address} from your profile."
+#. Default: "You have <b>removed</b> the email address ${address} from your
+#. profile."
 #: ./delete.py:64
 msgid "delete-message"
 msgstr ""
 
-#. Default: "You have set the email address ${address} as an <b>extra</b> address. You can post to your groups from this address, but by default messages will be sent to your <i>preferred</i> addresses"
+#. Default: "You have set the email address ${address} as an <b>extra</b>
+#. address. You can post to your groups from this address, but by default
+#. messages will be sent to your <i>preferred</i> addresses"
 #: ./normal.py:66
 msgid "demote-message"
 msgstr ""
@@ -84,7 +94,8 @@ msgstr ""
 msgid "extra-h"
 msgstr ""
 
-#. Default: "You can post to your groups from any of your <i>extra</i> addresses."
+#. Default: "You can post to your groups from any of your <i>extra</i>
+#. addresses."
 #: ./browser/templates/settings.pt:52
 msgid "extra-intro"
 msgstr ""
@@ -104,7 +115,8 @@ msgstr ""
 msgid "page-title"
 msgstr ""
 
-#. Default: "You have set the email address ${address} as <b>preferred</b>. You will recieve email from your groups at this address by default."
+#. Default: "You have set the email address ${address} as <b>preferred</b>.
+#. You will recieve email from your groups at this address by default."
 #: ./prefer.py:67
 msgid "prefer-message"
 msgstr ""
@@ -114,7 +126,9 @@ msgstr ""
 msgid "preferred-h"
 msgstr ""
 
-#. Default: "You can post to your groups from any of your <i>preferred</i> addresses; messages from your groups are sent to these addresses by default."
+#. Default: "You can post to your groups from any of your <i>preferred</i>
+#. addresses; messages from your groups are sent to these addresses by
+#. default."
 #: ./browser/templates/settings.pt:42
 msgid "preferred-intro"
 msgstr ""
@@ -144,7 +158,8 @@ msgstr ""
 msgid "progress-setting-extra"
 msgstr ""
 
-#. Default: "You have sent a new <b>verification message</b> to the email address ${address}."
+#. Default: "You have sent a new <b>verification message</b> to the email
+#. address ${address}."
 #: ./resend.py:68
 msgid "resend-message"
 msgstr ""
@@ -174,8 +189,9 @@ msgstr ""
 msgid "unverified-h"
 msgstr ""
 
-#. Default: "You must verify that you control an email address. Click the <samp class=\"button\">Verify</samp> button to send a new verification message."
+#. Default: "You must verify that you control an email address. Click the
+#. <samp class=\"button\">Verify</samp> button to send a new verification
+#. message."
 #: ./browser/templates/settings.pt:61
 msgid "unverified-intro"
 msgstr ""
-

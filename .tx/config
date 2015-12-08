@@ -1,0 +1,9 @@
+[main]
+host = https://www.transifex.com
+
+[gs-profile-email-settings.gs-profile-email-settings-pot]
+file_filter = gs/profile/email/settings/locales/<lang>/LC_MESSAGES/gs.profile.email.settings.po
+source_file = gs/profile/email/settings/locales/en/LC_MESSAGES/gs.profile.email.settings.po
+source_lang = en
+type = PO
+

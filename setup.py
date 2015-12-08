@@ -50,7 +50,7 @@ requires = [
     'Products.CustomUserFolder', ]
 
 if (sys.version_info < (3, 4)):
-    requires += ['setuptools', ]
+    requires += ['setuptools', 'enum34']
 
 setup(
     name=name,

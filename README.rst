@@ -29,8 +29,14 @@ states. The ``gs.profile.email.base`` product defines the states
 Resources
 =========
 
-- Code repository: https://github.com/groupserver/gs.profile.email.settings/
-- Questions and comments to http://groupserver.org/groups/development
+
+
+- Translations:
+  https://www.transifex.com/projects/p/gs-profile-email-settings/
+- Code repository:
+  https://github.com/groupserver/gs.profile.email.settings/
+- Questions and comments to
+  http://groupserver.org/groups/development
 - Report bugs at https://redmine.iopen.net/projects/groupserver
 
 .. [#base] See <https://github.com/groupserver/gs.profile.email.base/>
