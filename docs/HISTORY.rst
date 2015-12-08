@@ -1,6 +1,25 @@
 Changelog
 =========
 
+3.0.0 (2015-12-08)
+------------------
+
+* Adding buttons for people that use touch-screens (which have
+  difficulty with drag-and-drop)
+* Making the drag-and-drop support more interactive
+* Switching the *Add* form to a static form that is always shown
+  from a Twitter Bootstrap dialog
+* Explaining the different types of address
+* Adding `i18n support`_
+* Splitting the form into six JSON endpoints
+* Splitting the page-template for the group-settings off from the
+  main page
+* Switching to self-contained JavaScript (ES5) code, which works
+  without jQuery or jQuery UI
+
+.. _i18n support:
+   https://www.transifex.com/projects/p/gs-profile-email-settings/
+
 2.3.1 (2015-01-08)
 ------------------
 
