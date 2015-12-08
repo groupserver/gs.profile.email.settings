@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-# Copyright © 2014 OnlineGroups.net and Contributors.
+# Copyright © 2014, 2015 OnlineGroups.net and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -17,15 +17,10 @@ from collections import Mapping
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope.component import createObject, getMultiAdapter
-from gs.core import comma_comma_and
 from gs.group.member.email.base.interfaces import IGroupEmailUser
 from gs.group.member.email.base import GroupEmailSetting
 from gs.profile.base import ProfileContentProvider
-from .utils import markup_address
 # TODO: Make into an adaptor
-# TODO: Move to gs.groups.member.email,
-#                  ^^^^^^
-#                  GroupS, not group.
 
 
 class GroupSettingsContentProvider(ProfileContentProvider):
@@ -131,6 +126,5 @@ class GroupSettingInfo(object):
     @Lazy
     def addresses(self):
         'The address where posts are delivered.'
-        addrs = self.groupEmailUser.get_addresses()
-        retval = comma_comma_and([markup_address(a) for a in addrs])
+        retval = self.groupEmailUser.get_addresses()
         return retval

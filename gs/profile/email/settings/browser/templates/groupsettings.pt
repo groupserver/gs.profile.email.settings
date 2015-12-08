@@ -30,9 +30,13 @@
              tal:attributes="href groupSetting/groupInfo/relative_url"
              tal:content="groupSetting/groupInfo/name">Group name</a>
         </td>
-        <td class="gs-profile-email-settings-group-address"
-            tal:content="structure groupSetting/addresses">
-          person@example.com
+        <td class="gs-profile-email-settings-group-address">
+          <ul>
+            <li tal:repeat="e groupSetting/addresses">
+              <code class="email"
+                    tal:content="structure e">person@example.com</code>
+            </li>
+          </ul>
         </td>
         <td class="gs-profile-email-settings-group-setting-setting">
           <span tal:condition="groupSetting/oneEmailPerPost"
