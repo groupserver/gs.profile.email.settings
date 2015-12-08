@@ -70,16 +70,11 @@
 
   <!--JavaScript resources-->
   <browser:resource
-    name="gs-profile-email-settings.js"
-    file="browser/javascript/settings.js"
-    permission="zope2.Public"/>
-
-  <browser:resource
-    name="emailsettings-20140321.js"
+    name="gs-profile-email-settings-20151208.js"
     file="browser/javascript/settings.js"
     permission="zope2.Public"/>
   <browser:resource
-    name="emailsettings-min-20140321.js"
+    name="gs-profile-email-settings-min-20151208.js"
     file="browser/javascript/settings-min.js"
     permission="zope2.Public"/>
 

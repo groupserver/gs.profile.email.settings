@@ -182,6 +182,6 @@
             data-feedback="#gs-profile-email-settings-feedback"
             type="text/javascript"
             defer="defer"
-            src="/++resource++gs-profile-email-settings.js"> </script>
+            src="/++resource++gs-profile-email-settings-min-20151208.js"> </script>
   </body>
 </html>
