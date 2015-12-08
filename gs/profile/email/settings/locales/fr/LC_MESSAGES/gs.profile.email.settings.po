@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gs.profile.email.settings\n"
 "POT-Creation-Date: 2015-12-08 00:31+0000\n"
-"PO-Revision-Date: 2015-12-08 18:24+0000\n"
+"PO-Revision-Date: 2015-12-08 18:42+0000\n"
 "Last-Translator: Michael JasonSmith <mpj17@onlinegroups.net>\n"
 "Language-Team: French (http://www.transifex.com/groupserver/gs-profile-email-settings/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgstr ""
 #. Default: "Add an address"
 #: ./browser/templates/settings.pt:124
 msgid "add-h"
-msgstr ""
+msgstr "Ajouter votre adresse e-mail"
 
 #. Default: "Enter your new email address below and click the <samp
 #. class=\"button\">Add</samp> button."
@@ -40,7 +40,7 @@ msgstr ""
 #. Default: "Address used"
 #: ./browser/templates/groupsettings.pt:19
 msgid "address-used"
-msgstr ""
+msgstr "Adresse utilisé"
 
 #. Default: "${icon} Add"
 #: ./browser/templates/settings.pt:134
@@ -55,17 +55,17 @@ msgstr "Modifier"
 #. Default: "Add to extra addresses"
 #: ./browser/templates/settings.pt:77
 msgid "button-extra"
-msgstr ""
+msgstr "Ajouter à l'adresses supplément "
 
 #. Default: "Prefer"
 #: ./browser/templates/settings.pt:92
 msgid "button-prefer"
-msgstr ""
+msgstr "Préférer"
 
 #. Default: "Remove"
 #: ./browser/templates/settings.pt:83
 msgid "button-remove"
-msgstr ""
+msgstr "Retirer"
 
 #. Default: "Verify"
 #: ./browser/templates/settings.pt:108
@@ -93,7 +93,7 @@ msgstr ""
 #. Default: "Extra addresses"
 #: ./browser/templates/settings.pt:51
 msgid "extra-h"
-msgstr ""
+msgstr "Adresses supplément "
 
 #. Default: "You can post to your groups from any of your <i>extra</i>
 #. addresses."
@@ -109,12 +109,12 @@ msgstr "Groupe"
 #. Default: "Group settings"
 #: ./browser/templates/groupsettings.pt:9
 msgid "group-settings"
-msgstr ""
+msgstr "Réglage du groupe"
 
 #. Default: "Change email settings: ${groupName}: ${siteName}"
 #: ./browser/templates/settings.pt:11
 msgid "page-title"
-msgstr ""
+msgstr "Mettre à jours vos préférences e-mail: ${groupName}: ${siteName}"
 
 #. Default: "You have set the email address ${address} as <b>preferred</b>.
 #. You will recieve email from your groups at this address by default."
@@ -125,7 +125,7 @@ msgstr ""
 #. Default: "Preferred addresses"
 #: ./browser/templates/settings.pt:41
 msgid "preferred-h"
-msgstr ""
+msgstr "Adresses préféré  "
 
 #. Default: "You can post to your groups from any of your <i>preferred</i>
 #. addresses; messages from your groups are sent to these addresses by
@@ -168,27 +168,27 @@ msgstr ""
 #. Default: "Setting"
 #: ./browser/templates/groupsettings.pt:21
 msgid "setting"
-msgstr ""
+msgstr "Réglage"
 
 #. Default: "Daily digest"
 #: ./browser/templates/groupsettings.pt:41
 msgid "setting-digest"
-msgstr ""
+msgstr "Résumer du jour"
 
 #. Default: "Email per post"
 #: ./browser/templates/groupsettings.pt:38
 msgid "setting-email-per-post"
-msgstr ""
+msgstr "Un e-mail chaque message "
 
 #. Default: "Web only"
 #: ./browser/templates/groupsettings.pt:44
 msgid "setting-web-only"
-msgstr ""
+msgstr "Web seulement "
 
 #. Default: "Unverified addresses"
 #: ./browser/templates/settings.pt:60
 msgid "unverified-h"
-msgstr ""
+msgstr "Adresses sans vérification"
 
 #. Default: "You must verify that you control an email address. Click the
 #. <samp class=\"button\">Verify</samp> button to send a new verification
