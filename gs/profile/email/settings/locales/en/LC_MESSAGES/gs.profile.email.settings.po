@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "POT-Creation-Date: 2015-12-08 00:31+0000\n"
-"PO-Revision-Date: 2015-12-07 16:33-0800\n"
+"PO-Revision-Date: 2015-12-08 10:26-0800\n"
 "Last-Translator: Michael JasonSmith <mpj17@onlinegroups.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,12 +17,12 @@ msgstr ""
 #. Default: "Add an address"
 #: ./browser/templates/settings.pt:124
 msgid "add-h"
-msgstr ""
+msgstr "Add an address"
 
 #. Default: "Enter your new email address below and click the <samp class=\"button\">Add</samp> button."
 #: ./browser/templates/settings.pt:126
 msgid "add-intro"
-msgstr ""
+msgstr "Enter your new email address below and click the <samp class=\"button\">Add</samp> button."
 
 #. Default: "You have <b>added</b> the email address ${address} to your profile. An email message has been sent to verify that you control the address. You must follow the instructions in the message before you can post to your groups from ${address}."
 #: ./add.py:70

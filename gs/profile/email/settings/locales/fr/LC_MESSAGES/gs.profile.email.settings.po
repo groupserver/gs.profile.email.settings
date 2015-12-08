@@ -1,10 +1,11 @@
 # 
 # Translators:
+# Michael JasonSmith <mpj17@onlinegroups.net>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: gs.profile.email.settings\n"
 "POT-Creation-Date: 2015-12-08 00:31+0000\n"
-"PO-Revision-Date: 2015-12-08 00:48+0000\n"
+"PO-Revision-Date: 2015-12-08 18:24+0000\n"
 "Last-Translator: Michael JasonSmith <mpj17@onlinegroups.net>\n"
 "Language-Team: French (http://www.transifex.com/groupserver/gs-profile-email-settings/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -44,12 +45,12 @@ msgstr ""
 #. Default: "${icon} Add"
 #: ./browser/templates/settings.pt:134
 msgid "button-add"
-msgstr ""
+msgstr "Ajouter"
 
 #. Default: "Change"
 #: ./browser/templates/groupsettings.pt:49
 msgid "button-change"
-msgstr ""
+msgstr "Modifier"
 
 #. Default: "Add to extra addresses"
 #: ./browser/templates/settings.pt:77
@@ -69,12 +70,12 @@ msgstr ""
 #. Default: "Verify"
 #: ./browser/templates/settings.pt:108
 msgid "button-verify"
-msgstr ""
+msgstr "Vérifier"
 
 #. Default: "Change email settings"
 #: ./browser/templates/settings.pt:33
 msgid "change"
-msgstr ""
+msgstr "Mettre à jours vos préférences e-mail"
 
 #. Default: "You have <b>removed</b> the email address ${address} from your
 #. profile."
@@ -103,7 +104,7 @@ msgstr ""
 #. Default: "Group"
 #: ./browser/templates/groupsettings.pt:17
 msgid "group"
-msgstr ""
+msgstr "Groupe"
 
 #. Default: "Group settings"
 #: ./browser/templates/groupsettings.pt:9
