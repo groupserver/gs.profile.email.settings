@@ -22,7 +22,8 @@
             colspan="2" i18n:translate="setting">Setting</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody tal:define="u string:?form.userId=${view/userInfo/id};
+                       userForm python:'' if view.userInfo.id == view.loggedInUser.id else u">
       <tr tal:repeat="groupSetting view/groupEmailSettings"
           tal:attributes="id string:gs-profile-email-settings-entry-${groupSetting/groupInfo/id};">
         <td class="gs-profile-email-settings-group-group">
@@ -52,7 +53,7 @@
         <td class="gs-profile-email-settings-group-setting-change">
           <a class="btn"
              tal:attributes="title string:Change your email settings for the group ${groupSetting/groupInfo/name};
-                             href string:${groupSetting/groupInfo/relative_url}/email_settings.html"
+                             href string:${groupSetting/groupInfo/relative_url}/email_settings.html${userForm}"
              href="#" data-icon="&#x2699;"
              i18n:translate="button-change">Change</a>
         </td>
