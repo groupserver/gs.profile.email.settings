@@ -30,7 +30,7 @@
     for="Products.CustomUserFolder.interfaces.ICustomUser">
     <browser:menuItem
       action="emailsettings.html"
-      title="Change Email Settings"
+      title="Change email settings"
       description="Change your email addresses and delivery options"
       order="3"
       permission="zope2.ManageProperties"/>
