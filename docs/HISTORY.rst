@@ -1,6 +1,14 @@
 Changelog
 =========
 
+3.0.1 (2015-12-16)
+------------------
+
+* Returning ``?form.userId={id}`` to the end of the *Change* link
+  for a group when the *Change email settings* page is being
+  viewed by someone with the ``Manager`` role
+* Fixing the capitalisation of the menu item
+
 3.0.0 (2015-12-08)
 ------------------
 
